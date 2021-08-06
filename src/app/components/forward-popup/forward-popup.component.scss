@@ -1,0 +1,62 @@
+@import '~assets/css/variables';
+
+.modal{
+  z-index: 2500;
+}
+.forward-header{
+  height: 60px;
+  background-color: $chat-bar-header;
+  color: $chat-header-text;
+  font-size: 19px;
+}
+.search-bar{
+  background-color: $chat-bg-color;
+}
+.channels-container{
+  height: 380px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.chat-card {
+  outline: none;
+  border-bottom: solid 1px $border-bottom-header;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: $chat-bg-color;
+  color: $light-font;
+  height: 71px;
+  border-left: solid 3px transparent;
+}
+.custom-image{
+  color: white;
+  font-size: 20px;
+  background-color: #EF5350;
+}
+.channel-image {
+  min-height: 40px;
+  max-height: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  object-fit: cover;
+}
+.members{
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-card.active{
+  background-color: var(--app-color-highlight);
+  border-left: solid 3px var(--app-color);
+}
+*::-webkit-scrollbar{
+  width: 5px !important;
+  height: 6px !important;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: rgba(0,0,0,0.2);
+}
+*::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.08);
+}

@@ -1,0 +1,53 @@
+.permissions-modal{
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2601;
+  background-color: rgba(20, 20, 20, 0.9);
+  .permissions-modal__body{
+    width: 40%;
+    color: white;
+    ::ng-deep .heading-text{
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 28px;
+      font-weight: 300;
+      line-height: normal;
+    }
+    ::ng-deep .description{
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .permissions-text{
+      padding-left: 15px;
+      padding-top: 12px;
+    }
+    .arrow-image{
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      height: 48px;
+      width: 48px;
+      min-height: 48px;
+      min-width: 48px;
+      padding: 14px;
+      transform: rotate(-135deg);
+      .back-icon{
+        height: 28px;
+        width: 28px;
+      }
+    }
+    ::ng-deep .got-it-button{
+      background-color: var(--app-color);
+      color: white;
+      cursor: pointer;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 3px;
+      font-size: 14px;
+      transition: box-shadow .18s ease-out, background .18s ease-out, color .18s ease-out;
+      &:hover{
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}

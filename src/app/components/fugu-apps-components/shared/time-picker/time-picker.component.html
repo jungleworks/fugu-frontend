@@ -1,0 +1,20 @@
+<div class="time-box pl-3 pr-3 pt-2 pb-2 position-absolute d-flex align-items-center">
+  <form [formGroup]="timeForm">
+    <div class="d-flex align-items-center">
+      <div class="d-flex flex-column hour-box text-center">
+        <span class="fa fa-angle-up cursor-hand" (click)="changeTime('hour',1)"></span>
+        <input class="form-control" formControlName="hour" type="number" max="23" min="0" (keydown)="onTimeKeyPress($event,'hour')">
+        <span class="fa fa-angle-down cursor-hand" (click)="changeTime('hour',-1)"></span>
+      </div>
+      <div class="mr-2 ml-2"><span>:</span></div>
+      <div class="d-flex flex-column hour-box text-center">
+        <span class="fa fa-angle-up cursor-hand" (click)="changeTime('min',1)"></span>
+        <input class="form-control" formControlName="min" type="number" max="59" min="0" (keydown)="onTimeKeyPress($event,'min')">
+        <span class="fa fa-angle-down cursor-hand" (click)="changeTime('min',-1)"></span>
+      </div>
+    </div>
+  </form>
+  <div class="d-flex ml-3">
+    <img class="h-20px cursor-hand" (click)="saveTime()" src="assets/img/green-tick.svg">
+  </div>
+</div>

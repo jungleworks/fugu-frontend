@@ -1,0 +1,18 @@
+.google-sign-in-btn {
+  background-color: #4285f4;
+  // background-image: linear-gradient(to right, #6FC37B , #41AD8D);
+  color: #ffffff;
+  padding: 2px;
+  margin-top: 30px;
+  font-size: 17px;
+  border-radius: 6px;
+  &__icon {
+    left: 2px;
+    background: #fff;
+    height: 37px;
+    width: 37px;
+    display: flex;
+    align-items: 9px;
+    border-radius: 4px;
+  }
+}

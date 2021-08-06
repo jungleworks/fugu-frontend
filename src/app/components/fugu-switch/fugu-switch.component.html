@@ -1,0 +1,5 @@
+<label class="switch {{default}}">
+  <input type="checkbox" [disabled]="disableToggle" [checked]="active" [ngClass]="active?activeClass:inActiveClass" (change)="onChangeEvent($event)"
+    [value]="true">
+  <div class="slider round"></div>
+</label>

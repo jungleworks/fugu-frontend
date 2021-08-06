@@ -1,0 +1,35 @@
+::ng-deep canvas { 
+    cursor: crosshair;
+}
+
+.crop-parent {
+    .header-crop {
+        background-color: var(--app-color);
+        color: #fff;
+        padding: 1em 1rem;
+        color: #fff;
+        font-size: 0.9em;
+        padding-right: 10px;
+      }
+      .heading {
+          color: #fff!important;
+      }
+      .center {
+	   	 display: flex;
+		   justify-content: center;
+	     align-items: center;
+        height: 100%;
+        background: #EAEAEA;
+      }
+  }
+  .button-crop {
+    text-transform: uppercase;
+    background-color: var(--app-color);
+    color: white;
+    cursor: pointer;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: box-shadow 0.18s ease-out, background 0.18s ease-out, color 0.18s ease-out;
+  }

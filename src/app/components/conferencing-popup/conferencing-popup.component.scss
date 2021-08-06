@@ -1,0 +1,124 @@
+.message-modal{
+  background-color: var(--popup-opacity);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2601;
+  overflow: auto;
+  .select-cont {
+    max-height: 75px;
+    overflow: scroll;
+  }
+  .message-modal__content{
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 17px 50px 0 rgba(0, 0, 0, 0.19), 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+    .invite-header{
+      background: var(--app-color);
+      color: white;
+    }
+    .search-input{
+      border: solid 1px #e4e4ed;
+      box-shadow: none;
+      outline: none;
+      border-radius: 2px;
+      &:focus{
+        border: solid 1px #bdbdc5;
+      }
+    }
+    .message-modal__body{
+      width: 500px;
+      background-color: var(--chat-bar-header);
+      ::ng-deep .message-modal-heading{
+        color: #4b4b4b;
+        font-family: TitilliumWeb-SemiBold;
+        font-size: 20px;
+      }
+      ::ng-deep .message-modal-description{
+        color: #5b646b;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      ::ng-deep .message-modal-button{
+        background-color: var(--app-color);
+        color: white;
+        cursor: pointer;
+        border: none;
+        margin-top: 20px;
+        padding: 10px 24px;
+        border-radius: 3px;
+        font-size: 14px;
+        transition: box-shadow .18s ease-out, background .18s ease-out, color .18s ease-out;
+        &:hover{
+          box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+      }
+      .chip-email{
+        background-color: #e8e8e8;
+        color: white;
+        border-radius: 16px;
+        img{
+          height: 26px;
+          width: 26px;
+          object-fit: cover;
+        }
+        .chip-text{
+          font-size: 16px;
+          color: #303030;
+        }
+        .chip-cross{
+          &:hover{
+            background-color: #FFFFFF;
+          }
+        }
+      }
+      .vs-scroll-container{
+        height: 300px;
+        .active{
+          background-color: var(--app-color-highlight);
+        }
+        .user-card{
+          color: var(--chat-header-text);
+          cursor: pointer;
+          &:hover{
+            background-color: var(--app-color-highlight);
+          }
+          .user-image{
+            height: 46px;
+            width: 46px;
+            min-height: 46px;
+            object-fit: cover;
+            min-width: 46px;
+          }
+          .user-email{
+            margin-top: -4px;
+          }
+        }
+      }
+    }
+  }
+  .tick-position {
+    top: 44px;
+    left: 44px;
+  }
+  .circle-icon-tick {
+    color: var(--app-color);
+    background: #fff;
+    border-radius: 50%;
+    border: 0.2px solid var(--app-color);;
+  }
+}
+
+
+.select-cont *::-webkit-scrollbar{
+  width: 5px !important;
+  height: 7px !important;
+}
+.select-cont *::-webkit-scrollbar-thumb{
+  background-color: var(--scroll-color);
+  border-radius: 3px;
+}
+.select-cont *::-webkit-scrollbar-track{
+  background: #eeeeee;
+  padding: 1px;
+}

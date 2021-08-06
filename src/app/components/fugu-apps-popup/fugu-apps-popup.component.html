@@ -1,0 +1,49 @@
+<div class="d-flex flex-column w-100 apps-popup">
+  <div class="d-flex align-items-center justify-content-center flex-column apps-cover">
+    <b class="font-26">Connect the Apps You Love</b>
+    <p class="font-20 text-muted">Make planning, tracking and monitoring easier.</p>
+  </div>
+  <div class="d-flex flex-wrap justify-content-center">
+    <div *ngFor="let card of all_apps" class="app-card d-flex flex-column align-items-center"
+         [routerLink]="['details/' + card.app_id]">
+      <img [src]="card.icon" class="app-card__logo pb-3" alt="logo"/>
+      <span class="app-card__name">{{card.name}}<img *ngIf="card.status == 1" class="hw-18 ml-2" src="assets/img/verified-logo.svg"></span>
+      <span class="app-card__tagline text-muted">{{card.tag_line}}</span>
+    </div>
+  </div>
+  <!--<div class="d-flex flex-column ml-auto mr-auto mt-4 w-75">-->
+  <!--<ng-container *ngIf="!searchMode">-->
+  <!--<ng-container *ngIf="installedApps.length > 0">-->
+  <!--<p class="fugu-apps__heading mb-0 mt-2">In your workspace {{ '(' + installedApps.length + ')' }}</p>-->
+  <!--<div *ngFor="let app of installedApps" class="d-flex align-items-center fugu-apps p-2"-->
+  <!--(click)="openApp(app.app_id)">-->
+  <!--<img [src]="app.logo" [alt]="app.name" class="fugu-apps__logo mr-2">-->
+  <!--<div class="d-flex flex-column justify-content-center flex-grow-1">-->
+  <!--<p class="fugu-apps__name mb-0 font-weight-bold">{{app.name}}</p>-->
+  <!--<p class="fugu-apps__desc mb-0">{{app.desc}}</p>-->
+  <!--</div>-->
+  <!--<button class="fugu-apps__button btn">View</button>-->
+  <!--</div>-->
+  <!--</ng-container>-->
+  <!--<ng-container *ngIf="installedApps.length == 0">-->
+  <!--<p>No apps installed.</p>-->
+  <!--</ng-container>-->
+  <!--<ng-container *ngIf="availableApps.length > 0">-->
+  <!--<p class="fugu-apps__heading mb-0 mt-2">Add apps to your workspace</p>-->
+  <!--<div *ngFor="let app of availableApps" class="d-flex align-items-center fugu-apps p-2"-->
+  <!--(click)="openApp(app.app_id)">-->
+  <!--<img [src]="app.logo" [alt]="app.name" class="fugu-apps__logo mr-2">-->
+  <!--<div class="d-flex flex-column justify-content-center flex-grow-1">-->
+  <!--<p class="fugu-apps__name mb-0 font-weight-bold">{{app.name}}</p>-->
+  <!--<p class="fugu-apps__desc mb-0">{{app.desc}}</p>-->
+  <!--</div>-->
+  <!--<button class="fugu-apps__button btn">Install</button>-->
+  <!--</div>-->
+  <!--</ng-container>-->
+  <!--<ng-container *ngIf="availableApps.length == 0">-->
+  <!--<p>No available apps.</p>-->
+  <!--</ng-container>-->
+  <!--</ng-container>-->
+  <!--<ng-container *ngIf="searchMode"></ng-container>-->
+  <!--</div>-->
+</div>

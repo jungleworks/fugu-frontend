@@ -1,0 +1,44 @@
+<div *ngIf="isPublicInvite" class="d-flex h-100 justify-content-center align-items-center">
+  <div class="join-box">
+    <div class="join-box-header d-flex justify-content-center align-items-center">
+        <img *ngIf="!commonService.isWhitelabelled" src="assets/img/fugu-logo-full.svg" alt="" class="img-fluid mb-4 logo">
+        <img class="h-45" *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations['logo']" alt="" class="img-fluid mb-4 logo">
+    </div>
+    <div class="join-box-content d-flex justify-content-center flex-column">
+      <div class="col-12">
+        <p class="text-center">Join <span class="font-weight-bold">{{spaceName}}</span> on {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }}.</p>
+        <p class="text-center"><span class="font-weight-bold">{{usersCount}}</span> users registered recently.</p>
+      </div>
+    <form *ngIf="!showJoinButton"role="form" [formGroup]="inviteForm" (submit)="onInviteClick()">
+      <div class="col-12 mt-1">
+            <app-intl-phone-input *ngIf="!isEmail && inviteForm.value.email" class="phone-dropdown-container position-absolute"
+                                    [(phoneObj)]="selected_country_code"></app-intl-phone-input>
+              <input type="text"
+                     appAutofocus
+                     [ngClass]="{'error' : commonService.getErrorMessage(inviteForm.controls.email),
+                     'padding-phone-picker-input': !isEmail && inviteForm.value.email}"
+                     [placeholder]="'Enter email or number'"  [maxLength]="!isEmail ? 12 : 200"
+                     class="form-control form-signup-custom pl-3 mr-2"
+                     formControlName="email"
+                     id="inputEmail">
+        <!-- <input  formControlName="email" autofocus type="text" class="form-input-custom-small text-center w-100" placeholder="foo@bar.com"> -->
+      </div>
+      <div class="col-12 mt-3">
+          <button [disabled]="!inviteForm.valid"
+                  class="btn btn-common w-100 text-uppercase font-weight-bold">
+                  Get my invite
+          </button>
+      </div>
+      <div class="col-12 mt-2">
+        <p class="text-muted text-center">or <span class="app-color"><a [routerLink]="['/login']" [queryParams]="{'space': ws}" class="cursor-hand" >sign in</a></span>.</p>
+      </div>
+    </form>
+         <div class="col-12 mt-3" *ngIf="showJoinButton" (click)="joinCommunity()">
+          <button 
+                  class="btn btn-common w-100 text-uppercase font-weight-bold">
+                  Join Community
+          </button>
+      </div>
+    </div>
+  </div>
+</div>

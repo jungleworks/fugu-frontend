@@ -1,0 +1,58 @@
+@import '~assets/css/variables';
+
+:host{
+  --modal-width: 50%;
+}
+
+@media (min-width: 1500px) {
+    .message-modal__content {
+      width: calc(var(--modal-width) / 1.33) !important;
+  }
+}
+
+.message-modal{
+  background-color: var(--popup-opacity);
+  position: fixed;
+  left: 0;
+  top: 0;
+  //padding-top:100px;
+  z-index: 2601;
+  overflow: auto;
+  .message-modal__content{
+    background-color: $chat-bar-header;
+    border-radius: 3px;
+    box-shadow: 0 17px 50px 0 rgba(0, 0, 0, 0.19), 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+    padding: 22px 24px 20px 24px;
+    .message-modal__body{
+      color: $chat-header-text;
+      ::ng-deep .message-modal-heading{
+        color: $chat-header-text;
+        font-family: TitilliumWeb-SemiBold;
+        font-size: 20px;
+      }
+      ::ng-deep .message-modal-description{
+        color: $light-font;
+        font-size: 14.5px;
+        line-height: 20px;
+      }
+      ::ng-deep .message-modal-button{
+        text-transform: uppercase;
+        background-color: var(--app-color);
+        color: white;
+        cursor: pointer;
+        border: none;
+        margin-top: 20px;
+        padding: 10px 24px;
+        border-radius: 16px;
+        font-size: 14px;
+        transition: box-shadow .18s ease-out, background .18s ease-out, color .18s ease-out;
+        &:hover{
+          box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        &:disabled{
+          opacity: 0.5
+        }
+      }
+    }
+  }
+}

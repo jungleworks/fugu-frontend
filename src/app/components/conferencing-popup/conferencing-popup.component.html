@@ -1,0 +1,58 @@
+<div class="message-modal d-flex justify-content-center align-items-center h-100 w-100">
+  <div class="message-modal__content" [@popup-open]>
+    <div class="invite-header d-flex align-items-center p-2">
+      <span>
+        <img class="ml-2 mr-3 cursor-hand" data-dismiss="modal" aria-label="Close" src="assets/img/cross-icon-forward.svg"
+             alt="close" (click)="closeConferencingModal.emit(true)">{{isTaskMembers ? 'Select members' : isLiveStream ? 'Choose people who can see your livestream' : 'Invite People to Conference'}}
+      </span>
+    </div>
+    <div class="message-modal__body d-flex flex-column">
+      <div class="d-flex p-1 flex-wrap select-cont">
+        <div class="chip-email mb-2 mr-1 d-flex position-relative" *ngFor="let member of selected_members | keys" [@flyInOut]>
+          <img *ngIf="selected_members[member].user_image" [src]="selected_members[member].user_image" class="rounded-img-fugu" alt="user-image">
+          <div *ngIf="!selected_members[member].user_image" class="rounded-img-fugu d-flex
+                 justify-content-center align-items-center hw-26"
+               [ngStyle]="{'background-color': selected_members[member].user_id | randomColor}">
+            {{selected_members[member].full_name.substring(0,1)}}
+          </div>
+          <span class="chip-text d-flex align-items-center pl-2">{{selected_members[member].full_name.split(' ')[0]}}
+            <span (click)="removeMember(member)" class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                <path opacity=".6" fill="#263238" d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+                </path>
+              </svg>
+            </span>
+          </span>
+        </div>
+      </div>
+      <div class="p-2">
+        <input type="text" class="form-control search-input" id="conferenceSearchBox" (keydown)="onSearchBoxKeyDownEvent($event)"
+               placeholder="Type user name" [formControl]="searchCtrl">
+      </div>
+      <div *ngIf="users_list.length <= 20 && !searchCtrl.value" (click)="selectAllMembersCheckBox ?unselectAllMembers() : selectAllMembers()" class="d-flex mr-2 align-items-center ml-2 pb-1 pt-1 cursor-hand theme-font-color">
+       <input *ngIf="!isTaskMembers" type="checkbox" class="mr-2 "  [(ngModel)]="selectAllMembersCheckBox"/> Select all</div>
+      <cdk-virtual-scroll-viewport itemSize="64" class="vs-scroll-container" #usersContainer>
+        <div *cdkVirtualFor="let user of users_list; let i = index"
+             class="d-flex p-2 user-card position-relative" (click)="addMember(user)"
+        [id]="'users' + i" [ngClass]="{'active': active_index == i}">
+          <img *ngIf="user.user_image" [src]="user.user_image" class="rounded-img-fugu user-image"
+               alt="user-image">
+          <div *ngIf="!user.user_image" [ngStyle]="{'background-color': user.user_id | randomColor}"
+               class="user-image rounded-img-fugu custom-image d-flex color-white
+           justify-content-center align-items-center">
+            {{user.full_name.substring(0,1)}}
+          </div>
+          <span *ngIf="selected_members[user.user_id]" class="d-flex align-items-end tick-position position-absolute"><i class="fas fa-check-circle circle-icon-tick"></i></span>
+
+          <div class="d-flex flex-column pl-2">
+            <span>{{user.full_name}}</span>
+            <span class="text-muted user-email">{{user.email}}</span>
+          </div>
+        </div>
+      </cdk-virtual-scroll-viewport>
+      <button *ngIf="send_btn_enabled && !isLiveStream && !isTaskMembers" class="message-modal-button" (click)="inviteMembers()">Start call</button>
+      <button *ngIf="isLiveStream && !isTaskMembers" class="message-modal-button" (click)="inviteLivestreamMembers()">Start livestream</button>
+      <button *ngIf="isTaskMembers" class="message-modal-button" (click)="sendInfo()">Select Members</button>
+    </div>
+  </div>
+</div>

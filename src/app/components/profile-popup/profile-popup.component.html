@@ -1,0 +1,82 @@
+<div class="profile-mask">
+  <div [id]="id" class="p-3">
+    <div *ngIf="profileInfo">
+      <div class="popover-image-container d-flex  flex-column">
+        <img [src]="profileInfo.user_thumbnail_image || '../../../assets/img/placeholder.png'" [ngClass]="{'deactive-member': profileInfo.status == UserStatusEnum.deactiveState}" class="popover-image rounded-img-fugu mb-2">
+        <p class="full-name"
+           [ngClass]="{'deactive-member': profileInfo.status == UserStatusEnum.deactiveState}">{{profileInfo.full_name}}</p>
+        <span *ngIf="['GUEST', 'PAYING_GUEST'].includes(profileInfo.role) && profileInfo.status != UserStatusEnum.invited" class="guest-label">(Guest)</span>
+        <span *ngIf="profileInfo.status == UserStatusEnum.invited" class="guest-label">(Pending)</span>
+        <div class="d-flex font" *ngIf="!(spaceData.config.hide_email | parseInt) && !profileInfo.email.includes('@junglework.auth')">
+          <span>
+            <!-- <img src="assets/img/popover-dm-black.svg" class="mr-12"> -->
+            <svg  class="mr-12" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+              <g fill="none" fill-rule="evenodd">
+                  <path d="M0 0h18v18H0z"/>
+                  <path stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" d="M2.25 14.25h13.5V3.75H2.25z"/>
+                  <path stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" d="M2.598 4.101L9 9l6.308-4.837"/>
+              </g>
+          </svg>
+          
+          </span>
+          <span class="email mb-0">{{profileInfo.email}}</span>
+        </div>
+        <div class="d-flex font" *ngIf="!(spaceData.config.hide_contact_number | parseInt) && profileInfo.contact_number">
+          <span>
+            <!-- <img src="assets/img/popover-number.svg" class="mr-12"> -->
+            <svg class="mr-12" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+    <g fill="none" fill-rule="evenodd">
+        <path d="M0 0h18v18H0z"/>
+        <path stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" d="M14.188 12.509c0-.488-.517-.462-.781-.462a7.41 7.41 0 0 1-3.395-.824l-1.361 1.361a9.34 9.34 0 0 1-3.234-3.235l1.36-1.361a7.404 7.404 0 0 1-.824-3.395c0-.264-.129-.78-.635-.78H2.764c-.514 0-.514.516-.514.78 0 6.162 4.995 11.157 11.157 11.157.264 0 .78-.093.78-.508V12.51z"/>
+    </g>
+</svg>
+
+          </span>
+          <span class="mb-0">{{profileInfo.contact_number}}</span>
+        </div>
+      </div>
+      <div *ngIf="profileInfo.designation" class="">
+        <div class="d-flex font">
+          <span>
+            <!-- <img src="assets/img/popover-desig.svg" class="mr-12"> -->
+            <svg class="mr-12" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+    <g fill="none" fill-rule="evenodd" stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" transform="translate(2.25 3)">
+        <rect width="13.5" height="9.45" y="2.7" rx="1.35"/>
+        <path d="M9.45 12.15V1.35A1.35 1.35 0 0 0 8.1 0H5.4a1.35 1.35 0 0 0-1.35 1.35v10.8"/>
+    </g>
+</svg>
+
+          </span>
+          <span class=" mb-0">{{profileInfo.designation}} <span *ngIf="profileInfo.department"> in </span>
+            {{profileInfo.department}}</span>
+        </div>
+        <div class="d-flex font">
+          <span>
+            <!-- <img src="assets/img/popover-location.svg" class="mr-12"> -->
+            <svg  class="mr-12" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+    <g fill="none" fill-rule="evenodd" stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.125" transform="translate(3 1.5)">
+        <path d="M12.273 6.136C12.273 10.91 6.136 15 6.136 15S0 10.91 0 6.136a6.136 6.136 0 0 1 12.273 0z"/>
+        <circle cx="6.136" cy="6.136" r="2.045"/>
+    </g>
+</svg>
+
+          </span>
+          <span class=" mb-0">{{profileInfo.location}}</span>
+        </div>
+      </div>
+      <p class="text-muted mb-2" [hidden]="profileInfo.status != UserStatusEnum.deactiveState">Deactivated Account</p>
+      <div class="d-flex justify-content-between" *ngIf="profileInfo.status != UserStatusEnum.deactiveState &&
+       userId != commonService.userDetails.user_id && (!['GUEST', 'PAYING_GUEST'].includes(profileInfo.role) || (['GUEST', 'PAYING_GUEST'].includes(profileInfo.role) && profileInfo.is_message_allowed))">
+        <button *ngIf="(commonService.external_perm_options.is_create_group_allowed) && spaceData.config.enable_one_to_one_chat.includes(spaceData.role)" class="message-btn cursor-hand outline-none box-shadow-none" (click)="createConversation()">
+          <img *ngIf="!commonService.isWhitelabelled" src="/assets/img/popover-dm.svg" class="img-fluid mr-1"> 
+          <img  class="img-fluid mr-1 wl-icon" *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations['fav_icon']">
+         <span>Direct Message</span> 
+        </button>
+        <button *ngIf="(commonService.external_perm_options.is_create_group_allowed) && (spaceData.role != RoleStatusEnum.isGuest && spaceData.role != RoleStatusEnum.isPayingGuest) && spaceData.config.enable_create_group.includes(spaceData.role)" class="message-btn cursor-hand outline-none box-shadow-none" (click)="createGroup()">
+          <img src="/assets/img/create-group-blue.svg" class="img-fluid mr-1"> 
+           <span>Create Group</span> 
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

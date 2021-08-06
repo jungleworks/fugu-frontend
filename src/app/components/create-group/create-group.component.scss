@@ -1,0 +1,179 @@
+@import '~assets/css/variables';
+
+.create-group-parent{
+  height: calc(100% - 60px);
+  background-color: white;
+  border-right: 1px solid $border-bottom-header;
+}
+.group-header{
+  background-color: var(--app-color);
+  color: white;
+  font-size: 19px;
+  align-items: flex-end;
+}
+.search-contacts-input{
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-size: 17px;
+  color: $chat-header-text;
+  border-bottom: 1px solid #d7d7d7;
+  &:focus{
+    border-bottom: 1px solid var(--app-color);
+  }
+}
+.member-card{
+  height: 62px;
+  &:hover{
+    background-color: $app-color-highlight;
+  }
+}
+.member-img{
+  max-height: 46px;
+  min-height: 46px;
+  min-width: 46px;
+  max-width: 46px;
+  object-fit: cover;
+}
+.members-container{
+  overflow: hidden;
+  // padding-bottom: 70px;
+}
+.member-card{
+  border-left: solid 3px transparent;
+}
+.search-container{
+  background-color: $chat-bar-header;
+}
+.label {
+ color: $chat-header-text
+}
+.label-light {
+ color: $light-font;
+}
+*::-webkit-scrollbar{
+  width: 5px !important;
+  height: 7px !important;
+}
+ *::-webkit-scrollbar-thumb{
+  background-color: var(--scroll-color);
+  border-radius: 3px;
+}
+ *::-webkit-scrollbar-track{
+  background: #eeeeee;
+  padding: 1px;
+}
+.chip-container {
+  height: 40px;
+}
+.chip-email{
+  background-color: var(--chip-bg);
+  color: white;
+  font-family: TitilliumWeb;
+  img{
+    height: 24px;
+    width: 24px;
+    object-fit: cover;
+    margin-left: 2px;
+  }
+  .chip-text{
+    font-size: 16px;
+    color: #303030;
+  }
+  .chip-cross{
+    &:hover{
+      background-color: #FFFFFF;
+    }
+  }
+}
+.selected-members-container{
+  max-height: 240px;
+  overflow: auto;
+}
+.action-button{
+  position: absolute;
+  bottom: 82px;
+  min-height: 70px;
+  max-height: 70px;
+  right: 32px;
+}
+.forward-icon{
+  background-color: var(--app-color);
+  filter: drop-shadow(0 0 10px #333);
+}
+.channel-group-image{
+  height: 150px;
+  width: 150px;
+  img{
+    height: 150px;
+    width: 150px;
+  }
+}
+.image-layer{
+  background-color: #7F807F;
+  color: white;
+  height: 100%;
+  transition: all 1s ease-in-out;
+  opacity: 0.7;
+  font-size: 18px;
+  text-align: center;
+  font-family: TitilliumWeb;
+  width: 100%;
+  .add-text{
+    font-size: 16px;
+  }
+}
+.height-0{
+  height: 0 !important;
+}
+.group-type-bar{
+  background-color: #f9f9f9;
+}
+.w-83{
+  width: 83%;
+}
+.email-text{
+  margin-top: -4px;
+}
+.no-thumbnail-img{
+  min-height: 46px;
+  max-height: 46px;
+  min-width: 46px;
+  max-width: 46px;
+  font-size: 30px;
+  color: white;
+}
+.tick-button{
+  margin-top: 50px;
+}
+.skip-button{
+  right: 10px;
+  top: 4px;
+  font-size: 16px;
+}
+.hw-56{
+  height: 56px;
+  width: 56px;
+}
+.member .active{
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  background-color: $app-color-highlight;;
+  border-right: solid 3px var(--app-color);
+}
+.members-vs-scroll-container {
+  min-height: 100%;
+}
+::ng-deep  .cdk-virtual-scroll-content-wrapper{
+  width: 100%;
+}
+.circle-icon-tick {
+  color: var(--app-color);
+  background: #fff;
+  border-radius: 50%;
+  border: 0.2px solid var(--app-color);;
+}
+.tick-position {
+  top: 36px;
+  left: 47px;
+}

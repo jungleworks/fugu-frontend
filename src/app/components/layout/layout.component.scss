@@ -1,0 +1,167 @@
+@import '~assets/css/variables';
+@import '~assets/css/introjs';
+
+app-sidebar {
+  // height: calc(100% - 64px);
+}
+app-chat {
+}
+app-workspace-bar {
+  z-index: 11111111;
+  box-shadow: 0 12px 24px -6px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
+  // border-radius: 3px;
+  height: 93%;
+  width: 100%;
+  // margin-left: 3px;
+}
+app-profile-component {
+  min-width: 26%;
+  max-width: 26%;
+}
+
+app-themes {
+  position: absolute;
+  top: 0px;
+  z-index: 111111111;
+  background-color: #fff;
+  height: 100%;
+}
+
+.overlay-themes {
+  cursor: not-allowed;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1111111;
+}
+// app-search-messages {
+//   min-width: 36%;
+//   max-width: 36%;
+// }
+app-user-profile {
+  min-width: 31%;
+  max-width: 31%;
+} 
+app-starred-messages {
+  z-index: 3;
+}
+app-notification{
+  z-index: 3;
+}
+app-create-group{
+}
+app-whats-new {
+  min-width: 26%;
+  max-width: 26%;
+}
+app-meet-profile {
+  min-width: 26%;
+  max-width: 26%;
+}
+app-message-read-by {
+  min-width: 26%;
+  max-width: 26%;
+}
+.top-absolute {
+   top: $header-height;
+}
+.parent-container{
+  height: 100%;
+  flex-wrap: nowrap;
+}
+#cookie_consent{
+  background-color: #3e454b;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 60px;
+  z-index: 2400;
+}
+#create-group{
+  z-index: 10;
+}
+.overlay {
+  z-index: 111;
+  background-color: #15141447;
+}
+
+.slow-internet-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9edbe;
+  border: 1px solid #f0c36d;
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: #222;
+  margin-top: 0px;
+  position: absolute;
+  left: 87px;
+  z-index: 1111;
+}
+.slow-internet {
+  font-size: 10px;
+}
+
+.opt-chat-meet {
+  border-right: 1px solid var(--border-bottom-header);
+  border-bottom: 1px solid;
+    border-bottom-color: var(--border-bottom-header) ;
+    background-color: var(--header-color);
+    &__label {
+      font-family: TitilliumWeb-Bold;
+      color: var(--header-ws);
+    }
+}
+
+.active-option {
+  border-bottom: 2px solid $app-color!important;
+  color: $app-color!important;
+  cursor: default!important;
+}
+.h-30 {
+  height: 30px;
+}
+
+.active-fill {
+  fill: $app-color!important;
+}
+
+::ng-deep.tutorial-number {
+  font-size: 13px;
+  color: #969698;
+}
+::ng-deep.tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+::ng-deep .tutorial-label {
+  color: #000000;
+  font-size: 18px;
+  font-family: TitilliumWeb-Bold;
+  margin-top: 5px;
+  white-space: nowrap;
+}
+::ng-deep .tutorial-svg {
+  min-width: 15px;
+}
+.try {
+  background-color: red;
+  border-radius: 30%;
+  // position: absolute;
+  // left: 109px;
+  // top: 6px;
+  width: 34px;
+  font-size: 11px;
+  border-radius: 8px;
+  background-color: #ff1717;
+  color: #fff;
+  padding: 0 6px;
+  margin-left: 10px;
+}
+
+::ng-deep .height-tut-2 {
+  height: 50px;
+}

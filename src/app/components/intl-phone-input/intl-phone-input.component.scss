@@ -1,0 +1,38 @@
+@import '~assets/css/variables';
+
+.phone-dropdown{
+  z-index: 1000;
+  width: 232px;
+  border: solid 1px $chat-bar-header;
+  overflow: hidden;
+  background-color: $chat-bar-header;
+  color: $chat-header-text;
+}
+.country-name-intl {
+  color: #838383;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  text-align: end;
+}
+.numbers-div{
+  height: 150px;
+  overflow: auto;
+}
+.dialcode-intl {
+  white-space: nowrap;
+  margin-right: 7px;
+}
+*::-webkit-scrollbar{
+  width: 4px !important;
+  height: 4px !important;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: var(--scroll-color);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-track{
+  background: #eeeeee;
+  padding: 1px;
+}

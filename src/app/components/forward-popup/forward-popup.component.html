@@ -1,0 +1,46 @@
+<div class="modal fade show" tabindex="-1" role="dialog" id="forwardPopup">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header forward-header d-flex align-items-center">
+        <span>
+          <img class="ml-2 mr-3 cursor-hand" data-dismiss="modal" aria-label="Close" src="assets/img/cross-icon-forward.svg"
+            alt="close"> Forward to...</span>
+      </div>
+      <div class="modal-body p-0">
+        <div class="search-bar p-2">
+          <input type="text" id="forward-search-box" autofocus class="form-control box-shadow-none outline-none" [formControl]="chatSearchCtrl" placeholder="Search..."
+            (keydown)="onSearchBoxKeyDownEvent($event)">
+        </div>
+        <div class="channels-container" #chatsContainer>
+          <div class="chat-card cursor-hand d-flex align-items-center" *ngFor="let chat of chats_list;let i = index" [id]="'results' + i"
+            [ngClass]="{'active' : i == active_index}" (click)="sendAttachment(chat)">
+            <div *ngIf="chat.chat_type == 2 || !chat.chat_type; else chatImage">
+              <img *ngIf="chat.channel_thumbnail_url || chat.user_image" [src]="chat.channel_thumbnail_url || chat.user_image" class="rounded-img-fugu channel-image"
+                alt="channel-image">
+              <div *ngIf="!chat.channel_thumbnail_url && !chat.user_image" class="channel-image rounded-img-fugu custom-image d-flex
+         justify-content-center align-items-center">
+                {{chat.label ? chat.label.substring(0,1) : chat.full_name.substring(0,1)}}
+              </div>
+            </div>
+            <ng-template #chatImage>
+                <div *ngIf="chat.channel_thumbnail_url ==
+                'https://fuguchat.s3.ap-south-1.amazonaws.com/default/WwX5qYGSEb_1518441286074.png';
+                else channelImage" class="d-flex channel-image-layer hw-50 overflow-hidden rounded-img-fugu">
+                <app-unnamed-image [members]="chat.members_info" [dimensions]="{height:40, width:40}"></app-unnamed-image>
+                </div>
+                <ng-template #channelImage>
+                    <img [src]="chat.channel_thumbnail_url" class="mr-2 channel-image rounded-img-fugu" alt="channel-image">
+                </ng-template>
+            </ng-template>
+            <div class="d-flex flex-column w-100">
+              <span class="ml-1">{{chat.label || chat.full_name}}</span>
+              <span class="ml-1 text-muted members" *ngIf="chat.members">{{chat.members}}</span>
+            </div>
+          </div>
+          <p class="text-center mt-2" *ngIf="!chats_list.length">No results found.</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

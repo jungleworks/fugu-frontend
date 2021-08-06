@@ -1,0 +1,81 @@
+<div class="position-fixed invited-users-popup d-flex flex-column h-100 w-100 p-5" id="invited-user-container" #invitedUserContainer keyboard-events [isEnabled]="true" (esc)="closeInvited.emit($event)">
+    <div class="container h-100">
+      <div class="d-flex justify-content-between">
+        <div class="mb-3 heading d-flex align-items-center">
+            <i class="fa fa-envelope-open-o mr-2 app-color"></i>
+            <span>Invitations</span>
+        </div>
+        <div class="float-right d-flex flex-column align-items-center justify-content-center close-icon
+     rounded-img-fugu p-2 pt-3 cursor-hand" (click)="closeInvited.emit($event)">
+          <img src="assets/img/close.svg" class="hw-18">
+          <p class="mb-0 text-muted font-12">esc</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center invite-user-box mb-4">
+        <p class="mb-0 font-18">Invite others to join your workspace.</p>
+        <!-- <button class="btn btn-success btn-bg-color" (click)="closeInvited.emit($event)">
+          Invite New Members</button> -->
+      </div>
+      <div class="tabs-header d-flex">
+        <span class="tabs p-3 pl-4 pr-4 cursor-hand" [ngClass]="{'active':selected_tab == 1}"
+        (click)="onTabClick(1, 'PENDING')">
+          Pending Invitations
+        </span>
+        <span class="tabs p-3 pl-4 pr-4 cursor-hand" [ngClass]="{'active':selected_tab == 2}"
+        (click)="onTabClick(2, 'ACCEPTED')">
+          Accepted Invitations
+        </span>
+      </div>
+      <div class="tabs-body mb-5 d-flex flex-column" [ngClass]="{'h-100': totalCountMembers > (selected_tab == 1 ? pendingMembers?.length : acceptedMembers?.length)}">
+        <div class="d-flex border-bottom pb-3">
+            <input type="text" class="form-control ml-3 mt-3 member-search" placeholder="Search members"
+            [formControl]="searchMembers">
+        </div>
+        <ng-container *ngIf="selected_tab == 1">
+          <div class="invited-user-box mt-2 h-100" [ngClass]="{'overflow-hidden': !bodyScrollDone , 'overflow-auto':bodyScrollDone }" #pendingUsersContainer id="pending-users-container" *ngIf="pendingInvitations.length">
+            <ng-container *ngIf="pendingInvitationsToDisplay.length">
+              <div class="d-flex mb-2 pl-3 invited-user flex-column" *ngFor="let user of pendingInvitationsToDisplay;
+               let i = index" [attr.id]="'accordion_' + i">
+                <div class="d-flex align-items-center" data-toggle="collapse" [attr.data-parent]="'#accordion_' + i"
+                     [attr.href]="'#collapse_' + i" (click)="user.open = !user.open">
+                  <img class="d-flex invited-user-icons mr-2" [src]="user.email ? 'assets/img/mail-icon.svg' : 'assets/img/phone-icon.svg'">
+                  <div class="d-flex align-items-center">{{user.email ? user.email : user.contact_number}}<span class="pl-1 small text-muted" *ngIf="user.type == 'GUEST'">(Guest)</span></div>
+                  <div class="ml-auto d-flex flex-column">
+                    <div>{{user.status.toLowerCase() == 'not_expired' ? 'Invited' : 'Resent'}}: <i class="ml-2 mt-1 fa app-color font-18" [ngClass]="{'fa-caret-right' : !user.open,
+                 'fa-caret-down': user.open}"></i></div>
+                    <p class="mb-0">{{user.date_time | time_converter:'chat'}}</p>
+                  </div>
+                </div>
+                <div [attr.id]="'collapse_' + i" class="collapse">
+                  <div class="d-flex p-1">
+                    <button class="btn expand-btn app-color TitilliumWeb-bold mr-2 box-shadow-none outline-none"
+                            (click)="resendInvitation(user, i)">Resend</button>
+                    <button class="btn expand-btn app-color TitilliumWeb-bold box-shadow-none outline-none"
+                            (click)="revokeInvitation(user, i)">Revoke</button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <p class="text-center" *ngIf="pendingInvitationsToDisplay.length == 0">No pending invitations found.</p>
+          </div>
+          <p class="text-muted pl-4 mb-0 pt-4 pb-5" *ngIf="pendingInvitations.length === 0">No one is invited to this workspace</p>
+        </ng-container>
+        <ng-container *ngIf="selected_tab == 2">
+          <div class="invited-user-box mt-2 h-100" [ngClass]="{'overflow-hidden': !bodyScrollDone , 'overflow-auto':bodyScrollDone }" #acceptedUsersContainer id="accepted-users-container" *ngIf="acceptedInvitations.length">
+            <ng-container *ngIf="acceptedInvitationsToDisplay.length">
+              <div class="d-flex align-items-center mb-2 pl-3 invited-user" *ngFor="let user of acceptedInvitationsToDisplay">
+                <img class="d-flex invited-user-icons mr-2" [src]="user.email ? 'assets/img/mail-icon.svg' : 'assets/img/phone-icon.svg'">
+                <div class="d-flex align-items-center">{{user.email ? user.email : user.contact_number}}<span class="pl-1 small text-muted" *ngIf="user.type == 'GUEST'">(Guest)</span></div>
+                <div class="d-flex flex-column ml-auto">
+                  <div>Accepted: </div>
+                  <p class="mb-0">{{user.date_time | time_converter:'chat'}}</p>
+                </div>
+              </div>
+            </ng-container>
+            <p class="text-center" *ngIf="acceptedInvitationsToDisplay.length == 0">No accepted invitations found.</p>
+          </div>
+          <p class="text-muted pl-4 mb-0 pt-4 pb-5" *ngIf="acceptedInvitations.length === 0">No one accepted invitation to this workspace</p>
+        </ng-container>
+      </div>
+    </div>
+  </div>

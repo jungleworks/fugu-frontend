@@ -1,0 +1,13 @@
+<div class="emoji-container d-flex flex-column" id="emoji-picker">
+  <div class="emoji-tabs d-flex">
+    <div *ngFor="let tab of emojis; let i = index;" draggable="false" (click)="renderEmoji(i);active_index = i" class="p-2 cursor-hand tab-icon"
+         [innerHTML]="parseTwemoji(tab.icon)" [ngClass]="{'active': active_index == i}"></div>
+  </div>
+  <div class="emoji-panel pt-1">
+    <div class="d-flex flex-wrap" [ngClass]="{'justify-content-center' : active_index || emojis[0].emojis.length % 9 == 0}">
+      <div class="emoji-icon cursor-hand p-1" draggable="false" *ngFor="let icon of emojis[active_index].emojis"
+           [innerHTML]="icon.image" (click)="emojiClicked(icon)">
+      </div>
+    </div>
+  </div>
+</div>

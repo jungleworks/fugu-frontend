@@ -1,0 +1,31 @@
+.join-box-content {
+    p{
+        margin-bottom: 0.5rem;
+    }
+}
+.form-input-custom-small{
+    font-size: 1rem;
+    padding: .4rem;
+    border-radius: .25rem;
+    border: 1px solid #ececec;
+    &:focus{
+      border-color: var(--app-color);
+      outline-offset: 0;
+      outline: 0;
+      box-shadow: none;
+    }
+  }
+  .logo {
+      width: 40%
+  }
+  .phone-dropdown-container{
+    padding-top: 11px;
+    padding-left: 22px;
+  left: 0;
+}
+.padding-phone-picker-input{
+  padding-left: 75px !important;
+}
+.join-box {
+        // width: 18%;
+}

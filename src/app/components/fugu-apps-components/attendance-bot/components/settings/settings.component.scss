@@ -1,0 +1,165 @@
+.hidden-input {
+  width: 0;
+  z-index: -9;
+}
+.bg-white {
+  background: white;
+}
+.block-border {
+  border: 1px solid #d5d5d5;
+}
+::ng-deep  .spaceSessionCal mat-calendar-header {
+  display: none;
+}
+::ng-deep  .spaceSessionCal {
+  height: auto!important;
+}
+.basic-settings-container {
+  background-color: white;
+  border-radius: 5px;
+  overflow: auto;
+}
+.template-heading {
+  font-size: 23px;
+  font-weight: 500;
+}
+.box-shadow {
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,.08);
+}
+.bordered {
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+}
+.table-link {
+  color: var(--app-color);
+  cursor: pointer;
+}
+
+.btn-small {
+  min-width: 70px;
+}
+.justify-content-space-evenly{
+  justify-content: space-evenly
+}
+.min-h-100 {
+  min-height: 100%;
+}
+.add-leave-form {
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+#synonym-textarea {
+  height: calc(2.25rem + 2px);
+  max-height: 150px;
+  min-height: 38px;
+  overflow: auto;
+}
+.interval-input {
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+}
+.interval-box-selection {
+  position: absolute;
+  top: 40px;
+  left: 15px;
+  background: #fff;
+  z-index: 10;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,.08);
+  max-height: 180px;
+  overflow-y: auto;
+  width: 92%;
+}
+.interval-selection__option{
+  &:hover {
+    border-color: silver;
+    background-color: #eee;
+    border-radius: 4px;
+  }
+}
+.error{
+  border: 1px solid #d72b3f !important;
+  background: #fbeaec !important;
+  &:focus{
+    box-shadow: 0 0 7px rgba(255,0,0,.15);
+  }
+}
+.interval-selection__option--selected,
+.interval-selection__option--selected:hover{
+  background-color: var(--app-color);
+  border-radius: 4px;
+  color: #fff;
+}
+::ng-deep .mat-header-row {
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+::ng-deep .mat-header-cell {
+  color: #646464;
+  font-size: 14px;
+}
+::ng-deep .mat-row {
+  border-bottom: 1px solid #f0f0f0;
+}
+::ng-deep  td.mat-cell{
+  border: none!important;
+}
+.w-45{
+  width: 45%;
+}
+.form-control{
+  outline: none;
+  box-shadow: none;
+  border: solid 1px #e6e6e6;
+  &:focus{
+    border: solid 1px #bfbfbf;
+  }
+}
+#map{
+  width: 100%;
+  height: 440px;
+}
+
+.places-div {
+  height: 205px;
+  overflow: auto;
+}
+
+.name-predictions {
+  color: #838383;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+}
+.prediction-dropdown {
+  border: 1px solid #CCCCCC;
+  background: #fff;
+}
+.search-places-container {
+  top: 11px;
+  right: 80px;
+  width: 340px;
+}
+
+.place-name-container {
+  border-bottom: 1px solid #CCCCCC;
+}
+
+:host ::ng-deep   div[title="Stop drawing"] {
+  height: 40px;
+  width: 40px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+:host ::ng-deep   div[title="Draw a shape"] {
+  height: 40px;
+  width: 40px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}

@@ -1,0 +1,70 @@
+<div class="parent d-flex flex-column p-2 container">
+  <svg  *ngIf="!commonService.isWhitelabelled  && commonService.showAppDetails"  class="bg-signup" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="570" height="920" viewBox="0 0 570 920">
+    <defs>
+        <linearGradient id="prefix__b" x1="69.193%" x2="35.768%" y1="0%" y2="102.497%">
+            <stop offset="0%" stop-color="#13C6FE"/>
+            <stop offset="100%" stop-color="#5EB3FF"/>
+        </linearGradient>
+        <path id="prefix__a" d="M0 0L570 0 570 920 0 920z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="prefix__c" fill="#fff">
+            <use xlink:href="#prefix__a"/>
+        </mask>
+        <use fill="url(#prefix__b)" transform="matrix(-1 0 0 1 570 0)" xlink:href="#prefix__a"/>
+        <path fill="#FFF" d="M520.225 382.895c34.436-38.092 53.586-87.555 53.775-138.896C573.974 123.16 467.871 25 336.987 25 206.103 25 100 123.16 100 244c0 120.839 106.129 219 236.987 219 41.459.106 82.298-10.055 118.868-29.579 9.355 7.956 51.682 40.943 93.777 25.522-20.048-20.098-30.72-47.696-29.407-76.048zM221.487 254C184.75 254 155 225.132 155 189.487 155 153.842 184.75 125 221.487 125 258.224 125 288 153.868 288 189.513 288 225.158 258.224 254 221.487 254z" mask="url(#prefix__c)" opacity=".101" transform="rotate(20 337 244)"/>
+        <path fill="#FFF" fill-opacity=".1" d="M570 0v920H0c182.464-45.466 318.593-121.562 408.388-228.288C498.182 584.985 552.053 354.415 570 0z" mask="url(#prefix__c)" transform="matrix(-1 0 0 1 570 0)"/>
+    </g>
+</svg>
+  <div class="d-flex justify-content-center mb-5 pb-2 pt-5">
+      <img *ngIf="!commonService.isWhitelabelled" src="/assets/img/fugu-logo-full.svg">
+      <img class="h-45" *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations['logo']">
+  </div>
+  <div class="card p-4 justify-content-center flex-grow mb-5">
+    <div class="card-content row no-gutters">
+      <div class="col-12 col-md-5 pl-3 pr-5 d-none d-sm-none d-md-flex
+      logo-border align-items-center justify-content-center">
+        <img src="/assets/img/rocket-space.svg" class="img-fluid">
+      </div>
+      <div class="col-12 col-md-7 pl-5 pb-5" *ngIf="spaces_info">
+        <div class="pl-2 pr-4">
+          <p class="pt-2 fugu-welcome-header mb-1" *ngIf="spaces_info.workspaces_info.length">Your spaces</p>
+          <p class="create-workspace-text mb-1 text-muted" *ngIf="spaces_info.workspaces_info.length">You are already member of the these {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'fugu' }} spaces.</p>
+          <p class="create-workspace-text mb-1 text-muted" *ngIf="!spaces_info.workspaces_info.length">You are not a member of any {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'fugu' }} space.</p>
+          <div class="scroll-spaces">
+            <div *ngFor="let space of spaces_info.workspaces_info; let i = index">
+              <div class="your-spaces d-flex justify-content-between align-items-center p-2 mt-2 mb-2" *ngIf="i < 2 || show_more">
+                <b class="pl-2">{{space.workspace_name}}</b>
+                <button class="btn btn-green-reverse pt-1 pl-4 pr-4" (click)="launchSpace(space)">Launch</button>
+              </div>
+              <div *ngIf="i == 2 && !show_more" (click)="show_more = true">
+                <p class="app-color cursor-hand">Show {{spaces_info.workspaces_info.length - 2}} other spaces</p>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="invitations.length">
+            <p class="pt-2 fugu-welcome-header mb-1">Join other spaces</p>
+            <p class="create-workspace-text mb-1 text-muted">You’re invited to join the following {{ commonService.isWhitelabelled ? commonService.whitelabelConfigurations['app_name'] : 'Fugu' }} spaces using the email address.</p>
+            <div class="scroll-spaces">
+              <div *ngFor="let space of invitations; let i = index">
+                <div class="your-spaces d-flex justify-content-between align-items-center p-2 mt-2 mb-2" *ngIf="i < 2 || show_more_inv">
+                  <b class="pl-2">{{space.workspace_name}}</b>
+                  <button class="btn btn-green pt-1 pl-4 pr-4" (click)="joinSpace(space)">Join<img src="/assets/img/arrow-right.svg" class="pl-2"></button>
+                </div>
+                <div *ngIf="i == 2 && !show_more_inv" (click)="show_more_inv = true">
+                  <p class="app-color cursor-hand">Show {{invitations.length - 2}} other spaces</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!commonService.isWhitelabelled || (commonService.isWhitelabelled && commonApiService.whitelabelConfigurations['properties'].is_create_workspace_enabled) " class="mt-5 create-new-space pb-3">
+            Trying to create a new space? <a class="app-color cursor-hand" [routerLink]="['/signup', 4]" [queryParams]="{g_user: spaces_info.user_info.has_google_contacts, g_popup: spaces_info.user_info.onboard_source == 'GOOGLE' && !spaces_info.workspaces_info.length}">Create a new space</a>
+          </div>
+          <div class="app-color text-center cursor-hand" (click)="logout()">
+            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

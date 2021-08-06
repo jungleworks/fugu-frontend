@@ -1,0 +1,176 @@
+<div class="d-flex h-100 w-100 flex-column">
+  <div class="p-3 bg-white border-bottom">
+    <span class="h2 mb-0">Leave Balance</span>
+    <input type="text" class="form-control search-member float-right" placeholder="Search for member" [formControl]="searchMember">
+  </div>
+  <div class="flex-grow overflow-auto">
+    <img *ngIf="allLeaveBalanceLoading" src="assets/img/loading-gif.svg" class="h-20" alt="loader-gif" />
+    <table id="all-leave-balance"  mat-table [dataSource]="allLeaveBalanceData" class="w-100">
+      <ng-container *ngFor="let col of allLeaveBalanceCols" [matColumnDef]="col.field">
+        <ng-container *ngIf="col.field == 'full_name'">
+          <th mat-header-cell *matHeaderCellDef>{{col.header}}</th>
+          <td mat-cell *matCellDef="let element" class="outline-none" [ngClass]="'table-link'" [routerLink]="['../../attendance/employee', element.user_name]"> {{element[col.field]}} </td>
+        </ng-container>
+        <ng-container *ngIf="col.field == 'email'">
+          <th mat-header-cell *matHeaderCellDef>{{col.header}}</th>
+          <td mat-cell *matCellDef="let element"> {{element[col.field]}} </td>
+        </ng-container>
+        <ng-container *ngIf="!(col.field == 'full_name' || col.field == 'email')">
+          <th mat-header-cell *matHeaderCellDef>{{col.header}}</th>
+          <td mat-cell *matCellDef="let element">{{leaveTypesDict[col.field].total_count < 0 ? 'Unlimited' : element[col.field]}}</td>
+        </ng-container>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="allLeaveBalanceDisplayedCols"></tr>
+      <tr mat-row *matRowDef="let row; columns: allLeaveBalanceDisplayedCols;"></tr>
+    </table>
+    <mat-paginator #allLeavePaginator [length]="allLeaveBalanceData.data.length" [pageSize]="20"></mat-paginator>
+  </div>
+</div>
+<!--<div *ngIf="userLeaveSelected" class="user-leave-details-box p-4" keyboard-events [isEnabled]="true" (esc)="onEscKeyPress()">-->
+    <!--<div class="d-flex border-bottom">-->
+      <!--<p class="leave-user__name flex-grow-1 mb-2">{{selectedUserLeaveData.full_name}}</p>-->
+      <!--<span class="cursor-hand mb-2 d-flex align-items-center leave-user__back" (click)="resetSelectedUserLeaveData()">-->
+          <!--<i class="fa fa-angle-left mr-2"></i>Back-->
+        <!--</span>-->
+    <!--</div>-->
+    <!--<div>-->
+      <!--<div>-->
+        <!--<p class="leave-user__label mt-3 ml-2">Profile</p>-->
+        <!--<div class="leave-user__profile p-2" *ngIf="selectedUserData">-->
+          <!--<div class="row no-gutters">-->
+            <!--<div class="col-6">-->
+              <!--<p>Full Name: {{selectedUserData.full_name}}</p>-->
+            <!--</div>-->
+            <!--<div class="col-6">-->
+              <!--<p>Email: {{selectedUserData.email}}</p>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="row no-gutters">-->
+            <!--<div class="col-6">-->
+              <!--<p>Joining Date:-->
+                <!--<input matInput [matDatepicker]="joiningDatePicker" placeholder="Joining Date" disabled>-->
+                <!--<mat-datepicker-toggle class="outline-none" matSuffix [for]="joiningDatePicker"></mat-datepicker-toggle>-->
+                <!--<mat-datepicker #joiningDatePicker disabled="false"></mat-datepicker>-->
+              <!--</p>-->
+            <!--</div>-->
+            <!--<div class="col-6">-->
+              <!--<p>Date of Birth:-->
+                <!--<input matInput [matDatepicker]="dateOfBirthPicker" placeholder="Date of Birth" disabled>-->
+                <!--<mat-datepicker-toggle class="outline-none" matSuffix [for]="dateOfBirthPicker"></mat-datepicker-toggle>-->
+                <!--<mat-datepicker #dateOfBirthPicker disabled="false"></mat-datepicker>-->
+              <!--</p>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div>-->
+        <!--<p class="leave-user__label mt-3 ml-2">Punch Card</p>-->
+        <!--<div class="position-relative mb-2">-->
+          <!--<button class="btn btn-secondary btn-range-picker" (click)="show_date_range_picker = !show_date_range_picker">-->
+            <!--<i class="fa fa-calendar"></i>-->
+            <!--{{date_range_picker_obj.start_date | date}} - {{date_range_picker_obj.end_date | date}}-->
+          <!--</button>-->
+          <!--<app-date-range-picker *ngIf="show_date_range_picker" [btn_class_name]="'btn-range-picker'" [input_date_obj]="date_range_picker_obj"-->
+                                 <!--(dateSelectEvent)="onDateSelected($event)"-->
+                                 <!--(closePicker)="show_date_range_picker = false"></app-date-range-picker>-->
+        <!--</div>-->
+        <!--<div>-->
+          <!--<table mat-table [dataSource]="selectedUserPunchData" class="w-100">-->
+            <!--<ng-container matColumnDef="name_card">-->
+              <!--<th mat-header-cell *matHeaderCellDef></th>-->
+              <!--<td mat-cell *matCellDef="let element">-->
+                <!--<div class="d-flex align-items-center justify-content-center rounded-img-fugu-->
+                 <!--p-2 alphabet-circle bg-light">{{element.punch_event.substring(0,1)}}</div> </td>-->
+            <!--</ng-container>-->
+            <!--<ng-container matColumnDef="action">-->
+              <!--<th mat-header-cell *matHeaderCellDef>Action</th>-->
+              <!--<td mat-cell *matCellDef="let element"> {{element.punch_event}} </td>-->
+            <!--</ng-container>-->
+            <!--<ng-container matColumnDef="timestamp">-->
+              <!--<th mat-header-cell *matHeaderCellDef>Timestamp</th>-->
+              <!--<td mat-cell *matCellDef="let element">-->
+                  <!--{{element.timestamp | date: 'MMM d, y, HH:mm'}}-->
+              <!--</td>-->
+            <!--</ng-container>-->
+            <!--<ng-container matColumnDef="edit">-->
+              <!--<th mat-header-cell *matHeaderCellDef></th>-->
+              <!--<td mat-cell *matCellDef="let element">-->
+                <!--<i class="fas fa-pencil-alt cursor-hand" (click)="onEditPunchClick(element)"></i>-->
+              <!--</td>-->
+            <!--</ng-container>-->
+            <!--<tr mat-header-row *matHeaderRowDef="['name_card', 'action', 'timestamp', 'edit']"></tr>-->
+            <!--<tr mat-row *matRowDef="let row; columns: ['name_card', 'action', 'timestamp', 'edit'];"></tr>-->
+          <!--</table>-->
+          <!--<mat-paginator [length]="selectedUserPunchData.length" [pageSize]="5"-->
+                         <!--#punchTablePaginator></mat-paginator>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div>-->
+        <!--<p class="leave-user__label mt-3 ml-2">Vacation Log</p>-->
+        <!--<table mat-table [dataSource]="userVacationData" class="w-100">-->
+          <!--<ng-container matColumnDef="leaveType">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Leave Type</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.leaveType}} </td>-->
+          <!--</ng-container>-->
+          <!--<ng-container matColumnDef="status">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Status</th>-->
+            <!--<td mat-cell *matCellDef="let element">-->
+              <!--<ng-container>-->
+                <!--<div [class]="'mat-leave-status'" [ngClass]="{'success': ['APPROVED'].includes(element.status)-->
+              <!--, 'danger': ['REJECTED', 'CANCELLED'].includes(element.status)}">-->
+                  <!--{{element.status}}</div>-->
+              <!--</ng-container>-->
+            <!--</td>-->
+          <!--</ng-container>-->
+          <!--&lt;!&ndash; <ng-container matColumnDef="approved_by">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Approved By</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.approved_by}} </td>-->
+          <!--</ng-container> &ndash;&gt;-->
+          <!--<ng-container matColumnDef="applied_at">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Applied At</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.applied_at}} </td>-->
+          <!--</ng-container>-->
+          <!--<ng-container matColumnDef="start_days">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Start Days</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.start_days}} </td>-->
+          <!--</ng-container>-->
+          <!--<ng-container matColumnDef="duration">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Duration</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.duration}} </td>-->
+          <!--</ng-container>-->
+          <!--<tr mat-header-row *matHeaderRowDef="['leaveType', 'status', 'applied_at', 'start_days', 'duration']"></tr>-->
+          <!--<tr mat-row *matRowDef="let row; columns: ['leaveType', 'status', 'applied_at', 'start_days', 'duration'];"></tr>-->
+        <!--</table>-->
+      <!--</div>-->
+      <!--<div>-->
+        <!--<p class="leave-user__label mt-3 ml-2">Leave Quota</p>-->
+        <!--<table mat-table [dataSource]="userLeavesData" class="w-100">-->
+          <!--<ng-container matColumnDef="leave_title">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Leave Title</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.leave_title}} </td>-->
+          <!--</ng-container>-->
+          <!--<ng-container matColumnDef="balance">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Balance</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{leaveTypesDict[element.leave_type_id].total_count < 0 ? 'Unlimited' : element.balance}} </td>-->
+          <!--</ng-container>-->
+          <!--<ng-container matColumnDef="total">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Total</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.total < 0 ? 'Unlimited' : element.total}} </td>-->
+          <!--</ng-container>-->
+          <!--<ng-container matColumnDef="accrual_interval">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Accrual Interval</th>-->
+            <!--<td mat-cell *matCellDef="let element"> {{element.accrual_interval}} </td>-->
+          <!--</ng-container>-->
+          <!--<ng-container matColumnDef="adjust">-->
+            <!--<th mat-header-cell *matHeaderCellDef>Adjust</th>-->
+            <!--<td mat-cell *matCellDef="let element" (click)="onEditUserLeaveClick(element)" data-toggle="modal" data-target="#leaveAdjustModal">-->
+              <!--<i class="fas fa-pencil-alt cursor-hand"></i>-->
+            <!--</td>-->
+          <!--</ng-container>-->
+          <!--<tr mat-header-row *matHeaderRowDef="['leave_title', 'balance', 'total', 'accrual_interval', 'adjust']"></tr>-->
+          <!--<tr mat-row *matRowDef="let row; columns: ['leave_title', 'balance', 'total', 'accrual_interval', 'adjust'];"></tr>-->
+        <!--</table>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->

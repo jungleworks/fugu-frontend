@@ -1,0 +1,57 @@
+<div class="d-flex w-100 h-100 flex-column">
+  <iframe class="installation-iframe h-100 w-100" [src]="iframe_url"></iframe>
+    <!--<ng-container *ngIf="appId == 1">-->
+      <!--<div class="secret-santa overflow-auto w-100 h-100">-->
+        <!--<header class="d-flex header justify-content-between">-->
+          <!--<div class="d-flex align-items-center header__text-box">-->
+            <!--<img class="header__logo" src="assets/img/santa-claus.svg">-->
+            <!--<div class="d-flex flex-column header__text-box">-->
+              <!--<p class="header__name">Secret Santa</p>-->
+              <!--<p class="header__desc"> Share the Christmas spirit in your workspace</p>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="d-flex align-items-end">-->
+            <!--<img class="powered-by-logo mr-3" src="assets/img/fugu-logo-white.png">-->
+            <!--<p class="powered-by-text mb-0">Powered by Fugu</p>-->
+          <!--</div>-->
+        <!--</header>-->
+        <!--<div class="install-body row no-gutters pl-3 pr-3">-->
+          <!--<div class="col-md-6 col-12 p-3">-->
+            <!--<p class="install-body__heading">Select the participants for your secret santa</p>-->
+            <!--<div class="d-flex flex-column">-->
+              <!--<div class="p-2 select-all-div d-flex justify-content-center">-->
+                <!--<span class="select-all-text" (click)="onUserSelectAll()">Select All / </span>-->
+                <!--<span class="select-all-text" (click)="onUserUnselectAll()">&nbsp;Unselect All</span>-->
+              <!--</div>-->
+              <!--<input type="text" class="form-control w-100 search-user-input" placeholder="Search users" [formControl]="searchUserInput">-->
+              <!--<div class="d-flex flex-column participants-box">-->
+                <!--<label class="d-block mb-0 p-1 participants-box__member" *ngFor="let member of userListDisplayed;let i = index"-->
+                  <!--(change)="onMemberSelect(member)">-->
+                  <!--<span class="p-1 pl-2 cursor-hand overflow-hidden d-flex align-items-center" style="width: 445px">-->
+                    <!--<input type="checkbox" name="checkbox" [checked]="member.selected" class="checkbox-input">-->
+                    <!--<img class="participants-box__profile-img rounded-img-fugu" [src]="member.user_thumbnail_image">-->
+                    <!--<div class="participants-box__name ml-2">{{member.full_name}}</div>-->
+                  <!--</span>-->
+                <!--</label>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="col-md-6 col-12 p-3">-->
+            <!--<p class="install-body__heading">Write an optional message</p>-->
+            <!--<div class="d-flex justify-content-center flex-column">-->
+              <!--<textarea class="text-box" placeholder="Optional Text (can be used for price limit and deadline)"-->
+                <!--[formControl]="textarea"></textarea>-->
+              <!--<button class="secret-santa-submit" (click)="sendSecretSantaMessage()">Finish and send Secret Santa-->
+                <!--messages</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</ng-container>-->
+    <!--<ng-container *ngIf="appId == 3">-->
+      <!--<div class="attendance w-100 pb-5">-->
+        <!--<p class="section__main-heading mb-0 p-3 ml-3 border-bottom">Configure your Attendance App</p>-->
+        <!--<app-attendance-bot></app-attendance-bot>-->
+      <!--</div>-->
+    <!--</ng-container>-->
+</div>

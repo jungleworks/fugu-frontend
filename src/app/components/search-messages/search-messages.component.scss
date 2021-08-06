@@ -1,0 +1,70 @@
+@import '~assets/css/variables';
+
+
+*::-webkit-scrollbar{
+  width: 6px !important;
+  height: 6px !important;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: rgba(0,0,0,0.2);
+}
+*::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.08);
+}
+
+.conv-label {
+  color: $sidebar-heading;
+}
+.full-name {
+   font-size: 13px;
+}
+
+.height-sidebar {
+  // height: $height-sidebar-chats;
+  // margin-left: $margin-sidebar;
+}
+.margin-sidebar {
+  margin-left: $margin-image-chats;
+}
+
+.color-no-result {
+  color: $search-cont-text;
+}
+.conv-message {
+  margin-top: -4px;
+  pointer-events: none;
+  font-size: 13px;
+  color: var(--light-font) !important;
+  ::ng-deep .tagged-agent{
+    color: #5c5c5c !important;
+  }
+}
+
+.date-time {
+  white-space: pre;
+}
+
+.date-time-hours {
+  font-size: 11px;
+}
+
+.channel-image {
+  min-height: 40px;
+  max-height: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  object-fit: cover;
+}
+
+.min-height {
+  min-height: 56px;
+}
+
+.filter-container {
+  &:hover {
+    background-color: $sidebar-highlight;
+    border-right: solid 3px var(--app-color);
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+}

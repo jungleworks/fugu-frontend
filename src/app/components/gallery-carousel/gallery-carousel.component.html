@@ -1,0 +1,136 @@
+<div class="h-100 d-flex flex-column carousel-parent" keyboard-events (esc)="onCloseClick()"
+     (leftArrow)="onPrev()" (rightArrow)="onNext()" [isEnabled]="true">
+  <div class="carousel-header d-flex">
+    <div class="d-flex align-self-center">
+      <img class="rounded-img-fugu channel-image"
+           [src]="parentData.channelImage || parentData.chatType == 2 ? '../../../assets/img/placeholder.png' : '../../../assets/img/channel-placeholder.png'">
+      <h3 class="align-self-center mb-0">{{parentData.channelName}}</h3>
+    </div>
+    <div class="top-icons" *ngIf="commonService.channelMedia[currentMuid]">
+      <i
+        *ngIf="commonService.channelMedia[currentMuid] && commonService.channelMedia[currentMuid].messageType ==  MessageTypeEnum.Media_Message"
+        class="fas fa-redo-alt cursor-hand rotate-left mr-4" (click)="rotateBy90('left')"></i>
+      <i
+        *ngIf="commonService.channelMedia[currentMuid] && commonService.channelMedia[currentMuid].messageType == MessageTypeEnum.Media_Message"
+        class="fas fa-redo-alt cursor-hand rotate-right mr-4" (click)="rotateBy90('right')"></i>
+      <a class="download-link mr-4"
+         [href]="commonService.changeS3Url(commonService.channelMedia[currentMuid].message.url || commonService.channelMedia[currentMuid].message.image_url)"
+         download>
+        <!-- <img class="top-icon" src="../../../assets/img/download-button.svg"> -->
+        <svg fill="var(--chat-header-text)" class="top-icon" version="1.1" id="Capa_1"
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+             width="25px" height="25px" viewBox="0 0 433.5 433.5" style="enable-background:new 0 0 433.5 433.5;"
+             xml:space="preserve"
+        >
+	<g id="file-download">
+		<path d="M395.25,153h-102V0h-153v153h-102l178.5,178.5L395.25,153z M38.25,382.5v51h357v-51H38.25z"/>
+	</g>
+
+</svg>
+
+      </a>
+      <!-- <img (click)="onCloseClick()" class="top-icon cursor-hand" src="../../../assets/img/cross-icon.svg" alt="close"> -->
+      <!-- <span (click)="onCloseClick()" class="top-icon cursor-hand">
+        <svg fill="var(--chat-bar-header)" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" version="1.1" width="20px" height="20px">
+          <g id="surface1">
+          <path d="M 9.15625 6.3125 L 6.3125 9.15625 L 22.15625 25 L 6.21875 40.96875 L 9.03125 43.78125 L 25 27.84375 L 40.9375 43.78125 L 43.78125 40.9375 L 27.84375 25 L 43.6875 9.15625 L 40.84375 6.3125 L 25 22.15625 Z "/>
+          </g>
+          </svg>
+
+        <span> -->
+      <span (click)="onCloseClick()" class="top-icon cursor-hand">
+            <svg fill="var(--chat-header-text)" xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" version="1.1" width="20px"
+                 height="20px">
+              <g id="surface1">
+              <path
+                d="M 9.15625 6.3125 L 6.3125 9.15625 L 22.15625 25 L 6.21875 40.96875 L 9.03125 43.78125 L 25 27.84375 L 40.9375 43.78125 L 43.78125 40.9375 L 27.84375 25 L 43.6875 9.15625 L 40.84375 6.3125 L 25 22.15625 Z "/>
+              </g>
+              </svg>
+          </span>
+    </div>
+  </div>
+  <div class="carousel-body d-flex flex-grow justify-content-between">
+    <div class="carousel-control cursor-hand" (click)="onPrev()" [ngClass]="{'hide-nav': false}" role="button">
+      <i class="fa fa-angle-left nav-icons"></i>
+      <span class="sr-only">Previous</span>
+    </div>
+    <div id="gallery" class="flex-grow" data-ride="carousel" data-keyboard="true" data-interval="false">
+      <div class="carousel-inner h-100" (click)="onCloseClick()">
+        <div class="h-100">
+          <img class="d-block carousel-image rotater" (click)="$event.stopPropagation()"
+               *ngIf="commonService.channelMedia[currentMuid] && commonService.channelMedia[currentMuid].messageType == MessageTypeEnum.Media_Message"
+               [src]="commonService.channelMedia[currentMuid].message.image_url | safeHtml : 'url'">
+          <div
+            *ngIf="commonService.channelMedia[currentMuid] && commonService.channelMedia[currentMuid].messageType == MessageTypeEnum.Video_Message"
+            class="d-flex flex-column
+                    align-items-center justify-content-center h-100">
+            <div *ngIf="commonService.channelMedia[currentMuid].video_error else videoFromChat">
+              We don't support this video, but you can download the video from above download icon.
+            </div>
+            <ng-template #videoFromChat>
+              <div class="d-flex flex-column h-100">
+                <video #videoPlayer id="carousel-video" height="90%" width="90%" controls
+                       class="d-flex align-self-center mt-4 outline-none" (click)="$event.stopPropagation()">
+                  <source (error)="commonService.channelMedia[currentMuid].video_error = true"
+                          [src]="commonService.channelMedia[currentMuid].message.url | safeHtml: 'url'"
+                          type="video/mp4">
+                  <source (error)="commonService.channelMedia[currentMuid].video_error = true"
+                          [src]="commonService.channelMedia[currentMuid].message.url | safeHtml: 'url'"
+                          type="video/ogg">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </ng-template>
+          </div>
+          <div *ngIf="commonService.channelMedia[currentMuid] && commonService.channelMedia[currentMuid].messageType ==  MessageTypeEnum.File_Message
+           && commonService.channelMedia[currentMuid].documentType == MessageExtensionEnum.AUDIO"
+               class="d-flex flex-column h-100">
+            <div class="d-flex flex-column mt-auto mb-auto" (click)="$event.stopPropagation()">
+              <img src="../../../assets/img/audio.svg" class="d-flex mb-2">
+              <audio controls class="d-flex align-self-center">
+                <source [src]="commonService.channelMedia[currentMuid].message.url | safeHtml: 'url'" type="audio/ogg">
+                <source [src]="commonService.channelMedia[currentMuid].message.url | safeHtml: 'url'" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+
+          <div *ngIf="commonService.channelMedia[currentMuid] && commonService.channelMedia[currentMuid].messageType == MessageTypeEnum.File_Message
+           && commonService.channelMedia[currentMuid].documentType != MessageExtensionEnum.AUDIO"
+               class="d-flex flex-column h-100">
+            <div class="d-flex flex-column mt-auto mb-auto" (click)="$event.stopPropagation()">
+              <img src="../../../assets/img/documents.svg" class="d-flex mb-2">
+              <p class="d-flex align-self-center">{{commonService.channelMedia[currentMuid].message.file_name}}</p>
+              <a class="d-flex align-self-center download-link"
+                 [href]="commonService.changeS3Url(commonService.channelMedia[currentMuid].message.url)" download>
+                <button class="btn btn-common pt-1">Download</button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-control cursor-hand" (click)="onNext()" [ngClass]="{'hide-nav': false}" role="button">
+      <i class="fa fa-angle-right nav-icons"></i>
+      <span class="sr-only">Next</span>
+    </div>
+  </div>
+  <div id="carousel-footer" class="carousel-footer d-flex" #thumbnailContainer (scroll)="onScrollThumbnail()">
+    <span *ngIf="!parentData.isSingle" class="d-flex w-100">
+      <img *ngFor="let media of commonService.channelMedia | keyvalue | orderByKeyVal ;let i = index"
+           [id]="'car' + media.key"
+           class="thumb-image cursor-hand pl-2 pr-2"
+           [ngStyle]="{'object-fit' : media.value.messageType == MessageTypeEnum.Media_Message ? 'cover' : 'contain'}"
+           [src]="setImageThumbURL(media.value) | safeHtml:'url'" [ngClass]="{'active': media.key == currentMuid}"
+           (click)="onImageClick(media.key)">
+    </span>
+    <span *ngIf="parentData.isSingle" class="d-flex w-100 justify-content-center">
+      <img *ngFor="let media of parentData.singleData | keyvalue | orderByKeyVal ;let i = index"
+           [id]="'car' + media.key"
+           class="thumb-image cursor-hand pl-2 pr-2"
+           [ngStyle]="{'object-fit' : media.value.messageType == MessageTypeEnum.Media_Message ? 'cover' : 'contain'}"
+           [src]="setImageThumbURL(media.value) | safeHtml:'url'" [ngClass]="{'active': media.key == currentMuid}">
+    </span>
+  </div>
+</div>

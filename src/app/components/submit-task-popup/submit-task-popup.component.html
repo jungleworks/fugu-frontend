@@ -1,0 +1,128 @@
+<app-message-modal [width]="'60%'" [width]="'40%'" [@messageModalAnimation] (closeMessageModal)="closePopup.emit()">
+  <div class="row">
+    <p class="message-modal-heading mb-0 col-md-7">Task Details</p>
+
+    <div class="col-md-5" *ngIf="isAdmin">
+      <select class="form-control" [(ngModel)]="selectedUser" (ngModelChange)="userChange()">
+        <option disabled value="">Select User</option>
+        <option *ngFor="let data of membersInfo" [value]="data.user_id">
+          {{data?.full_name}}
+        </option>
+      </select>
+    </div>
+    <!--    <div class="col-md-3" *ngIf="isAdmin">-->
+    <!--      <button class="message-modal-button outline-none" style="margin-top: 0">Edit Task</button>-->
+    <!--    </div>-->
+
+  </div>
+  <br>
+  <!--  <p class="theme-font-light">Task Details</p>-->
+  <div class="d-flex flex-column">
+    <div class="mb-2">
+      <span>Task title</span>
+      <input [(ngModel)]="taskTitle" type="text" class="form-control bg-white" readonly/>
+    </div>
+    <div class="mb-2">
+      <span>Description</span>
+      <textarea [(ngModel)]="taskDescription" class="form-control task-desc bg-white" readonly>
+      </textarea>
+    </div>
+    <form [formGroup]="taskDateForm">
+      <div class="d-flex flex-row justify-content-around">
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">Start date</span>
+          <div class="position-relative d-flex">
+            <input readonly class="form-control bg-white cal" formControlName="task_start"
+                   placeholder="Choose a date">
+          </div>
+        </div>
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">Start time</span>
+          <input class="form-control bg-white" formControlName="time_start" readonly>
+        </div>
+      </div>
+      <div class="d-flex flex-row justify-content-around">
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">End date</span>
+          <div class="position-relative d-flex">
+            <input readonly class="form-control bg-white cal" formControlName="task_end"
+                   placeholder="Choose a date">
+          </div>
+        </div>
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">End time</span>
+          <input class="form-control bg-white" formControlName="time_end" readonly>
+        </div>
+      </div>
+    </form>
+    <hr>
+
+
+    <ng-container *ngIf="showSubmit">
+      <div class="d-flex align-items-center mb-2">
+        <span style="padding: 11px;">Attach File</span>
+        <div>
+          <input type="file" #fileInput (change)="fileUpload($event,false)" accept="*"/>
+
+          <span *ngIf="editData?.task_work?.url">Uploaded:
+            <a (click)="downloadVideo(editData?.task_work?.url)" class="download-link">
+              <i class="fa fa-download" aria-hidden="true"></i>
+            </a>
+          </span>
+        </div>
+      </div>
+      <div class="mb-2">
+        <span>Content</span>
+        <textarea [formControl]="content" class="form-control task-desc bg-white"
+                  placeholder="Enter content here">
+      </textarea>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="savedData">
+      <div class="d-flex align-items-center mb-2" *ngIf="savedData?.task_work?.url">
+        <span style="padding: 11px;">Attached File</span>
+        <div>
+          <a (click)="downloadVideo(savedData?.task_work?.url)" style="color: blue">
+            <i class="fa fa-download" aria-hidden="true"></i>
+          </a>
+        </div>
+
+      </div>
+      <div class="mb-2">
+        <span>Content</span>
+        <textarea [formControl]="content" class="form-control task-desc bg-white" readonly
+                  placeholder="Enter content here">
+      </textarea>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <label class="note-text">
+    <ng-container *ngIf="meetingStatus == 'before'">
+      Submission starts {{editData?.start_datetime | date:'hh:mm a on dd/MM/yyyy'}}
+    </ng-container>
+    <ng-container *ngIf="meetingStatus == 'after'">
+      Submission already ended at {{editData?.end_datetime | date:'hh:mm a on dd/MM/yyyy'}}
+    </ng-container>
+  </label>
+
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none message-modal-button-red btn-red outline-none mr-2"
+            (click)="closePopup.emit()">CLOSE
+    </button>
+    <button class="message-modal-button outline-none br-7" (click)="openEdit()" *ngIf="showEdit">EDIT TASK</button>
+
+    <button class="my-delete-btn" *ngIf="showEdit" style="margin-left: 10px"
+            (click)="deleteTask()">DELETE
+    </button>
+
+    <button class="message-modal-button outline-none br-7" (click)="submitTask()" *ngIf="showSubmit">SUBMIT TASK
+    </button>
+  </div>
+
+</app-message-modal>
+
+<app-tasks-popup *ngIf="showAssignTaskPopup" (closePopup)="showAssignTaskPopup = false;closePopup.emit()"
+                 [taskDataEdit]='editData'></app-tasks-popup>

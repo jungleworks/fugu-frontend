@@ -1,0 +1,26 @@
+<app-message-modal [padding]="'0'" class="p-0" [width]="cropObj.width ? cropObj.width : '45%'" [@messageModalAnimation]>
+        <div class="h-100 d-flex flex-column justify-content-between crop-parent">
+            <div class="d-flex align-items-center header-crop">
+                <span (click)="closeCropPopup.emit()" class="margin-close-icon cursor-hand mr-3">
+                    <img src="assets/img/close-white.svg" class="cursor-hand">
+                </span>
+                <div>
+                    <span class="message-modal-heading heading mr-3">Crop your photo</span>
+                </div>
+            </div>
+            <div>
+                <div class="center mt-1">
+                    <image-cropper [resizeToWidth]="resizeToWidth" [imageQuality]="'5'" [outputType]="'both'" [imageFile]="imageChangedEvent" [maintainAspectRatio]="cropObj.isAspectRatio"
+                        [aspectRatio]="aspectRatio" format="fileType" (imageCropped)="imageCropped($event)"
+                        (loadImageFailed)="loadImageFailed()" (cropperReady)="cropperReady()">
+                    </image-cropper>
+                    <div *ngIf="loaderCrop" class="p-3 h-100 w-100 d-flex align-items-center justify-content-center position-absolute">
+                        <div class="loader"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center p-2" *ngIf="!loaderCrop">
+            <button class="button-crop outline-none" (click)="cropImage()" type="button">Crop Image</button>
+        </div>
+</app-message-modal>

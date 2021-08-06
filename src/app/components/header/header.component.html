@@ -1,0 +1,411 @@
+<div class="sticky-top app-header">
+  <div class="d-flex w-100 justify-content-between align-items-center margin-header" id="nameContainer">
+    <div class="d-flex align-items-center h-80" [ngClass]="{'active-header' : commonService.showWorkspaces}">
+      <img *ngIf="spaceData.workspace_image && spaceData.workspace_image.workspace_image_url"
+           [src]="spaceData.workspace_image.workspace_image_url" class="center-logo">
+      <!-- <img *ngIf="!commonService.isWhitelabelled && (!spaceData.workspace_image && !(roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin))" src="assets/img/watermark.png" class="center-logo mr-2 favicon-png"> -->
+      <button
+        *ngIf="!commonService.isWhitelabelled && (!spaceData.workspace_image && !(roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin))"
+        class="btn-add-img outline-none">
+        <!-- <span class="d-flex flex-column">Add <span class="margin-image-text">Image</span>
+      </span> -->
+        <div class="img-text">
+          {{userData.workspace_name?.substring(0, 1) == '+' ? 'U' : userData.workspace_name?.substring(0, 1)}}
+        </div>
+      </button>
+      <img
+        *ngIf="commonService.isWhitelabelled && (!spaceData.workspace_image && !(roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin))"
+        [src]="commonApiService.whitelabelConfigurations['fav_icon']" class="center-logo mr-2 favicon-png">
+      <button (click)="settings_open_header = true"
+              *ngIf="!spaceData.workspace_image && (roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin)"
+              class="btn-add-img outline-none">
+        <!-- <span class="d-flex flex-column">Add <span class="margin-image-text">Image</span>
+      </span> -->
+        <div class="img-text">
+          {{userData.workspace_name?.substring(0, 1) == '+' ? 'U' : userData.workspace_name?.substring(0, 1)}}
+        </div>
+      </button>
+      <!-- <span *ngIf="!spaceData.workspace_image && (roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin)" class="center-logo mr-3 d-flex flex-column text-display cursor-hand" (click)="settings_open = true"> <span>+</span> Add image </span> -->
+      <div [title]="userData.workspace_name"
+           class="position-relative business-name d-flex align-items-center mb-0 pt-1 justify-content-center cursor-hand"
+           (click)="openWorkspaces()">
+        <span class="workspace-name">{{userData.workspace_name}}</span>
+        <div class="ml-2 arrow-cont"
+             *ngIf="!commonService.isWhitelabelled || (commonService.isWhitelabelled && commonApiService.whitelabelConfigurations['properties'].is_create_workspace_enabled)">
+          <!-- <img draggable="false" class="header-arrow-image" src="/assets/img/down-arrow-black.svg"> -->
+          <!-- <svg class="header-arrow-image" [ngClass]="{'active-arrow': commonService.showWorkspaces, 'active-arrow-disable': !commonService.showWorkspaces}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="11" viewBox="0 0 16 11">
+            <defs>
+              <path id="a" d="M.01 0h15.978v20H.01z"/>
+            </defs>
+            <g fill="none" fill-rule="evenodd" transform="translate(0 -4)">
+              <mask id="b" fill="#fff">
+                <use xlink:href="#a"/>
+              </mask>
+              <path class="arrow-fill" fill="#5c5c5c" stroke="#5c5c5c" d="M15.815 5.23a.547.547 0 0 0-.799 0l-7.02 7.359L.965 5.23a.547.547 0 0 0-.799 0 .61.61 0 0 0 0 .835l7.418 7.761a.54.54 0 0 0 .4.173.562.562 0 0 0 .399-.173L15.8 6.066a.598.598 0 0 0 .015-.835z" mask="url(#b)"/>
+            </g>
+          </svg> -->
+          <svg class="header-arrow-image"
+               [ngClass]="{'active-arrow': commonService.showWorkspaces, 'active-arrow-disable': !commonService.showWorkspaces}"
+               xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <g fill="none" fill-rule="evenodd">
+              <rect width="24" height="24" rx="2"/>
+              <path class="arrow-fill" stroke="#2F2F2F" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="1.5" d="M7.75 10.25l4.5 4.5 4.5-4.5"/>
+            </g>
+          </svg>
+          <span class="noti-dot" *ngIf="commonService.showUnreadDot"></span>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="slow-internet-container" *ngIf="showSlowInternetBar" [@barFadeInOut]>
+      <span class="slow-internet pl-1 pr-1">Slow Internet Connection Detected.</span>
+    </div> -->
+    <div class="d-flex h-80">
+      <div class="d-flex align-items-center position-relative cursor-hand margin-icons-bell"
+           [ngClass]="{'active-header' : commonService.notifications_menu_open}">
+        <div class="bell-div" (click)="onBellIconClick()">
+          <p *ngIf="notifications_count" class="rounded-circle notification-count position-absolute d-flex align-items-center
+         justify-content-center mb-0" [ngStyle]="{'font-size': 12 - notifications_count.toString().length + 'px'}">
+            {{notifications_count}}</p>
+          <!-- <img draggable="false" src="assets/img/notification-bell.svg" class="notification-bell-icon"> -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <g fill="none" fill-rule="evenodd">
+              <rect width="24" height="24" rx="2"/>
+              <path class="fill-svg-bell" fill="#2F2F2F"
+                    d="M11.993 3c-.703 0-1.286.583-1.286 1.286v1.466c-2.212.578-3.86 2.577-3.86 4.962v5.123s-.021.357-.192.688c-.17.337-.377.618-1.096.618v1.286h12.869v-1.286c-.764 0-.96-.281-1.121-.603-.161-.326-.166-.678-.166-.678v-5.148c0-2.385-1.649-4.384-3.86-4.962V4.286c0-.703-.584-1.286-1.288-1.286zm0 15.429c-.708 0-1.286.577-1.286 1.285S11.285 21 11.993 21c.71 0 1.287-.578 1.287-1.286 0-.708-.578-1.285-1.287-1.285zm0-11.572a3.847 3.847 0 0 1 3.86 3.857v5.138s-.014.613.303 1.25c.005.016.015.026.02.04H7.78a.11.11 0 0 1 .02-.024c.322-.633.332-1.24.332-1.24v-5.164c0-2.14 1.719-3.857 3.86-3.857zM4.267 8.133a.656.656 0 0 0-.583.412 9 9 0 0 0 .015 6.92.644.644 0 0 0 1.187-.502c-.8-1.888-.79-4.033-.01-5.936a.638.638 0 0 0-.06-.608.643.643 0 0 0-.549-.286zm15.447 0a.645.645 0 0 0-.588.894c.78 1.903.79 4.048-.01 5.936a.643.643 0 1 0 1.187.502c.935-2.214.92-4.71.015-6.92a.647.647 0 0 0-.604-.412z"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div click-outside (clickOutside)="onProfileClickOutside($event)"
+           class="d-flex align-items-center justify-content-center">
+        <div class="full-name d-flex align-items-center cursor-hand" [ngClass]="{'cursor-not' : showNotCursor}"
+             (click)="showProfileDropdown()">
+          <!-- {{userData.full_name || loginData.full_name}} -->
+          <img draggable="false" [src]="userData.user_image || '../../../assets/img/placeholder.png'"
+               class="profile-image rounded-img-fugu">
+        </div>
+        <div class="profile-dropdown-menu d-flex flex-column" *ngIf="profile_dropdown_active">
+          <!-- <a class="p-2 pl-3 pr-3 cursor-hand" data-toggle="modal" data-target="#profileModal" (click)="fetchUserDetails()" id="profileButton">
+            Profile</a> -->
+          <div class="profile-dropdown-padding d-flex flex-column">
+                <span (click)="openUserProfile()" class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-icon.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <g fill="none" fill-rule="evenodd">
+                          <rect width="24" height="24" rx="2"/>
+                          <path fill="var(--chat-header-text)"
+                                d="M8.41 4c-1.125 0-2.046.901-2.046 2v.667H5V8h2.727V6c0-.375.299-.667.682-.667h9.546c.383 0 .681.292.681.667v12a.666.666 0 0 1-.681.667H8.409A.666.666 0 0 1 7.727 18v-.667H6.364V18c0 1.099.921 2 2.045 2h9.546C19.078 20 20 19.099 20 18V6c0-1.099-.922-2-2.045-2H8.409zm4.772 4c-1.497 0-2.727 1.203-2.727 2.667 0 .713.298 1.364.767 1.843-1.263.683-2.131 1.985-2.131 3.49h1.364c0-1.48 1.214-2.667 2.727-2.667s2.727 1.188 2.727 2.667h1.364c0-1.505-.869-2.807-2.131-3.49a2.64 2.64 0 0 0 .767-1.843C15.91 9.203 14.68 8 13.182 8zM6.364 9.333v1.334H5V12h2.727V9.333H6.364zm6.818 0c.762 0 1.363.589 1.363 1.334 0 .744-.601 1.333-1.363 1.333s-1.364-.589-1.364-1.333c0-.745.602-1.334 1.364-1.334zm-6.818 4v1.334H5V16h2.727v-2.667H6.364z"/>
+                      </g>
+                  </svg>
+
+                  </span>
+                  <a class="cursor-hand" id="profileButton">
+                    Profile</a>
+                </span>
+            <!--LOCAL TEST-->
+
+<!--            {{commonService.getDomainName()}}-->
+            <ng-container *ngIf="(!commonService.isWhitelabelled)  && spaceData.config.is_tasks_enabled == 'true'">
+              <!--            <ng-container *ngIf="!commonService.isWhitelabelled">-->
+              <span (click)="showViewTaskPopup = true; profile_dropdown_active = false;"
+                    class="option d-flex align-items-center cursor-hand">
+                <span class="pr-16 pl-28">
+                                <i class="fa fa-tasks" aria-hidden="true" style="margin-left: 6px"></i>
+          </span>
+                  <a class="cursor-hand" id="profileButton">
+                    View Tasks</a>
+                </span>
+            </ng-container>
+
+            <span (click)="emitNotificationSettingsOpenEvent()" class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-bell.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd" stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round"
+       stroke-width="1.5">
+        <path
+          d="M16.2 9.48a4.48 4.48 0 1 0-8.96 0C7.24 14.707 5 16.2 5 16.2h13.44s-2.24-1.493-2.24-6.72M13.012 19.187a1.493 1.493 0 0 1-2.584 0"/>
+    </g>
+</svg>
+                  </span>
+                  <a class="">Notification Settings</a>
+              <!-- <span class="header-new">New</span> -->
+                </span>
+            <span (click)="showStarredMessage()" class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/dark-star.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="24" height="24" rx="2"/>
+        <path stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M12 4l2.472 5.008L20 9.816l-4 3.896.944 5.504-4.944-2.6-4.944 2.6L8 13.712 4 9.816l5.528-.808z"/>
+    </g>
+</svg>
+</span>
+                  <a class="">Starred Messages</a>
+                </span>
+            <span (click)="emitThemesOpenEvent()" class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-theme.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="24" height="24" rx="2"/>
+        <path fill="var(--chat-header-text)"
+              d="M4.143 3A2.15 2.15 0 0 0 2 5.143V16.57a2.15 2.15 0 0 0 2.143 2.143h2.143v.715a2.15 2.15 0 0 0 2.143 2.142h11.428A2.15 2.15 0 0 0 22 19.43V8a2.15 2.15 0 0 0-2.143-2.143h-2.143v-.714A2.15 2.15 0 0 0 15.571 3H4.143zm0 1.429H15.57c.402 0 .715.312.715.714V16.57a.705.705 0 0 1-.715.715H4.143a.705.705 0 0 1-.714-.715V5.143c0-.402.312-.714.714-.714zm13.571 2.857h2.143c.402 0 .714.312.714.714v11.429a.705.705 0 0 1-.714.714H8.43a.705.705 0 0 1-.715-.714v-.715h7.857a2.15 2.15 0 0 0 2.143-2.143V7.286z"/>
+    </g>
+</svg>
+                  </span>
+
+                  <a class="">Choose Theme</a>
+                  <span class="header-new">New</span>
+                </span>
+            <span (click)="openBroadcastPopup = true;profile_dropdown_active = false"
+                  class="option d-flex align-items-center cursor-hand"
+                  *ngIf="(roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin)">
+                  <!-- <img src="assets/img/profile-broadcast.svg" class="pr-16 pl-28"> -->
+                            <span class="pr-16 pl-28">
+     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path fill="var(--chat-header-text)" fill-rule="evenodd"
+          d="M18.268 5a.578.578 0 0 0-.424.205S15.2 8.43 9.714 8.43h-4A1.72 1.72 0 0 0 4 10.143v2.34l1.063 5.312c.102.53.58.92 1.12.92h1.246c.71 0 1.259-.675 1.12-1.367v-.004l-.638-3.201h1.803c5.487 0 8.13 3.223 8.13 3.223.156.188.41.255.638.174a.58.58 0 0 0 .375-.54v-3.987A1.854 1.854 0 0 0 20 11.286c0-.79-.478-1.46-1.143-1.728V5.571a.572.572 0 0 0-.59-.571zm-.554 1.746v9.08c-1.053-.978-3.38-2.826-8-2.826H8.571V9.571h1.143c4.62 0 6.947-1.848 8-2.825zm-12 2.825H7.43V13h-.916l.916 4.571H6.183l-1.04-5.196v-2.232c0-.322.25-.572.571-.572z"/>
+</svg>
+
+                  </span>
+                  <a class="">Broadcast</a>
+                </span>
+            <span [routerLink]="['/'+spaceData.workspace + '/apps']"
+                  class="option d-flex align-items-center cursor-hand outline-none">
+                  <!-- <img src="assets/img/profile-bot.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="24" height="24" rx="2"/>
+        <path fill="var(--chat-header-text)"
+              d="M4.656 4a.67.67 0 0 0-.468.2.656.656 0 0 0-.188.47v13.352c0 .24.13.46.341.577 0 0 .69.374 1.961.718C7.573 19.662 9.468 20 12 20c2.532 0 4.427-.338 5.698-.683 1.27-.344 1.96-.718 1.96-.718a.659.659 0 0 0 .342-.577v-4.603V4.67a.656.656 0 0 0-.196-.477.671.671 0 0 0-.95.008.656.656 0 0 0-.188.469v2.918a8.066 8.066 0 0 0-6.43-3.529A.673.673 0 0 0 12 4.01a8.032 8.032 0 0 0-6.667 3.56v-2.9a.656.656 0 0 0-.195-.477A.671.671 0 0 0 4.656 4zM12 5.33c3.67 0 6.666 2.963 6.666 6.593v5.646c-.17.084-.4.226-1.322.476-1.16.315-2.932.636-5.344.636-2.412 0-4.184-.321-5.344-.636-.921-.25-1.153-.392-1.323-.476v-4.94c.001-.016.001-.031 0-.047v-.66C5.333 8.294 8.33 5.33 12 5.33zm-3.333 5.274c-1.1 0-2 .89-2 1.978s.9 1.978 2 1.978h6.666c1.1 0 2-.89 2-1.978s-.9-1.978-2-1.978H8.667zm-.032 1.319c.368 0 .667.295.667.66 0 .363-.297.659-.667.659a.663.663 0 0 1-.666-.66c0-.364.298-.66.666-.66zm6.698 0c.368 0 .667.295.667.66 0 .363-.299.659-.667.659a.663.663 0 0 1-.666-.66c0-.364.298-.66.666-.66z"/>
+    </g>
+</svg>
+
+                  </span>
+                  <a class="" target="_blank">Bots</a>
+                </span>
+            <span [routerLink]="['../../billing']"
+                  *ngIf="false && roleStatus == RoleStatusEnum.isOwner && spaceData.workspace_status != 'ENABLED'"
+                  class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-icon.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="24" height="24" rx="2"/>
+        <path fill="var(--chat-header-text)"
+              d="M8.41 4c-1.125 0-2.046.901-2.046 2v.667H5V8h2.727V6c0-.375.299-.667.682-.667h9.546c.383 0 .681.292.681.667v12a.666.666 0 0 1-.681.667H8.409A.666.666 0 0 1 7.727 18v-.667H6.364V18c0 1.099.921 2 2.045 2h9.546C19.078 20 20 19.099 20 18V6c0-1.099-.922-2-2.045-2H8.409zm4.772 4c-1.497 0-2.727 1.203-2.727 2.667 0 .713.298 1.364.767 1.843-1.263.683-2.131 1.985-2.131 3.49h1.364c0-1.48 1.214-2.667 2.727-2.667s2.727 1.188 2.727 2.667h1.364c0-1.505-.869-2.807-2.131-3.49a2.64 2.64 0 0 0 .767-1.843C15.91 9.203 14.68 8 13.182 8zM6.364 9.333v1.334H5V12h2.727V9.333H6.364zm6.818 0c.762 0 1.363.589 1.363 1.334 0 .744-.601 1.333-1.363 1.333s-1.364-.589-1.364-1.333c0-.745.602-1.334 1.364-1.334zm-6.818 4v1.334H5V16h2.727v-2.667H6.364z"/>
+    </g>
+</svg>
+
+                  </span>
+                  <a class="">Billing</a>
+                </span>
+            <!-- <span (click)="openNewFeatures()" class="option d-flex align-items-center cursor-hand">
+              <img src="assets/img/profile-new.svg" class="pr-16 pl-28">
+              <a class=""  id="newFeatures">What's New</a>
+            </span> -->
+            <span (click)="settings_option = 0;settings_open = true;profile_dropdown_active = false"
+                  *ngIf="roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin"
+                  class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-settings.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="24" height="24" rx="2"/>
+        <path fill="var(--chat-header-text)"
+              d="M16.011 5a.572.572 0 0 0-.388.14s-1.999 1.763-2.395 4.614c-.303-.107-.54-.171-.54-.171a.571.571 0 0 0-.688.56s-.009 2.442 1.15 4.707c.017 1.568.302 2.744.602 3.532.31.812.659 1.26.659 1.26l.172.215h2.834l.172-.214s.35-.45.659-1.261c.3-.79.586-1.967.602-3.538C20.047 12.469 20 9 20 9a.571.571 0 0 0-.77-.536s-.28.127-.645.322c-.643-2.28-2.208-3.645-2.208-3.645A.572.572 0 0 0 16.011 5zm-.007 1.458c.42.439 1.24 1.39 1.572 2.982a6.477 6.477 0 0 0-1.71 1.989 7.663 7.663 0 0 0-1.551-1.161 5.983 5.983 0 0 1 1.69-3.81zm-10.29.828C4.774 7.286 4 8.06 4 9v6.857c0 .94.774 1.714 1.714 1.714h5.143v1.143H7.43v1.143h5.714v-1.143H12V16.43H5.714a.564.564 0 0 1-.571-.572V9c0-.322.25-.571.571-.571H12V7.286H5.714zm13.065 2.73c-.06 1.015-.22 2.741-.857 4.127h-.243a7.69 7.69 0 0 0-1-1.817c.557-1.256 1.418-1.907 2.1-2.31zm-5.545 1.03c.803.28 2.253.95 3.208 3.097H14.08a9.039 9.039 0 0 1-.846-3.096zm1.145 4.24h3.242c-.072 1.115-.224 2.122-.44 2.69-.203.533-.305.64-.375.738h-1.612c-.07-.099-.172-.205-.375-.739-.216-.567-.368-1.574-.44-2.69z"/>
+    </g>
+</svg>
+
+                  </span>
+                  <a
+                    class="">Workspace Settings</a>
+                </span>
+            <span (click)="settings_option = 2;settings_open = true;profile_dropdown_active = false"
+                  *ngIf="roleStatus == RoleStatusEnum.isOwner || roleStatus == RoleStatusEnum.isAdmin"
+                  class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-manage.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="24" height="24" rx="2"/>
+        <path fill="var(--chat-header-text)"
+              d="M7.455 7a3.033 3.033 0 0 0-3.03 3.03c0 1.146.643 2.131 1.58 2.642C3.706 13.316 2 15.404 2 17.91h1.212a4.248 4.248 0 0 1 4.243-4.242c1.538 0 2.959.852 3.712 2.23l.53.975.53-.975c.753-1.378 2.174-2.23 3.712-2.23a4.248 4.248 0 0 1 4.243 4.242h1.212c0-2.505-1.705-4.593-4.006-5.237a3.008 3.008 0 0 0 1.582-2.642A3.033 3.033 0 0 0 15.94 7a3.033 3.033 0 0 0-3.03 3.03c0 1.137.638 2.122 1.566 2.638a5.455 5.455 0 0 0-2.779 1.841 5.455 5.455 0 0 0-2.78-1.841 3.023 3.023 0 0 0 1.568-2.638A3.033 3.033 0 0 0 7.455 7zm0 1.212a1.819 1.819 0 1 1-.001 3.637 1.819 1.819 0 0 1 0-3.637zm8.484 0a1.819 1.819 0 1 1 0 3.637 1.819 1.819 0 0 1 0-3.637z"/>
+    </g>
+</svg>
+
+                  </span>
+                  <a
+                    class="">Manage Members</a>
+                </span>
+            <span (click)="rightsPopup = true;clearRightsForm()" *ngIf="roleStatus == RoleStatusEnum.isOwner"
+                  class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-gdpr.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="24" height="24" rx="2"/>
+        <path fill="var(--chat-header-text)"
+              d="M5.714 5c-.468 0-.915.169-1.232.492C4.165 5.812 4 6.267 4 6.75v1.167c0 .323.254.583.571.583h1.715v8.604C6.286 18.066 6.982 19 8 19h10.192v-.01c.031 0 .062.01.094.01.468 0 .915-.169 1.232-.492.317-.32.482-.775.482-1.258v-1.167a.576.576 0 0 0-.571-.583h-1.715V6.75c0-.483-.165-.939-.482-1.258-.299-.305-.714-.47-1.156-.483A.34.34 0 0 0 16.004 5H5.714zm0 1.167h8.84c-.103.246-.268.46-.268.729v.437H5.143V6.75c0-.223.062-.346.147-.433.085-.087.21-.15.424-.15zm10.286 0c.214 0 .34.063.424.15.085.087.147.21.147.433v10.5c0 .2.036.396.094.583H8c-.353 0-.571-.282-.571-.729V8.5h7.428c.317 0 .572-.26.572-.583V6.896c0-.447.218-.73.571-.73zm-7.429 3.5v1.166h5.715V9.667H8.57zm0 2.333v1.167h5.715V12H8.57zm0 2.333V15.5H12v-1.167H8.571zm9.143 2.334h1.143v.583c0 .223-.062.346-.147.433-.085.087-.21.15-.424.15-.215 0-.34-.063-.424-.15-.085-.087-.148-.21-.148-.433v-.583z"/>
+    </g>
+</svg>
+                  </span>
+
+                  <a class=""
+                  >Rights</a>
+                </span>
+
+            <span (click)="exitCommunityModal = true"
+                  *ngIf="spaceData.config.enable_public_invite == 1 && roleStatus != RoleStatusEnum.isOwner"
+                  class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-logout.svg" class="pr-16 pl-28"> -->
+                  <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                      <rect width="24" height="24" rx="2"/>
+                      <g stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round"
+                         stroke-width="1.5">
+                          <path
+                            d="M13 8.706L15.824 12M5.237 15.295A8.002 8.002 0 0 0 20.53 12 8 8 0 0 0 5.237 8.706M13 15.294L15.824 12M5.471 12h9.411"/>
+                      </g>
+                  </g>
+                  </svg>
+                </span>
+
+              <a class="">Exit Space</a>
+            </span>
+
+
+            <span (click)="showDisableWorkplace = true" class="option d-flex align-items-center cursor-hand"
+                  *ngIf="spaceData?.role == 'OWNER'">
+                  <!-- <img src="assets/img/profile-logout.svg" class="pr-16 pl-28"> -->
+                                    <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <g fill="none" fill-rule="evenodd">
+                        <rect width="24" height="24" rx="2"/>
+                        <g stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round"
+                           stroke-width="1.5">
+                            <path
+                              d="M13 8.706L15.824 12M5.237 15.295A8.002 8.002 0 0 0 20.53 12 8 8 0 0 0 5.237 8.706M13 15.294L15.824 12M5.471 12h9.411"/>
+                        </g>
+                        </g>
+                        </svg>
+                        </span>
+                  <a class="">Disable Workspace</a>
+            </span>
+
+
+<!--            <span (click)="showLogoutModal = true" class="option d-flex align-items-center cursor-hand">&ndash;&gt;-->
+            <span (click)="showLogoutModal = true" class="option d-flex align-items-center cursor-hand">
+                  <!-- <img src="assets/img/profile-logout.svg" class="pr-16 pl-28"> -->
+                                    <span class="pr-16 pl-28">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <g fill="none" fill-rule="evenodd">
+                          <rect width="24" height="24" rx="2"/>
+                          <g stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round"
+                             stroke-width="1.5">
+                              <path
+                                d="M13 8.706L15.824 12M5.237 15.295A8.002 8.002 0 0 0 20.53 12 8 8 0 0 0 5.237 8.706M13 15.294L15.824 12M5.471 12h9.411"/>
+                          </g>
+                      </g>
+                  </svg>
+                  </span>
+                  <a class="">Logout</a>
+                </span>
+
+          </div>
+
+        </div>
+      </div>
+      <!-- <div *ngIf="whats_new_count" (click)="openNewFeatures()" class="ml-2 features-icon-container d-flex align-items-center justify-content-between cursor-hand">
+        <i class="gift-icon fas fa-gift cursor-hand mr-1"></i>
+        <span class="new-features-number">{{whats_new_count}}</span>
+      </div> -->
+    </div>
+  </div>
+  <app-notification-settings-popup *ngIf="showNotificationSettingsPopup"
+                                   (closeNotificationPopup)="showNotificationSettingsPopup = false"></app-notification-settings-popup>
+</div>
+
+<app-settings-permissions *ngIf="settings_open || settings_open_header" [is_settings_open_header]="settings_open_header"
+                          [settings_option]="settings_option" [currentChannelId]="currentChannelId"
+                          (closeSettings)="settings_open = false;settings_open_header = false;"></app-settings-permissions>
+<app-message-modal *ngIf="exitCommunityModal" [@messageModalAnimation] (closeMessageModal)="exitCommunityModal = false">
+  <p class="message-modal-description">Are you sure you want to leave this space?</p>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3" type="button"
+            (click)="exitCommunityModal = false">No
+    </button>
+    <button class="message-modal-button outline-none" (click)="leaveOpenCommunity()" type="button">Yes</button>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="rightsPopup" [width]="'40%'" [@messageModalAnimation]
+                   (closeMessageModal)="rightsPopup = false">
+  <p class="message-modal-heading">GDPR Rights</p>
+  <span
+    class="d-flex justify-content-center theme-font-light">We take security seriously here at {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }}
+    , and are proud to exceed the industry standard when it comes
+        to protecting your personal information.</span>
+  <div class="message-modal-description d-flex flex-column">
+    <form [formGroup]="rightsForm">
+      <div class="form-group rights-class">
+        <select formControlName="option" class="outline-none form-control input-bg theme-font-light">
+          <option *ngFor="let right of rights" [ngValue]="right">{{right.label}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+              <textarea formControlName="reason" class="input-bg form-control text-area" placeholder="Reason"
+                        [ngClass]="{'error' : rightsForm.controls.reason.touched && rightsForm.controls.reason.dirty &&
+              rightsForm.controls.reason.invalid}"></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button mr-3 message-modal-button-red btn-red outline-none"
+            (click)="rightsPopup = false">Cancel
+    </button>
+    <button class="message-modal-button outline-none" [disabled]="rightsForm.invalid" (click)="submitRights()">Submit
+    </button>
+  </div>
+</app-message-modal>
+
+<app-broadcast-message *ngIf="openBroadcastPopup"
+                       (closeBroadcastPopup)="openBroadcastPopup = false"></app-broadcast-message>
+<app-message-modal *ngIf="showLogoutModal" [width]="'30%'" [@messageModalAnimation]
+                   (closeMessageModal)="showLogoutModal = false">
+  <p class="message-modal-heading">Are you sure you want to logout?</p>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="message-modal-button mr-3 message-modal-button-red btn-red outline-none"
+            (click)="showLogoutModal = false">No
+    </button>
+    <button type="button" class="message-modal-button outline-none" (click)="commonApiService.logout()">Yes</button>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="showDisableWorkplace" [width]="'30%'" [@messageModalAnimation]
+                   (closeMessageModal)="showDisableWorkplace = false">
+  <p class="message-modal-heading">Do you really want to disable {{spaceData.workspace_name}} ?</p>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="message-modal-button mr-3 message-modal-button-red btn-red outline-none"
+            (click)="showDisableWorkplace = false">No
+    </button>
+    <button type="button" class="message-modal-button outline-none" (click)="disableWorkplace()">Yes</button>
+  </div>
+</app-message-modal>
+
+
+<app-tasks-calendar *ngIf="showViewTaskPopup" (closePopup)='showViewTaskPopup = false'></app-tasks-calendar>
+
+
+<app-submit-task-popup *ngIf="showAssignTaskPopup" (closePopup)="showAssignTaskPopup = false"
+                       [taskDataEdit]='taskDataEdit'></app-submit-task-popup>
+
+
+<!--<app-tasks-popup *ngIf="showAssignTaskPopup" (closePopup)="showAssignTaskPopup = false"-->
+<!--                 [taskDataEdit]='taskDataEdit'></app-tasks-popup>-->

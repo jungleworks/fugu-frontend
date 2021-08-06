@@ -1,0 +1,117 @@
+.search-member {
+  transition: width 0.1s linear;
+  width: 25%;
+  &:focus {
+    width: 30%
+  }
+}
+.bg-white {
+  background: white;
+}
+.template-heading {
+  font-size: 23px;
+  font-weight: 500;
+}
+.box-shadow {
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,.08);
+}
+.bordered {
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+}
+.table-link {
+  color: var(--app-color);
+  cursor: pointer;
+}
+.user-leave-details-box {
+  top: 0;
+  left: 0;
+  background: #fff;
+}
+.mat-column-leave-type-status {
+  width: 110px;
+  padding-right: 20px;
+}
+.leave-user__name {
+  font-size: 23px;
+  font-weight: 500;
+}
+.leave-user__back {
+  color: var(--app-color);
+  font-size: 17px;
+}
+.leave-user__label {
+  font-size: 17px;
+  color: #646464;
+  font-weight: 500;
+}
+.mat-leave-status {
+  width: fit-content;
+  border-radius: 5px;
+  border: 1px solid;
+  padding: 2px 5px;
+}
+.mat-leave-status.success {
+  color: #008000;
+}
+.mat-leave-status.danger {
+  color: #ff0000;
+}
+.btn-small {
+  min-width: 70px;
+}
+.justify-content-space-evenly{
+  justify-content: space-evenly
+}
+.min-h-100 {
+  min-height: 100%;
+}
+.add-leave-form {
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+#synonym-textarea {
+  height: calc(2.25rem + 2px);
+  max-height: 150px;
+  min-height: 38px;
+  overflow: auto;
+}
+.interval-input {
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+}
+.interval-box-selection {
+  position: absolute;
+  top: 40px;
+  left: 15px;
+  background: #fff;
+  z-index: 10;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,.08);
+  max-height: 180px;
+  overflow-y: auto;
+  width: 92%;
+}
+.interval-selection__option{
+  &:hover {
+    border-color: silver;
+    background-color: #eee;
+    border-radius: 4px;
+  }
+}
+.error{
+  border: 1px solid #d72b3f !important;
+  background: #fbeaec !important;
+  &:focus{
+    box-shadow: 0 0 7px rgba(255,0,0,.15);
+  }
+}
+.interval-selection__option--selected,
+.interval-selection__option--selected:hover{
+  background-color: var(--app-color);
+  border-radius: 4px;
+  color: #fff;
+}

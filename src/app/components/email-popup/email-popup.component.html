@@ -1,0 +1,56 @@
+<div class="modal fade show" role="dialog" tabindex="-1" id="emailPopup" keyboard-events [isEnabled]="true" (esc)="closeEmailPopup.emit()">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header forward-header d-flex align-items-center">
+        <span>
+          <!-- <img class="ml-2 mr-3 cursor-hand" src="assets/img/cross-icon-forward.svg" data-dismiss="modal" aria-label="Close" alt="close"> -->
+<svg class="ml-2 mr-3 cursor-hand" data-dismiss="modal" aria-label="Close" alt="close"  id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <path fill="var(--chat-header-text)" d="M19.058 17.236l-5.293-5.293 5.293-5.293-1.764-1.764L12 10.178 6.707 4.885 4.942 6.649l5.293 5.293-5.293 5.293L6.707 19 12 13.707 17.293 19l1.765-1.764z"></path></svg>
+  Choose Members</span>
+       </div>
+      <div class="modal-body p-0">
+        <div class="search-bar p-2">
+          <input id="email-search-box" type="text" class="form-control box-shadow-none outline-none" [formControl]="addMemberSearchCtrl"
+            placeholder="Search..." (keydown)="onSearchBoxKeyDownEvent($event)">
+        </div>
+        <div class="member members-container w-100 overflow-x-hidden flex-grow" #membersContainer>
+          <label class="d-flex align-items-center justify-content-between checkbox-container pl-3 mr-3 mb-0" *ngIf="search_results.length">
+            <span class="p-1 mr-1 theme-font-light">
+              <b >Select All</b>
+            </span>
+            <input type="checkbox" (change)="selectAll()">
+          </label>
+          <div (click)="showForward(members_object[member.user_id],member);" class="member-card d-flex align-items-center justify-content-between p-2 pl-3 cursor-hand"
+            [id]="'email-members' + i" *ngFor="let member of search_results | sortData:'priority';let i = index" [ngClass]="{'active': active_index == i}">
+            <div class="d-flex justify-content-between">
+              <img *ngIf="member.user_image" [src]="member.user_image" class="member-img rounded-img-fugu">
+              <div *ngIf="!member.user_image" class="rounded-img-fugu d-flex
+                           justify-content-center align-items-center no-thumbnail-img" [ngStyle]="{'background-color': member.user_id | randomColor}">
+                {{member.full_name.substring(0,1)}}
+              </div>
+              <div class="d-flex flex-column justify-content-center">
+                <p class="ml-2 mb-0 TitilliumWeb-bold theme-font-color ">{{member.full_name}}</p>
+                <p class="ml-2 mb-0 text-muted email-text font-14 theme-font-light">{{member.email}}</p>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end mr-2">
+              <label class="d-flex align-items-center checkbox-container">
+                <input type="checkbox" [checked]="members_object[member.user_id]">
+              </label>
+            </div>
+          </div>
+          <div class="no-results d-flex justify-content-center mt-3 theme-font-light" *ngIf="!search_results.length">
+            No results found.
+          </div>
+        </div>
+        <footer *ngIf="selected_check_count" class="action-button d-flex justify-content-end align-items-center">
+          <div class="forward-icon rounded-img-fugu cursor-hand hw-56 justify-content-end d-flex align-items-center mr-4 p-3" (click)="sendEmail()">
+            <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <path fill="#FFF" d="M8 17.1l-5.2-5.2-1.7 1.7 6.9 7L22.9 5.7 21.2 4 8 17.1z"></path>
+            </svg>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>

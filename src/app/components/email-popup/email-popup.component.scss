@@ -1,0 +1,83 @@
+@import '~assets/css/variables';
+
+  .forward-header{
+    height: 60px;
+    background-color: $chat-bar-header;
+    color: $chat-header-text;
+    font-size: 19px;
+  }
+  .search-bar{
+     background-color: $chat-bg-color;
+  }
+  .member-card{
+    border-left: solid 3px transparent;
+    &:hover{
+      background-color: $app-color-highlight;
+    }
+  }
+  .member-img{
+    max-height: 50px;
+    min-height: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    object-fit: cover;
+  }
+
+  .chip-email{
+  background-color: #e8e8e8;
+  color: white;
+  border-radius: 16px;
+  font-family: TitilliumWeb;
+  img{
+    height: 26px;
+    width: 26px;
+    object-fit: cover;
+  }
+  .chip-text{
+    font-size: 16px;
+    color: #303030;
+  }
+  .chip-cross{
+    &:hover{
+      background-color: #FFFFFF;
+    }
+  }
+}
+.no-thumbnail-img{
+    min-height: 50px;
+    max-height: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    font-size: 30px;
+    color: white;
+  }
+  .action-button{
+    position: absolute;
+    bottom: 20px;
+    min-height: 70px;
+    max-height: 70px;
+    right: 0;
+  }
+  .forward-icon{
+    background-color: var(--app-color);
+    filter: drop-shadow(0 0 10px #333);
+  }
+  .members-container{
+    overflow: auto;
+    padding-bottom: 70px;
+    min-height: 300px;
+    max-height: 400px;
+  }
+  .member .active{
+    background-color: $app-color-highlight;;
+    border-left: solid 3px var(--app-color);
+  }
+  .margin-top{
+  margin-top: -2px;
+  }
+  #emailPopup{
+    z-index: 2800;
+  }
+  .modal-body {
+    background-color: $chat-bar-header;
+  }

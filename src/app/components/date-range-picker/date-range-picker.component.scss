@@ -1,0 +1,86 @@
+.date-range-picker{
+  width: fit-content;
+  border: solid 1px #e4e4ed;
+  border-radius: 4px;
+  position: absolute;
+  background: white;
+  box-shadow: 0 0 16px 4px rgba(0,0,0,.10);
+  .date-range-picker__header{
+    border-bottom: solid 1px #e4e4ed;
+    .from_to_container{
+    }
+  }
+  .border-right-calendar{
+    border-right: solid 1px #e4e4ed;
+  }
+  .date-range-picker__left-column{
+    width: 262px;
+  }
+  .date-range-picker__right-column{
+    width: 262px;
+  }
+  .date-range-picker__body{
+    border-bottom: solid 1px #e4e4ed;
+    .cal_month{
+      color: #7d7d7d;
+      border-bottom: solid 1px #e4e4ed;
+      .cal_month__arrow{
+        border: solid 1px #DBE0E4;
+        border-radius: 4px;
+        color: #979797;
+      }
+    }
+    .calendar_header_days{
+      width: 35px;
+      height: 35px;
+    }
+    .calendar_days{
+      border: none;
+      outline: none;
+      width: 35px;
+      height: 35px;
+      transition: all 0.1s ease-out;
+      margin-bottom: 2px;
+    }
+  }
+  .selection_start{
+    color: white;
+    background-color: #2296ff;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+  }
+  .selection_end{
+    color: white;
+    background-color: #2296ff;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+  }
+  .highlight_date{
+    color: white;
+    border-radius: 0;
+    background-color: #2296ff;
+    opacity: 0.4;
+  }
+  .header_from_to_date{
+    font-size: 40px;
+    color: #2296ff;
+  }
+  .date-range-picker__footer{
+    .predefined_days{
+      color: #2296ff;
+      font-size: 12px;
+      font-family: TitilliumWeb-SemiBold;
+      margin: 0 8px;
+    }
+    .btn-apply{
+      background-color: #2296ff;
+      cursor: pointer;
+      color: white;
+      height: 30px;
+      padding: 0 10px;
+      &:hover{
+        background-color: #2476da;
+      }
+    }
+  }
+}

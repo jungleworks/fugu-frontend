@@ -1,0 +1,175 @@
+<div class="parent d-flex flex-column p-2 container">
+  <svg  *ngIf="!commonService.isWhitelabelled  && commonService.showAppDetails"  class="bg-signup" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="570" height="920" viewBox="0 0 570 920">
+    <defs>
+        <linearGradient id="prefix__b" x1="69.193%" x2="35.768%" y1="0%" y2="102.497%">
+            <stop offset="0%" stop-color="#13C6FE"/>
+            <stop offset="100%" stop-color="#5EB3FF"/>
+        </linearGradient>
+        <path id="prefix__a" d="M0 0L570 0 570 920 0 920z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="prefix__c" fill="#fff">
+            <use xlink:href="#prefix__a"/>
+        </mask>
+        <use fill="url(#prefix__b)" transform="matrix(-1 0 0 1 570 0)" xlink:href="#prefix__a"/>
+        <path fill="#FFF" d="M520.225 382.895c34.436-38.092 53.586-87.555 53.775-138.896C573.974 123.16 467.871 25 336.987 25 206.103 25 100 123.16 100 244c0 120.839 106.129 219 236.987 219 41.459.106 82.298-10.055 118.868-29.579 9.355 7.956 51.682 40.943 93.777 25.522-20.048-20.098-30.72-47.696-29.407-76.048zM221.487 254C184.75 254 155 225.132 155 189.487 155 153.842 184.75 125 221.487 125 258.224 125 288 153.868 288 189.513 288 225.158 258.224 254 221.487 254z" mask="url(#prefix__c)" opacity=".101" transform="rotate(20 337 244)"/>
+        <path fill="#FFF" fill-opacity=".1" d="M570 0v920H0c182.464-45.466 318.593-121.562 408.388-228.288C498.182 584.985 552.053 354.415 570 0z" mask="url(#prefix__c)" transform="matrix(-1 0 0 1 570 0)"/>
+    </g>
+</svg>
+  <div class="d-flex justify-content-center mb-4 pb-2 pt-5">
+    <span *ngIf="!commonService.isWhitelabelled && commonService.showAppDetails">
+      <img src="/assets/img/fugu-logo-full.svg" />
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="129" height="42" fill-rule="evenodd"><path fill="#2c2333" d="M54.62 4.578c-1.6 0-2.06.606-2.06 2.422v4.35h4.118v4.54H52.56v16.612h-5.016v-16.61H45v-4.54h2.545V5.334C47.545 1.74 49.342 0 53.46 0c1.123 0 2.06.15 3.22.416v4.4c-.6-.152-1.236-.228-2.06-.228zm19.877 6.773h5.016v21.152h-5.016v-1.968c-1.87 1.6-3.855 2.422-6.1 2.422-5.278 0-7.974-2.498-7.974-8.892V11.35h5.017v12.714c0 2.913.973 4.313 3.93 4.313 1.834 0 3.52-.832 5.128-2.194V11.35zm24.893 0h5.016v21.34c0 5.26-2.62 9.31-9.358 9.31-3.444 0-6.064-.34-8.684-1.362v-4.806c2.583 1.136 5.24 1.6 7.15 1.6 4.716 0 5.876-1.892 5.876-5.108V30.08c-1.722 1.4-3.668 2.308-5.84 2.308-5.464 0-9.47-3.33-9.47-10.86 0-7.226 4.006-10.783 9.47-10.783 2.172 0 4.118.87 5.84 2.27V11.35zm-4.903 16.46c1.796 0 3.443-.757 4.903-1.93v-8.665c-1.46-1.135-3.107-1.93-4.903-1.93-3.407 0-5.166 2.31-5.166 6.244 0 4.39 1.76 6.28 5.166 6.28zm29.497-16.46H129v21.152h-5.016v-1.968c-1.872 1.6-3.856 2.422-6.102 2.422-5.278 0-7.973-2.498-7.973-8.892V11.35h5.016v12.714c0 2.913.973 4.313 3.93 4.313 1.835 0 3.52-.832 5.13-2.194V11.35z"/><path fill="#2296ff" d="M19.234 35.562C8.612 35.562 0 27.602 0 17.782S8.612 0 19.234 0 38.468 7.96 38.47 17.78c0 4.28-1.638 8.21-4.365 11.277-.05 1.68.326 4.1 2.39 6.174-3.412 1.254-6.85-1.425-7.6-2.07a20.356 20.356 0 0 1-9.649 2.401zM9.872 18.537c2.988 0 5.4-2.342 5.4-5.23s-2.422-5.23-5.4-5.23-5.4 2.342-5.4 5.23 2.422 5.23 5.4 5.23z"/></svg> -->
+    </span>
+    <img *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations['logo']" class="h-200">
+  </div>
+  <div class="card p-4 justify-content-center flex-grow mb-5 border-none">
+    <div class="card-content row no-gutters">
+      <div class="col-12 col-md-5 pl-3 pr-5 d-none d-sm-none d-md-flex
+      logo-border align-items-center justify-content-center">
+        <img *ngIf="!verificationLink" src="/assets/img/name-password.svg" class="img-fluid">
+        <span *ngIf="verificationLink">
+          <svg xmlns="http://www.w3.org/2000/svg" width="344" height="287" viewBox="0 0 344 287">
+            <g fill="none" fill-rule="evenodd">
+                <g>
+                    <g transform="translate(0 -26) translate(0 30) translate(.392 .208)">
+                        <path fill="#F1F1F1" d="M47.765 74.062l17.12 12.374c.776.56 1.235 1.46 1.235 2.418v32.41h18.495V89.234c0-1.197.575-2.321 1.545-3.023l16.374-11.835c1.304-.942 3.066-.942 4.37 0l16.374 11.835c.97.702 1.544 1.826 1.544 3.023v32.028h18.495V89.235c0-1.197.575-2.321 1.545-3.023l16.375-11.835c1.303-.942 3.065-.942 4.369 0l16.374 11.835c.97.702 1.545 1.826 1.545 3.023l-.001 32.028h26.718v36.081h-26.718v124.974h-40.206l-.001-124.975h-18.495v124.975H84.616l-.001-124.975H66.12v124.975H25.913V157.343L0 157.344v-36.08h25.913v-32.41c0-.958.46-1.857 1.236-2.418l17.12-12.374c1.043-.754 2.452-.754 3.496 0z"/>
+                        <ellipse cx="225.093" cy="9.429" stroke="#ECCFA0" stroke-width="2.153" rx="8.27" ry="8.295"/>
+                        <ellipse cx="45.172" cy="50.429" stroke="#EFA8BF" stroke-width="2.153" rx="8.27" ry="8.295"/>
+                        <ellipse cx="226.845" cy="108.414" stroke="#8ECCF1" stroke-width="2.153" rx="5.349" ry="5.366"/>
+                        <ellipse cx="320.31" cy="122.471" stroke="#88E4D0" stroke-width="2.153" rx="7.686" ry="7.709"/>
+                    </g>
+                    <path stroke="#5DB3FF" stroke-dasharray="6.446 6.446" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.611" d="M276.891 55.933c-6.02 5.358-55.798 3.398-74.504 32.314-18.706 28.917-1.706 64.109-40.164 82.11-35.246 16.498-73.71-32.58-59.455-48.06 10.101-10.969 26.614 1.031 26.132 19.32-.543 20.584-17.982 33.948-37.931 31.292-39.571-5.269-45.199-88.737-71.661-67.415" transform="translate(0 -26) translate(0 30)"/>
+                </g>
+                <g>
+                    <path fill="#0C68BC" d="M16.752 86.578L16.752 67.245 54.287 48.33z" transform="translate(0 -26) translate(266) scale(-1 1) rotate(-90 0 102.974)"/>
+                    <path fill="#0C68BC" d="M16.426 86.346L17.165 69.096 52.925 50.495z" transform="translate(0 -26) translate(266)"/>
+                    <path fill="#2296FF" d="M51.656 15.444L87.957 88.187 63.705 88.219 51.61 50.769 39.423 88.251 15.166 88.282z" transform="translate(0 -26) translate(266) rotate(45 51.561 51.863)"/>
+                </g>
+            </g>
+        </svg>
+        </span>
+      </div>
+      <div class="col-12 col-md-7 pl-5 pb-5">
+        <div class="pl-2 pr-4" *ngIf="!verificationLink">
+          <p class="pt-2 fugu-already-reg-text mb-1" *ngIf="isAlreadyRegistered">You are already registered with this {{emailOrPhoneText}}</p>
+          <p class="pt-2 fugu-welcome-header mb-1" *ngIf="!workspace_name && commonService.showAppDetails">Sign in to {{commonService.isWhitelabelled ?
+            commonApiService.whitelabelConfigurations['app_name'] : 'FuguChat'}}</p>
+          <p class="create-workspace-text mb-1" *ngIf="workspace_name">Sign in to {{JWText ? JWText :workspace_name}}</p>
+          <div *ngIf="show_google_button && !isAlreadyRegistered && !commonService.isWhitelabelled">
+            <app-google-login (googleUserCodeEmitter)="onSignIn($event)"></app-google-login>
+          </div>
+          <div class="d-flex align-items-center" *ngIf="show_google_button && !isAlreadyRegistered && !commonService.isWhitelabelled"><hr class="w-100 mr-2">or<hr class="ml-2 w-100"></div>
+          <form class="mt-2" role="form" [formGroup]="loginForm" (submit)="commonService.isOldFlow ? login() : loginNew()">
+            <div class="form-group mb-0">
+              <label class="form-custom-label pl-3 pt-2 mb-0">
+               {{signupText}}
+              </label>
+              <app-intl-phone-input *ngIf="!isEmail && loginForm.value.emailOrPhone" class="phone-dropdown-container position-absolute"
+                                    [(phoneObj)]="selected_country_code"></app-intl-phone-input>
+              <!--<div class="phone-dropdown-container position-absolute cursor-hand" (click)="phone_dropdown_active =-->
+               <!--!phone_dropdown_active" *ngIf="!isEmail && loginForm.value.emailOrPhone">-->
+                <!--{{'+ ' + selected_country_code}} <i class="fa fa-caret-down"></i>-->
+                <!--<div class="phone-dropdown p-2 position-absolute" *ngIf="phone_dropdown_active">-->
+                  <!--<p *ngFor="let phone of countryService.getCountries()" class="m-1 cursor-hand"-->
+                     <!--(click)="selected_country_code = phone.dialCode">-->
+                    <!--{{'+ ' + phone.dialCode}}-->
+                  <!--</p>-->
+                <!--</div>-->
+              <!--</div>-->
+              <input type="text"
+                     appAutofocus
+                     [ngClass]="{'error' : commonService.getErrorMessage(loginForm.controls.emailOrPhone),
+                     'padding-phone-picker-input': !isEmail && loginForm.value.emailOrPhone}"
+                     [placeholder]="'Enter Your ' + signupText"  [maxLength]="!isEmail ? 12 : 200"
+                     class="form-control form-signup-custom pl-3"
+                     formControlName="emailOrPhone"
+                     id="inputEmail">
+              <div class="pl-3 validator-height">
+                <app-validator [control]="loginForm.controls.emailOrPhone"></app-validator>
+              </div>
+            </div>
+            
+            <div class="form-group mb-0" *ngIf="commonService.isOldFlow && loginForm.controls.password">
+              <label class="form-custom-label pl-3 pt-2 mb-0">
+                Your Password
+              </label>
+              <input type="password"
+                     [ngClass]="{'error' : commonService.getErrorMessage(loginForm.controls.password)}"
+                     placeholder="Enter your password"
+                     class="form-control form-signup-custom pl-3"
+                     formControlName="password"
+                     id="inputPassword">
+              <p class="text-right mb-0">
+                <a class="app-color cursor-hand" [routerLink]="['../forgotPassword']">Forgot Password?</a>
+              </p>
+              <div class="pl-3 validator-height">
+                <app-validator [control]="loginForm.controls.password"></app-validator>
+              </div>
+            </div>
+            <div class="form-custom-btn mt-2">
+              <button class="btn btn-next btn-40 d-flex align-items-center pl-4 pr-4 pt-1" [disabled]="!loginForm.valid">Login
+                <svg class="ml-2" xmlns="http://www.w3.org/2000/svg" width="16" height="13"><path fill="#fff" stroke="#fff" d="M9.774 1.165a.574.574 0 0 0-.806 0 .547.547 0 0 0 0 .78l4.09 4H1.564a.556.556 0 1 0 0 1.112h11.493l-4.1 4a.557.557 0 0 0 0 .789c.226.22.6.22.807 0L14.83 6.9a.535.535 0 0 0 0-.78L9.774 1.165z"/></svg>
+              </button>
+            </div>
+            <!-- <div class="mt-2" *ngIf="emailsData.length">
+              If you already have a <b *ngFor="let email of emailsData;let first = first;let last = last;">
+              {{'@' + email}} {{!last ? ', ' : ''}}</b> account.
+              <a class="app-color cursor-hand" [routerLink]="['/joinviadomain']" [queryParams]="{space: emailsData[0]}">Create an account.</a>
+            </div> -->
+          </form>
+        </div>
+        <div *ngIf="verificationLink" class="h-100 d-flex flex-column  justify-content-center verify-email">
+          <p class="pt-4 mt-1 fugu-welcome-header mb-1">Check your email</p>
+          <span class="create-workspace-text mb-3">We have sent a verification link to your email
+            <div class="email-label">{{loginForm.value.emailOrPhone}}</div>
+          </span>
+
+          <div (click)="verificationLink = false" class="cursor-hand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path d="M19.4 18.242c.442 0 .8.358.8.8 0 .442-.358.8-.8.8H4.8c-.442 0-.8-.358-.8-.8 0-.442.358-.8.8-.8zm-6.606-13.6c.859-.856 2.247-.856 3.106 0l.89.884c.413.412.645.972.645 1.556 0 .583-.232 1.143-.645 1.556l-7.014 7.014c-.138.137-.321.22-.516.232l-3.122.2h-.05c-.224 0-.439-.093-.591-.258-.152-.165-.228-.387-.209-.61l.258-3.06c.016-.188.098-.365.232-.498zm-.45 2.712l-5.228 5.228-.156 1.846 1.896-.12 5.22-5.222-1.732-1.732zm2.428-1.578c-.234-.234-.614-.234-.848 0l-.45.45 1.732 1.732.45-.45c.234-.235.234-.614 0-.848z"/>
+          </svg>
+          <span class="app-color ml-1">Change email</span>
+           </div>
+          <!-- <div class="d-flex verify-email mb-2">
+            <span>{{loginForm.value.emailOrPhone}}</span>
+            <img src="assets/img/pencil.svg" class="pencil-icon cursor-hand outline-none" (click)="verificationLink = false"/>
+          </div> -->
+          <div class="form-custom-btn mt-2"  (click)='loginNew(true)' *ngIf="showResendEmail">
+            <button class="btn btn-next btn-40 d-flex align-items-center pl-4 pr-4 pt-1">Resend Mail
+            </button>
+          </div>
+          <span *ngIf="!showResendEmail && timeLeftEmail != -1">Resend Email Verification in {{timeLeftEmail}} seconds</span>
+         </div>
+      </div>
+    </div>
+    <span class="sign-opt">Don't have an account yet? <span class="app-color TitilliumWeb-bold outline-none cursor-hand"
+      [routerLink]="JWText ? ['/jw/join'] :['/signup',1]">{{JWText ? 'Get Invite' : 'Signup now'}}</span> </span>
+  </div>
+</div>
+<!-- <div class="modal" tabindex="-1" role="dialog" id="joinPublicSpaceModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p class="h4 mb-0">
+          Looks like you are not invited to this space. But you can join this space by cliking the join button below.
+        </p>
+      </div>
+      <div class="modal-footer border-0 mt-0">
+        <button type="button" class="btn btn-cancel" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-common" data-dismiss="modal" [routerLink]="['/join']">Join</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<app-message-modal *ngIf="joinPublicSpacePopup" [width]="'30%'" [@messageModalAnimation] (closeMessageModal)="joinPublicSpacePopup = false">
+    <p class="message-modal-description">Looks like you are not invited to this space. But you can join this space by cliking the join button below.
+      </p>
+    <div class="d-flex justify-content-end">
+      <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+        (click)="joinPublicSpacePopup = false">Cancel</button>
+      <button class="message-modal-button outline-none" [routerLink]="['/join']">Join</button>
+    </div>
+</app-message-modal>

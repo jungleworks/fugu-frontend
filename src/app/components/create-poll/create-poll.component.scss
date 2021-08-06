@@ -1,0 +1,39 @@
+#createPollPopup{
+  display: block !important;
+  overflow-y: auto !important;
+  background: rgba(0,0,0,0.4);
+  .modal-dialog{
+    @media (min-width: 576px) {
+      max-width: 580px !important;
+    }
+  }
+  .modal-header{
+    background-color: #333;
+    color: #fff;
+  }
+  #question_box{
+    resize: none;
+  }
+  .input-border{
+    &:focus{
+      border: solid 1px #6f6f6f;
+    }
+  }
+  .days_hours_box{
+    background-color: #F7F7F7;
+  }
+  .select_box{
+    border: 1px solid #b2b2b2;
+    height: 40px;
+    width: 50px;
+    font-size: 14px;
+    background: #fff;
+    text-align: center;
+    padding-left: 10px;
+    -webkit-appearance: none;
+  }
+  .create_poll_btn{
+    background-color: var(--app-color);
+    color: #fff;
+  }
+}

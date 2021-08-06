@@ -1,0 +1,558 @@
+<div id="settings-container" #settingsContainer class="position-fixed settings-popup d-flex flex-column h-100 w-100 p-5" keyboard-events [isEnabled]="true" (esc)="showEditFieldsPopup || deleteGuestPopup ? '' : closeSettings.emit($event)">
+  <div class="container" [ngClass]="{'h-100': (selected_tab == 2 || selected_tab == 3)}">
+    <div class="float-right d-flex flex-column align-items-end">
+      <div class="float-right d-flex flex-column align-items-center justify-content-center close-icon
+     rounded-img-fugu p-2 pt-3 cursor-hand" (click)="closeSettings.emit($event)">
+        <img src="assets/img/close.svg" class="hw-18">
+        <p class="mb-0 text-muted font-12">esc</p>
+      </div>
+      <button class="btn btn-success btn-bg-color mt-3" (click)="commonService.openInvitePopup.emit()">Invite New Members</button>
+    </div>
+    <div class="mb-3 heading d-flex align-items-center"><i class="fa fa-gear mr-2 app-color"></i>
+      <span>Settings & Permissions</span>
+    </div>
+    <div class="tabs-header d-flex">
+      <span class="tabs p-3 pl-4 pr-4 cursor-hand" *ngFor="let tab of tabs_array;let i = index"
+            [ngClass]="{'active':selected_tab == i}" (click)="selected_tab = i;closeExpandedPanels();setTotalCount()">
+        {{tab.name}}
+      </span>
+    </div>
+    <div class="tabs-body mb-5 d-flex flex-column" [ngClass]="{'h-100':  totalCountMembers > (selected_tab == 3 ? (allGuestMembers?.length) : (selected_tab == 2 ? allMembers?.length : totalCountMembers + 20))}">
+      <ng-container [ngTemplateOutlet]="this[tabs_array[selected_tab].value]">
+
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #settingsAndPermissionsTab>
+  <div class="options p-4" *ngFor="let option of options[tabs_array[selected_tab].key];let i = index"
+  [attr.id]="'accordion_' + i"
+  [ngClass]="{'d-none': option.hidden || (option.role && option.role != spaceData.role)}">
+    <div class="mb-1 options-heading">{{option.name}}<button [ngClass]="{'d-none': option.no_close_btn}" class="btn expand-btn outline-none
+         box-shadow-none float-right" data-toggle="collapse" [attr.data-parent]="'#accordion_' + i"
+        [attr.href]="'#collapse_' + i" (click)="option.expanded = !option.expanded">{{option.expanded
+            ? 'Close' : 'Expand'}}</button></div>
+    <ng-container [ngTemplateOutlet]="this[option.template]"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #settings1>
+  <p class="options-description mr-5 pr-5">Choose to make your workspace signup process invitation only,
+    or allow anyone with a certain email address
+    format to sign up.</p>
+  <div [attr.id]="'collapse_' + 0" class="collapse">
+    <div class="d-flex flex-column p-1">
+      <label class="TitilliumWeb-bold"><input type="radio" name="invitation" class="mr-1" [value]=0 [(ngModel)]="config_object.signup_mode"> Invitation Only</label>
+      <label class="TitilliumWeb-bold"><input type="radio" name="invitation" class="mr-1" [value]=1 [(ngModel)]="config_object.signup_mode">  Any email address from these domains:</label>
+      <textarea class="form-control" rows="4" [(ngModel)]="add_email_domains" [disabled]="!config_object.signup_mode"></textarea>
+      <p class="mt-1 mb-1 text-muted small">To allow email addresses from multiple domains, separate them with commas.</p>
+      <button class="btn btn-success w-25 btn-bg-color" (click)="config_object.signup_mode ? editPublicDomains() : editConfiguration()">Save</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #settings2>
+  <p class="options-description mr-5 pr-5">Choose the default manager for new users</p>
+  <div [attr.id]="'collapse_' + 1" class="collapse">
+    <div *ngIf="selected_members">
+      <label class="font-weight-bold">
+        Default Manager
+      </label>
+      <div class="d-flex flex-wrap">
+        <span class="chips pt-1 pb-1 pl-3 pr-2 mb-2 mr-1 rounded d-flex" >
+          <span class="d-flex mt-1 pr-2 align-items-center">{{ selected_members.full_name }}</span>
+          <i class="fa fa-times d-flex cursor-hand chips-icon pl-2" (click)="removeMember()"></i>
+        </span>
+      </div>
+    </div>
+    <div class="mb-2">
+      <p class="mb-2 mt-2 font-weight-bold">Select the user you want to set as the default manager</p>
+      <input type="text" class="form-control w-100 public-channel-search" #defaultManager placeholder="Search users"
+        [formControl]="searchManagers"  (keydown)="onPublicChannelKeyevent($event, defaultManagerSearchbox, 'defaultManagerActiveIndex', search_results)">
+      <div class="autocomplete-channels w-100" *ngIf="search_results.length" #defaultManagerSearchbox>
+        <div class="pl-2 pt-2 pb-1 cursor-hand outline-none d-flex align-items-center public-channel"
+          *ngFor="let manager of search_results;let i = index"
+          [ngClass]="{'active' : i === indexVariableObj.defaultManagerActiveIndex}" (click)="addMember(manager)"
+          [id]="'public-channel-' + i">
+          <img *ngIf="manager.user_image" [src]="manager.user_image" class="channel-image rounded-img-fugu" alt="channel-image">
+          <div *ngIf="!manager.user_image" class="channel-image rounded-img-fugu d-flex
+          justify-content-center align-items-center no-thumbnail-img"
+            [ngStyle]="{'background-color': manager.user_id | randomColor}">
+            {{manager.full_name.substring(0,1)}}
+          </div>
+          <p class="d-flex pl-2 mb-0">{{manager.full_name}}</p>
+        </div>
+      </div>
+      <div *ngIf="search_results.length === 0">
+          <p class="text-muted pl-2 mb-0 pt-2">No result to display</p>
+      </div>
+    </div>
+    <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="saveDefaultManager()">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #settings3>
+  <p class="options-description mr-5 pr-5">Choose the channels new members will automatically be added to
+    (in addition to <b># General Chat</b>).</p>
+  <div [attr.id]="'collapse_' + 2" class="collapse">
+    <div [hidden]="!default_channels_array.length">
+      <label class="font-weight-bold">
+        {{default_channels_array.length == 1 ? 'Default Channel' : 'Default Channels'}}
+      </label>
+      <div class="d-flex flex-wrap">
+        <span class="chips pt-1 pb-1 pl-3 pr-2 mb-2 mr-1 rounded d-flex" *ngFor="let channel of default_channels_array;let i = index">
+          <span class="d-flex mt-1 pr-2 align-items-center">{{channel.label}}</span>
+          <i class="fa fa-times d-flex cursor-hand chips-icon pl-2" (click)="changeDefaultChannel('remove', channel)"></i>
+        </span>
+      </div>
+    </div>
+    <div *ngIf="public_channels_array.length" class="mb-2">
+      <p class="mb-2 mt-2 font-weight-bold">Select public channel to make it one of the default channels {{indexVariableObj.publicChannelActiveIndex}}</p>
+      <input type="text" class="form-control w-100 public-channel-search" #defaultChannels placeholder="Search for public groups" [formControl]="searchPublicChannel"
+             (keydown)="onPublicChannelKeyevent($event, publicChannelsSearchbox, 'publicChannelActiveIndex', publicChannelToDisplay)">
+      <div class="autocomplete-channels w-100" *ngIf="publicChannelToDisplay.length" #publicChannelsSearchbox>
+        <div class="pl-2 pt-2 pb-1 cursor-hand outline-none d-flex align-items-center public-channel" *ngFor="let channel of publicChannelToDisplay;let i = index"
+             [ngClass]="{'active' : i === indexVariableObj.publicChannelActiveIndex}" (click)="changeDefaultChannel('add', channel)" [id]="'public-channel-' + i">
+          <div *ngIf="channel.channel_image ==
+           'https://fuguchat.s3.ap-south-1.amazonaws.com/default/WwX5qYGSEb_1518441286074.png' && channel.members_info.length;
+           else channelImage" class="d-flex channel-image-layer hw-50 overflow-hidden rounded-img-fugu">
+            <app-unnamed-image [members]="channel.members_info" [dimensions]="{height:50, width:50}"></app-unnamed-image>
+          </div>
+          <ng-template #channelImage>
+            <img [src]="channel.channel_image" class="channel-image rounded-img-fugu" alt="channel-image">
+          </ng-template>
+          <p class="d-flex pl-2 mb-0">{{channel.label}}</p>
+        </div>
+      </div>
+      <div *ngIf="publicChannelToDisplay.length === 0">
+        <p class="text-muted pl-2 mb-0 pt-2">No result to display</p>
+      </div>
+    </div>
+    <button class="btn btn-success w-25 btn-bg-color mt-1" [hidden]="!(newDefaultChannel.length || newPublicChannel.length)" (click)="saveDefaultChannels()">Save</button>
+  </div>
+</ng-template>
+<ng-template #settings4>
+  <p class="options-description mr-5 pr-5">Modify this setting; if you’d like to allow user to delete their messages
+    within a set amount of time.</p>
+  <div [attr.id]="'collapse_' + 3" class="collapse">
+    <div class="d-flex flex-column">
+      <label class="TitilliumWeb-bold fit-content-width"><input type="checkbox" [(ngModel)]="config_object.delete_message">  Delete Messages on this space. </label>
+      <div class="d-flex align-items-center time-limit" *ngIf="config_object.delete_message"><span>Time Limit to delete a message:</span>
+        <input type="number" class="ml-2 mr-2 form-control" min="0" [disabled]="!config_object.delete_message" [(ngModel)]="config_object.delete_message_duration">
+        <span class="text-muted small">(in minutes, 0 is for infinite time)</span>
+      </div>
+      <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #settings5>
+  <p class="options-description mr-5 pr-5">Modify this setting; if you’d like to allow user to edit their messages
+    within a set amount of time.</p>
+  <div [attr.id]="'collapse_' + 4" class="collapse">
+    <div class="d-flex flex-column">
+      <label class="TitilliumWeb-bold fit-content-width"><input type="checkbox" [(ngModel)]="config_object.edit_message">  Edit Messages on this space. </label>
+      <div class="d-flex align-items-center time-limit" *ngIf="config_object.edit_message"><span>Time Limit to edit a message:</span>
+        <input type="number" class="ml-2 mr-2 form-control" min="0" [disabled]="!config_object.edit_message" [(ngModel)]="config_object.edit_message_duration">
+        <span class="text-muted small">(in minutes, 0 is for infinite time)</span>
+      </div>
+      <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #settings6>
+  <div [attr.id]="'collapse_' + 5" class="in">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex mr-3">
+        <img *ngIf="spaceData.workspace_image && spaceData.workspace_image.workspace_image_url" [src]="spaceData.workspace_image.workspace_image_url" class="hw-48 mr-3">
+        <div>Your workspace icon is useful in helping you quickly identify this workspace</div>
+      </div>
+      <div class="d-flex flex-column">
+        <button class="btn expand-btn outline-none
+                box-shadow-none change-space-btn" (click)="fileInput.click()"><b>Change workspace icon</b></button>
+        <input type="file" #fileInput name="upload" (change)="onImageFileSelect($event)" class="d-none" accept="image/*" />
+        <button *ngIf="spaceData.workspace_image && spaceData.workspace_image.workspace_image_url" class="btn expand-btn outline-none
+                box-shadow-none change-space-btn mt-2" (click)="removeWorkspaceIcon()">Remove Icon</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #settings7>
+  <div [attr.id]="'collapse_' + 6" class="in">Your workspace name is <b>{{spaceData.workspace_name}}</b>
+    <button class="btn expand-btn outline-none
+         box-shadow-none float-right change-space-btn" (click)="openChangeSpaceModal()"><b>Change workspace
+        name</b></button>
+    <app-message-modal *ngIf="changeSpacePopup" [width]="'50%'" [@messageModalAnimation]>
+      <div class=" d-flex message-modal-description">
+        <form role="form" [formGroup]="changeSpaceNameForm">
+          <div class="row">
+            <div class="col-6">
+              <b class="options-heading">Workspace Name</b><br />
+              Your workspace name is displayed in menus and headings. It will usually be (or include) the name of your
+              company.
+            </div>
+            <div class="col-6">
+              <div class="form-group pt-1">
+                <input class="form-control" appAutofocus type="text" placeholder="Enter Space name"
+                  formControlName="space_name">
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row mt-2">
+            <div class="col-6">
+              <b class="options-heading">Password</b><br />
+              Enter your password to continue.
+            </div>
+            <div class="col-6">
+              <div class="form-group pt-1">
+                <input class="form-control" type="password" placeholder="Enter your password"
+                  formControlName="space_password">
+              </div>
+            </div>
+          </div> -->
+        </form>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="message-modal-button mr-3 message-modal-button-red btn-red outline-none" type="button"
+          (click)="changeSpacePopup = false">Cancel</button>
+        <button class="message-modal-button outline-none" type="button" (click)="editSpaceName()" [disabled]="!changeSpaceNameForm.valid">Save
+          Changes</button>
+      </div>
+    </app-message-modal>
+  </div>
+</ng-template>
+<ng-template #settings8>
+  <p class="options-description mr-5 pr-5">Choose whether to display member's email addresses in their {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }} profiles.</p>
+  <div [attr.id]="'collapse_' + 7" class="collapse">
+    <label class="TitilliumWeb-bold"><input type="checkbox" [(ngModel)]="config_object.hide_email"
+                                           (ngModelChange)="editConfiguration()">  Hide email addresses. </label>
+  </div>
+</ng-template>
+<ng-template #settings9>
+  <p class="options-description mr-5 pr-5">Choose whether to display member's phone numbers in their {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }} profiles.</p>
+  <div [attr.id]="'collapse_' + 8" class="collapse">
+    <label class="TitilliumWeb-bold"><input type="checkbox" [(ngModel)]="config_object.hide_contact_number"
+                                           (ngModelChange)="editConfiguration()">  Hide phone numbers. </label>
+  </div>
+</ng-template>
+<ng-template #settings10>
+  <p class="options-description mr-5 pr-5">Set the price of users</p>
+  <div [attr.id]="'collapse_' + 9" class="collapse">
+    <div class="d-flex flex-column">
+      <div class="d-flex align-items-center time-limit"><span>Free invites to allow:</span>
+        <input type="number" class="ml-2 mr-2 form-control" min="1" [(ngModel)]="config_object.free_invite">
+        <!-- <span class="text-muted small">(in minutes, 0 is for infinite time)</span> -->
+      </div>
+      <div class="d-flex align-items-center time-limit mt-2"><span>Per invite cost:</span>
+        <input type="number" class="ml-2 mr-2 form-control" min="25" [(ngModel)]="config_object.per_user_invite_price">
+      </div>
+      <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #permissions1>
+  <p class="options-description mr-5 pr-5">Choose whether to display member's phone numbers in their {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }} profiles.</p>
+  <div [attr.id]="'collapse_' + 0" class="collapse">
+    <label class="TitilliumWeb-bold"><input type="checkbox">  Display phone numbers. </label>
+  </div>
+</ng-template>
+<ng-template #permissions2>
+  <p class="options-description mr-5 pr-5">Choose whether to allow non-admins to invite new people to your space.</p>
+  <div [attr.id]="'collapse_' + 1" class="collapse">
+    <label class="TitilliumWeb-bold"><input type="checkbox" [(ngModel)]="config_object.any_user_can_invite"
+                                           (ngModelChange)="editConfiguration()">  Allow everyone to invite new members. </label>
+  </div>
+</ng-template>
+<ng-template #permissions3>
+  <p class="options-description mr-5 pr-5">Choose whether to display members’ phone numbers in their {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }} profiles.</p>
+  <div [attr.id]="'collapse_' + 2" class="collapse">
+    <label class="TitilliumWeb-bold"><input type="checkbox">  Display phone numbers. </label>
+  </div>
+</ng-template>
+<ng-template #permissions4>
+  <p class="options-description mr-5 pr-5">Choose whom to allow message edit and deletion.</p>
+  <div [attr.id]="'collapse_' + 3" class="collapse">
+    <label class="TitilliumWeb-bold">People who can delete messages:</label>
+    <select class="form-control w-75" [(ngModel)]="config_object.delete_message_role">
+      <option [value]=config_object.all_roles>Everyone (default)</option>
+      <option [value]='["ADMIN","OWNER"]'>Workspace Owners and Admins only.</option>
+    </select>
+    <label class="TitilliumWeb-bold mt-3">People who can edit messages:</label>
+    <select class="form-control w-75" [(ngModel)]="config_object.edit_message_role">
+      <option [value]=config_object.all_roles>Everyone (default)</option>
+      <option [value]='["ADMIN","OWNER"]'>Workspace Owners and Admins only.</option>
+    </select>
+    <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+  </div>
+</ng-template>
+<ng-template #permissions5>
+    <p class="options-description mr-5 pr-5">Choose whom to allow to create one to one chat</p>
+    <div [attr.id]="'collapse_' + 4" class="collapse">
+      <label class="TitilliumWeb-bold">People who can create one to one chat:</label>
+      <select class="form-control w-75" [(ngModel)]="config_object.enable_one_to_one_chat">
+          <option [value]=config_object.all_roles>Everyone (default)</option>
+          <option [value]="[]">No one</option>
+          <option [value]='["ADMIN","OWNER"]'>Workspace Owners and Admins only.</option>
+        </select>
+      <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+    </div>
+  </ng-template>
+  <ng-template #permissions6>
+      <p class="options-description mr-5 pr-5">Choose whom to allow to create group</p>
+      <div [attr.id]="'collapse_' + 5" class="collapse">
+        <label class="TitilliumWeb-bold">People who can create groups:</label>
+        <select class="form-control w-75" [(ngModel)]="config_object.enable_create_group">
+          <option [value]=config_object.all_roles>Everyone (default)</option>
+          <option [value]="[]">No one</option>
+          <option [value]='["ADMIN","OWNER"]'>Workspace Owners and Admins only.</option>
+        </select>
+        <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+      </div>
+    </ng-template>
+      <ng-template #permissions7>
+      <p class="options-description mr-5 pr-5">Choose whom to allow to create space</p>
+      <div [attr.id]="'collapse_' + 6" class="collapse">
+        <label class="TitilliumWeb-bold">People who can create spaces:</label>
+        <select class="form-control w-75" [(ngModel)]="config_object.create_workspace_permission">
+          <option [value]='["ADMIN","OWNER"]'>Workspace Owners and Admins only</option>
+          <option [value]='["OWNER"]'>Owners only</option>
+          <option [value]=config_object.all_roles>Everyone</option>
+        </select>
+        <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+      </div>
+    </ng-template>
+  <ng-template #permissions8>
+      <p class="options-description mr-5 pr-5">Choose whom to allow to do live streaming</p>
+      <div [attr.id]="'collapse_' + 7" class="collapse">
+        <label class="TitilliumWeb-bold">People who can live stream:</label>
+        <select class="form-control w-75" [(ngModel)]="config_object.livestream_permission">
+          <option [value]='["ADMIN","OWNER"]'>Workspace Owners and Admins only (default)</option>
+          <option [value]='["OWNER"]'>Owners only</option>
+          <option [value]=config_object.all_roles>Everyone</option>
+        </select>
+        <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+      </div>
+    </ng-template>
+  <ng-template #permissions9>
+      <p class="options-description mr-5 pr-5">Choose whom to allow to do meet conference calls</p>
+      <div [attr.id]="'collapse_' + 8" class="collapse">
+        <label class="TitilliumWeb-bold">People who can start calls:</label>
+        <select class="form-control w-75" [(ngModel)]="config_object.create_meet_permission">
+          <option [value]='["ADMIN","OWNER"]'>Workspace Owners and Admins only</option>
+          <option [value]='["OWNER"]'>Owners only</option>
+          <option [value]=config_object.all_roles>Everyone</option>
+        </select>
+        <button class="btn btn-success w-25 btn-bg-color mt-1" (click)="editConfiguration()">Save</button>
+      </div>
+    </ng-template>
+
+<ng-template #members>
+  <div class="h-100 d-flex flex-column">
+    <div class="row border-bottom d-flex justify-content-between align-items-center p-4 no-gutters">
+      <select class="form-control w-25 box-shadow-none border-black" [(ngModel)]="members_option"
+              (ngModelChange)="all_members[members_option]=[];searchCtrl.reset();page_start = 0;getAllMembers()">
+        <option value="activated">Activated Members</option>
+        <option value="deactivated">Deactivated Members</option>
+      </select>
+      <input type="text" class="form-control box-shadow-none border-black search-member-input"
+             [formControl]="searchCtrl" placeholder="Search members">
+    </div>
+    <div class="d-flex flex-column h-100 m-2 ml-3 mr-3 no-gutters" [ngClass]="{'overflow-hidden': !bodyScrollDone , 'overflow-auto':bodyScrollDone }" id="members-container" #membersContainer>
+      <div *ngFor="let member of members_list;let i = index" class="p-3 border-bottom">
+        <div class="d-flex align-items-center cursor-hand" (click)="member.open = !member.open">
+          <img *ngIf="member?.user_thumbnail_image" [src]="member.user_thumbnail_image" class="user-image rounded-img-fugu">
+          <div *ngIf="!member.user_thumbnail_image" class="user-image rounded-img-fugu custom-image d-flex
+             justify-content-center align-items-center" [ngStyle]="{'background-color': member.fugu_user_id | randomColor}">
+            {{member.full_name.substring(0,1)}}
+          </div>
+          <div class="w-100 d-flex flex-column">
+            <p class="w-100 pl-2 pr-2 mb-0"><span [ngClass]="{'TitilliumWeb-bold': commonService.userDetails.user_id
+             != member.fugu_user_id}" class="font-18">
+              <b *ngIf="commonService.userDetails.user_id == member.fugu_user_id">You &bull; </b>{{member.full_name}}</span>
+              <span class="float-right small d-flex align-items-center">{{member.role}}
+                <i class="ml-3 fa app-color font-18" [ngClass]="{'fa-caret-right' : !member.open,
+                 'fa-caret-down': member.open}"></i>
+              </span>
+            </p>
+            <p class="mb-0 pl-2 text-muted">{{member.email}}</p>
+          </div>
+        </div>
+        <div class="mt-2 members-menu" [ngClass]="{'ht-auto': member.open}">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div *ngIf="commonService.userDetails.user_id == member.fugu_user_id && spaceData.role == 'OWNER'">
+                <button class="btn expand-btn app-color TitilliumWeb-bold box-shadow-none outline-none"
+                        (click)="temp_new_owner = null; transferOwnershipPopup = true;
+                        transferOwnershipForm.reset()">Transfer Ownership</button>
+              </div>
+              <p class="mb-0 text-muted small" *ngIf="commonService.userDetails.user_id == member.fugu_user_id
+               && spaceData.role == 'ADMIN'">There aren't any actions
+                for you to take on your account.</p>
+              <p class="mb-0 text-muted small" *ngIf="commonService.userDetails.user_id != member.fugu_user_id
+              && (((member.role == 'OWNER' || member.role == 'ADMIN') && spaceData.role == 'ADMIN') ||
+              ((member.role == 'OWNER' || member.role == 'ADMIN') && spaceData.role != 'OWNER'))">There aren't any actions
+                for you to take on <b>{{member.full_name}}</b>'s account.</p>
+              <div *ngIf="spaceData.role == 'OWNER' && member.status == 'ENABLED'">
+                <button class="btn expand-btn app-color TitilliumWeb-bold mr-1 box-shadow-none outline-none"
+                        [hidden]="member.role != 'USER'" (click)="changeUserRole('ADMIN',member)">Make an Admin</button>
+                <button class="btn expand-btn app-color TitilliumWeb-bold mr-1 box-shadow-none outline-none"
+                        [hidden]="member.role != 'ADMIN'"
+                        (click)="changeUserRole('USER',member)">Remove as Admin</button>
+              </div>
+            </div>
+            <span class="btn text-muted float-right underline cursor-hand" *ngIf="member.role != 'OWNER'
+        && commonService.userDetails.user_id != member.fugu_user_id && spaceData.role != member.role" (click)="changeUserStatus(member.status == 'ENABLED' ?
+             'DISABLED':'ENABLED', member)">{{member.status == 'ENABLED' ?
+              'Deactivate Account' : 'Activate Account'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+        <p class="text-center app-color TitilliumWeb-bold cursor-hand" (click)="changeMembersList()">
+          <span *ngIf="members_option == 'deactivated' && activatedMembers">{{activatedMembers + ' activated members'}}</span>
+          <span *ngIf="members_option == 'activated' && deactivatedMembers">{{deactivatedMembers + ' deactivated members'}}</span>
+        </p>
+  </div>
+
+<app-message-modal *ngIf="transferOwnershipPopup" [@messageModalAnimation]>
+  <p class="message-modal-heading">
+    <b class="options-heading">Transfer Ownership</b><br />
+  </p>
+  <div class=" d-flex message-modal-description">
+    <div class="d-flex flex-column w-50">
+      <span>
+        Transferring ownership is a one-way street.
+        You cannot undo this, and the transfer is immediate.
+      </span>
+      <div>
+        The new Workspace Owner will have ultimate authority over the
+        <b>{{spaceData.workspace_name}}</b> workspace — including promoting others to ownership roles.
+      </div>
+    </div>
+    <div class="d-flex flex-column w-50">
+      <div class="">
+        <div class="form-group position-relative">
+          <label>New Workspace Owner:</label>
+          <input class="form-control" appAutofocus type="text" placeholder="Enter new owner Name"
+            [formControl]="ownerSearchCtrl" (keydown)="ownerSearchKeyEvent($event)">
+          <div class="owner-autocomplete position-absolute w-100 bg-white" *ngIf="filtered_owner_results.length"
+            #ownerAutocomplete click-outside (clickOutside)="autocompleteClickOutside($event)">
+            <div *ngFor="let contact of filtered_owner_results;let i = index" class="dropdown-option p-2 cursor-hand d-flex
+                                     flex-column justify-content-center" (click)="temp_new_owner = contact;
+                                     ownerSearchCtrl.setValue(contact.full_name);filtered_owner_results = []"
+              [id]="'owner_autocomplete' + i" [ngClass]="{'active': owner_autocomplete_index == i}">
+              <p class="mb-0 TitilliumWeb-bold">{{contact.full_name}}</p>
+              <p class="mb-0 text-muted small">{{contact.email || contact.contact_number}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <form role="form" [formGroup]="transferOwnershipForm">
+        <div class="form-group">
+          <label>Password</label>
+          <input class="form-control" type="password" placeholder="Enter your password" formControlName="password">
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button mr-3 message-modal-button-red btn-red outline-none" type="button"
+      (click)="transferOwnershipPopup = false">Cancel</button>
+    <button class="message-modal-button outline-none" (click)="changeUserRole('OWNER',temp_new_owner)" type="button"
+      [disabled]="!transferOwnershipForm.valid || !temp_new_owner">Transfer Ownership</button>
+  </div>
+</app-message-modal>
+
+</ng-template>
+<ng-template #guests>
+  <div class="border-bottom d-flex justify-content-between align-items-center p-4">
+    <select class="form-control w-25 box-shadow-none border-black" [(ngModel)]="guest_option"
+      (ngModelChange)="searchGuestsCtrl.reset();page_start = 0;getAllGuests()">
+      <option value="activated">Activated Guests</option>
+      <option value="deactivated">Deactivated Guests</option>
+    </select>
+    <input type="text" class="form-control box-shadow-none border-black search-member-input"
+      [formControl]="searchGuestsCtrl" placeholder="Search guests">
+  </div>
+  <div #guestContainer id="guest-container" [ngClass]="{'overflow-hidden': !bodyScrollDone , 'overflow-auto':bodyScrollDone }">
+    <div class="d-flex flex-column m-2 ml-3 mr-3 no-gutters">
+      <div *ngIf="!invitedGuestMembers?.length && guest_option != 'deactivated'" class="no-guest-container d-flex flex-column justify-content-center align-items-center">
+        <img src="assets/img/guest-list.svg" class="no-guest-image mb-2">
+        <span>No guests have been added to your team yet</span>
+        <button class="button-guest-access mt-3 outline-none" (click)="openGuestPopup()">
+          Add Guest
+        </button>
+      </div>
+      <div *ngIf="!invitedGuestMembers?.length && guest_option == 'deactivated'" class="no-guest-container d-flex flex-column justify-content-center align-items-center">
+        <img src="assets/img/guest-list.svg" class="no-guest-image mb-2">
+        <span>No deactivated guests</span>
+      </div>
+      <div *ngIf="invitedGuestMembers.length" class="overflow-auto">
+        <div  *ngFor="let member of invitedGuestMembers;let i = index; let last = last" class="p-3" [ngClass]="{'border-bottom': !last}">
+          <div class="d-flex align-items-center cursor-hand">
+            <img [src]="member?.user_thumbnail_image || 'assets/img/placeholder.png'" class="user-image rounded-img-fugu">
+            <div class="w-100 d-flex flex-column">
+              <span class="w-100 pl-2 pr-2 mb-0 d-flex justify-content-between">
+                <span [ngClass]="{'TitilliumWeb-bold': commonService.userDetails.user_id
+                             != member.fugu_user_id}" class="font-18">
+                  {{member.full_name}}
+                </span>
+                <div class="d-flex">
+                  <button *ngIf="guest_option != 'deactivated'" class="button-guest-access outline-none mr-3" (click)="viewGuestSettings(member.id)">
+                    View Guest Access
+                  </button>
+                  <div class="cursor-hand position-relative">
+                    <img draggable="false" src="/assets/img/three-dots.svg" class="hw-24 three-dots ml-1"
+                      alt="three-dots-icon" (click)="member.showGuestActions = !member.showGuestActions">
+                    <div class="guest-options-mask position-absolute" *ngIf="member.showGuestActions" click-outside (clickOutside)="guestOptionsClickOutside($event, member)">
+                      <div class="guest-options-menu">
+                        <button *ngIf="guest_option != 'deactivated'"
+                          class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand guest-menu-option" (click)="changeUserRole('USER', member, i)">
+                          Upgrade to team member
+                        </button>
+                        <button *ngIf="guest_option != 'deactivated'"
+                          class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand guest-menu-option" (click)="member.deleteGuestPopup = true">
+                          Remove Guest
+                        </button>
+                        <button *ngIf="guest_option == 'deactivated'"
+                          class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand guest-menu-option" (click)="changeUserStatus('ENABLED', member, i, true)">
+                          Activate Guest
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </span>
+              <span class="mb-0 pl-2 text-muted">{{member.email}}</span>
+            </div>
+          </div>
+          <app-message-modal *ngIf="member.deleteGuestPopup" [width]="'30%'" [@messageModalAnimation]
+            (closeMessageModal)="member.deleteGuestPopup = false">
+            <p class="message-modal-description">Are you sure you want to remove this guest?</p>
+            <div class="d-flex justify-content-end">
+              <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+                (click)="member.deleteGuestPopup = false">No</button>
+              <button class="message-modal-button outline-none" (click)="changeUserStatus('DISABLED', member, i, true)">Yes</button>
+            </div>
+          </app-message-modal>
+        </div>
+      </div>
+    </div>
+  </div>
+    <p class="text-center app-color TitilliumWeb-bold cursor-hand" (click)="changeGuestList()">
+        <span *ngIf="guest_option == 'deactivated' && activatedGuests">{{activatedGuests + ' activated guests'}}</span>
+        <span *ngIf="guest_option == 'activated' && deactivatedGuests">{{deactivatedGuests + ' deactivated guests'}}</span>
+    </p>
+</ng-template>
+
+<app-invite-guests *ngIf="showGuestPopup" (closeGuestInvite)="showGuestPopup = false" (showSelectMembersandChannels)="showSelectMembersandChannels($event)" ></app-invite-guests>
+
+<app-guest-fields-popup [inviteContactObj]="inviteContactObj" [setGuestFields]="false" [guest_settings]="guest_settings" *ngIf="showEditFieldsPopup"
+  (closeGuestFieldsPopup)="showEditFieldsPopup = false;guest_settings = null">
+ 
+</app-guest-fields-popup>
+
+<app-image-cropper *ngIf="showCroppingPopup" [cropObj]="cropObj" (sendCroppedImage)="editWorkspaceIcon($event)" (closeCropPopup)="closeCropPopupFunc()"></app-image-cropper>
+ 
+<app-payment-popup *ngIf="showPaymentPopup" (closePaymentPopup)="showPaymentPopup = false"></app-payment-popup>

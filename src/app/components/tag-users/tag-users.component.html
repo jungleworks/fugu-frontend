@@ -1,0 +1,62 @@
+       <div class="mention-div" #mentionListScroll>
+  <div *ngFor="let item of sortedList;let i = index" class="mention-div__item d-flex align-items-center"
+   [ngClass]="{'active-class': i == tag_index}" (mousedown)="$event.preventDefault();" (click)="tag_index = i;enterToSelect()">
+  <ng-container *ngIf="mentionData.triggerType == 'USERS'">
+    <img  *ngIf="item.user_image ;else ImgElse" class="mention-div__item__image mr-2" [src]="item.user_image">{{item.full_name}}
+    <ng-template #ImgElse>
+      <ng-container>
+        <div  class="mention-div__item__image mt-1 mr-2 custom-image d-flex
+        justify-content-center align-items-center" [ngStyle]="{
+  'background-color': item.user_id | randomColor
+}">
+{{
+  item.full_name?.substring(0, 1) == "+"
+    ? "U"
+    : item.full_name?.substring(0, 1)
+}}
+</div>
+        </ng-container>
+    </ng-template>
+      <ng-container *ngIf="item.user_type != UserTypeEnum.Guest">
+        <ng-container [ngSwitch]="item.leave_type">
+          <ng-container *ngSwitchCase="leaveRoleEnum.ABSENT">
+            <span class="small text-muted">
+              (On leave)</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="leaveRoleEnum.WORK_FROM_HOME">
+            <span class="small text-muted">
+              (WFH)</span>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="item.user_type == UserTypeEnum.Guest">
+        <ng-container [ngSwitch]="item.leave_type">
+          <ng-container *ngSwitchCase="leaveRoleEnum.ABSENT">
+            <span class="small text-muted mr-2">
+              (Guest - On leave)</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="leaveRoleEnum.WORK_FROM_HOME">
+            <span class="small text-muted mr-2">
+              (Guest - WFH)</span>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <span class="small text-muted mr-2">
+              (Guest)</span>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    <!-- <span *ngIf="item.status == 'INVITED'" class="small text-muted">(Pending)</span> -->
+  </ng-container>
+   <ng-container *ngIf="mentionData.triggerType == 'BOT'">
+      <div>
+        <div>
+            <b class="TitilliumWeb-bold">/{{item.tag}}</b>
+            <span class="small pl-2">{{item.input_parameter}}</span>
+        </div>
+        <p class="mb-0 text-muted small">
+            {{item.description}}
+        </p>
+      </div>
+   </ng-container>
+  </div>
+</div>

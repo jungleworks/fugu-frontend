@@ -1,0 +1,20 @@
+<div class="h-100 w-100 d-flex flex-column">
+  <header class="d-flex justify-content-start header-container p-3">
+    <div class="d-flex align-items-center mr-4">
+      <img src="assets/img/fugu-favicon.png" alt="Fugu">
+      <span class="app-label ml-3">{{this.spaceData.workspace_name}}</span>
+    </div>
+    <span class="ml-4 d-flex dashboard-header align-items-center cursor-hand" [routerLink]="['dashboard']" routerLinkActive="selected-header">
+      <i class="fas fa-calendar-alt mr-2"></i>
+      <span>Dashboard</span>
+    </span>
+    <!-- history on comment-->
+    <!-- <span class="ml-4 d-flex dashboard-header align-items-center cursor-hand" [routerLink]="['history']" routerLinkActive="selected-header">
+      <i class="fas fa-history mr-2"></i>
+      <span>History</span>
+    </span> -->
+  </header>
+  <div class="h-100 overflow-auto">
+    <router-outlet></router-outlet>
+  </div>
+</div>

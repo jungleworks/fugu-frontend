@@ -1,0 +1,16 @@
+<div class="cursor-hand" (click)="phone_dropdown_active = !phone_dropdown_active" click-outside (clickOutside)="onClickOutside($event)">
+  {{'+ ' + phoneObj.dialCode}} <i class="fa fa-caret-down"></i>
+  <div class="phone-dropdown p-2 overflow-hidden position-absolute" *ngIf="phone_dropdown_active">
+      <input placeholder="Enter country name or code" appAutofocus class="w-100 outline-none" type="text" [formControl]="inputSearchCtrl" (click)="stopDefaultEvent($event)">
+    <div class="numbers-div">
+      <p class="mt-1" *ngIf="!countriesList.length">
+          No results.
+      </p>
+      <p *ngFor="let phone of countriesList" class="m-1 cursor-hand d-flex"
+      (click)="phoneObj = phone;changeDialCode(phone)">
+      <span class="dialcode-intl">{{'+ ' + phone.dialCode}}</span>
+      <span class="country-name-intl">{{phone.country}}</span>
+     </p>
+    </div>
+  </div>
+</div>

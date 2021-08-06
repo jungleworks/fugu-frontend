@@ -1,0 +1,49 @@
+.groups-popup{
+  left: 0;
+  top: 0;
+  z-index: 2500;
+  background-color: #F9F9F9;
+}
+.channel-image{
+  height: 50px;
+  width: 50px;
+}
+.active{
+  border-bottom: solid 2px var(--app-color);
+  border-radius: 0;
+}
+.close-icon{
+  font-size: 18px;
+  height: 64px;
+  width: 64px;
+  &:hover{
+    background-color: #e8e8e8;
+  }
+}
+.group-text{
+  font-family: TitilliumWeb;
+  font-size: 20px;
+}
+.groups-container{
+  overflow-y: auto;
+}
+.leave-join-btn{
+  color: var(--app-color);
+}
+.w-28{
+  width: 28px;
+}
+.left-photo-margin{
+  padding-left: 11px;
+}
+.channel-image-layer{
+  .bl{
+    border-left: solid 1.5px #fff;
+  }
+  .bt{
+    border-top: solid 2px #fff;
+  }
+}
+.group-vs-scroll-container {
+  min-height: 100%;
+}

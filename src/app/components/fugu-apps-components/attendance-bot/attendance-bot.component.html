@@ -1,0 +1,14 @@
+<div class="row h-100 w-100 no-gutters">
+  <div class="settings-pane" *ngIf="userRole != 'USER'">
+    <div class="d-flex align-items-center p-3 settings-option outline-none" *ngFor="let option of settingsOptions;"
+         routerLinkActive="settings-option--active" [routerLink]="option.link">
+      <span class="d-flex h-100">
+        <i [class]="option.icon"></i>
+      </span>
+      <a class="settings-option__title mt-1">{{option.name}}</a>
+    </div>
+  </div>
+  <div class="template-pane overflow-auto h-100">
+    <router-outlet></router-outlet>
+  </div>
+</div>

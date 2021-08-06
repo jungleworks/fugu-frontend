@@ -1,0 +1,38 @@
+<div class="parent">
+  <div class="container d-flex justify-content-center align-items-center p-4">
+    <div class="config-card w-75">
+      <div class="d-flex justify-content-between p-4 align-items-center">
+        <span class="font-22 TitilliumWeb-bold">Configurations</span>
+        <button class="btn btn-success" (click)="openNewConfiguration()">Add New Configuration</button>
+      </div>
+      <div class="d-flex justify-content-center pl-4 pr-4 pt-3 pb-3 align-items-center config-item" *ngIf="!webhooks_data.length">
+        No configurations present. Click on 'Add New Configuration' button above.
+      </div>
+      <div class="d-flex justify-content-between pl-4 pr-4 pt-3 pb-3 align-items-center config-item"
+        *ngFor="let card of webhooks_data;let i = index">
+        <div>
+          <p class="mb-1">Post to <b>{{card.label}} </b>
+            <span class="small" [ngClass]="{'color-green': card.webhook_status == 1, 'color-red': card.webhook_status == 0}">({{card.webhook_status == 1 ? 'Enabled' : 'Disabled'}})</span></p>
+          <p class="mb-1">Bot name: {{card.full_name}}</p>
+        </div>
+        <div>
+          <img src="assets/img/pencil.svg" title="EDIT WEBHOOK" (click)="editConfiguration(card)" class="pencil-icon p-2 cursor-hand">
+          <span class="three-dots dropdown-class cursor-hand ml-2 position-relative" (click)="closeDropdown();card.show_dropdown = !card.show_dropdown">
+            <svg class="dropdown-class" title="Options" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;"
+            xml:space="preserve" width="24px" height="24px">
+              <path class="dropdown-class" d="M8,22c-4.411,0-8,3.589-8,8s3.589,8,8,8s8-3.589,8-8S12.411,22,8,22z" fill="#7a8082"/>
+              <path class="dropdown-class" d="M52,22c-4.411,0-8,3.589-8,8s3.589,8,8,8s8-3.589,8-8S56.411,22,52,22z" fill="#7a8082"/>
+              <path class="dropdown-class" d="M30,22c-4.411,0-8,3.589-8,8s3.589,8,8,8s8-3.589,8-8S34.411,22,30,22z" fill="#7a8082"/>
+            </svg>
+            <div class="dropdown-class dropdown-options position-absolute d-flex flex-column" *ngIf="card.show_dropdown">
+              <button class="dropdown-class no-btn-style p-2 pl-3 pr-3 cursor-hand"
+                      (click)="editWebhookStatus(i, card.webhook_status == 1 ? 0 : 1)">{{card.webhook_status == 1 ? 'Disable' : 'Enable'}}</button>
+              <button class="dropdown-class no-btn-style p-2 pl-3 pr-3 cursor-hand" (click)="editWebhookStatus(i, 2)">Delete</button>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

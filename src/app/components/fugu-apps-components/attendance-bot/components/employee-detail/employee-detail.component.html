@@ -1,0 +1,324 @@
+<div class="user-leave-details-box p-4">
+  <div class="d-flex border-bottom">
+    <p class="leave-user__name flex-grow-1 mb-2">{{selectedUserData?.full_name}}</p>
+    <span *ngIf="userRole != attendanceRolesEnum.USER" class="cursor-hand mb-2 d-flex align-items-center leave-user__back" (click)="goBack()">
+      <i class="fa fa-angle-left mr-2"></i>Back
+    </span>
+  </div>
+  <div>
+    <div>
+      <p class="leave-user__label mt-3 ml-2">Profile</p>
+      <form [formGroup]="userProfileForm" role="form">
+        <div class="leave-user__profile d-flex flex-column">
+          <div class="row no-gutters align-items-center p-3">
+            <div class="col-6">
+              <div class="d-flex align-items-center"><span class="col-3 profile-labels">Full Name</span> <span class="col-9">{{selectedUserData?.full_name}}</span></div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center"><span class="col-3 profile-labels">Email</span> <span class="col-9">{{selectedUserData?.email}}</span></div>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center p-3">
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <span class="col-3 profile-labels">Joining Date</span> <span class="col-9">
+                <input matInput [matDatepicker]="joiningDatePicker" placeholder="Joining Date" formControlName="joining_date">
+                <mat-datepicker-toggle class="outline-none" matSuffix [for]="joiningDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #joiningDatePicker [disabled]="disableEditFields"></mat-datepicker></span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center"><span class="col-3 profile-labels">Date of birth</span>
+                <span class="col-9">
+                <input matInput [matDatepicker]="dateOfBirthPicker" placeholder="Date of Birth" formControlName="birth_date">
+                <mat-datepicker-toggle class="outline-none" matSuffix [for]="dateOfBirthPicker"></mat-datepicker-toggle>
+                <mat-datepicker #dateOfBirthPicker [disabled]="disableEditFields"></mat-datepicker></span>
+              </div>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center p-3">
+            <div class="col-6">
+              <div class="d-flex align-items-center"><span class="col-3 profile-labels">Manager</span> <span class="col-9">{{selectedUserData?.manager_name}}</span></div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <span class="col-3 profile-labels">Employee ID</span>
+                <span class="col-9">
+                  <input type="text" placeholder="Employee ID" class="outline-none" id="employee_id" name="employee_id" formControlName="employee_id">
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center p-3">
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <span class="col-3 profile-labels">Shift start time*</span>
+                <span class="col-9">
+                <input readonly (click)="startTimeTimePicker = !startTimeTimePicker" class="bg-white time-picker-input outline-none" formControlName="shift_start_time"
+                       placeholder="Enter time">
+                <app-time-picker *ngIf="startTimeTimePicker" [formControlInput]="userProfileForm.get('shift_start_time')" [hour]="userProfileForm.value.shift_start_time.split(':')[0]"
+                                 (timeChange)="startTimeChange($event)" [min]="userProfileForm.value.shift_start_time.split(':')[1]" click-outside
+                                 (clickOutside)="onTimePickerClickOutside($event, 'startTime')"></app-time-picker>
+                </span>
+              </div><br>
+              <div class="d-flex align-items-center">
+                <span class="col-3 profile-labels">Number of work hours*</span>
+                <span class="col-9">
+                  <input type="number" step="0.01" min="0" max="24" placeholder="Enter hours" class="outline-none" id="work_hours" name="work_hours" formControlName="work_hours">
+                </span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center"><span class="col-3 profile-labels">Punch Image</span>
+                <span class="col-9"><span class="d-flex align-items-center punch-image-container" *ngIf="selectedUserData?.user_punch_image">
+                  <a [href]="selectedUserData.user_punch_image + '?' + commonService.generateRandomString()" target="_blank"><img [src]="selectedUserData.user_punch_image + '?' +
+                   commonService.generateRandomString()" class="punch-image" alt="punch-image"></a>
+                  <i *ngIf="!disableEditFields" class="ml-1 cursor-hand fa fa-times-circle position-absolute image-delete-icon" (click)="removePunchImage()"></i></span>
+                  <span *ngIf="!selectedUserData?.user_punch_image">No Image present.</span></span></div>
+            </div>
+          </div>
+          <div class="row no-gutters align-items-center p-3">
+              <div class="col-6">
+                <div class="d-flex align-items-center"><span class="col-3 profile-labels">Punch In Permission*</span>
+                  <span class="col-7">
+                    <select class="form-control" formControlName="punch_in_permission">
+                      <option value="CAMERA">CAMERA</option>
+                      <option value="LOCATION">LOCATION</option>
+                      <option value="BOTH">BOTH</option>
+                      <option value="NONE">NONE</option>
+                    </select>
+                  </span>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center"><span class="col-3 profile-labels">Punch Out Permission*</span>
+                  <span class="col-7">
+                      <select class="form-control" formControlName="punch_out_permission">
+                        <option value="CAMERA">CAMERA</option>
+                        <option value="LOCATION">LOCATION</option>
+                        <option value="BOTH">BOTH</option>
+                        <option value="NONE">NONE</option>
+                      </select>
+                  </span>
+                </div>
+              </div>
+            </div>
+          <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" *ngIf="!disableEditFields" (click)="updateUserProfile()">Update</button>
+        </div>
+      </form>
+    </div>
+    <div class="weekday-box">
+      <p class="leave-user__label mt-3 ml-2">Working Week</p>
+      <div class="block-border d-flex flex-column">
+        <div class="d-flex flex-wrap align-items-center ml-2 pl-3 pr-3 pt-2">
+          <label class="d-flex mb-0 p-1 mr-2" *ngFor="let day of weekdays;let i = index" (change)="onWeekdayChange(day)">
+        <span class="p-1 pl-2 cursor-hand overflow-hidden d-flex align-items-center">
+          <input type="checkbox" [disabled]="disableEditFields" name="checkbox" [checked]="day.selected" class="checkbox-input">
+          <div class="ml-2">{{day.name}}</div>
+        </span>
+          </label>
+        </div>
+        <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" *ngIf="!disableEditFields" (click)="updateWorkingWeek()">Update</button>
+      </div>
+    </div>
+    <div>
+        <form [formGroup]="reportDatesForm">
+          <p class="leave-user__label mt-4 ml-2 TitilliumWeb-bold">Attendance Report</p>
+          <div class="block-border d-flex flex-column">
+            <div class="d-flex p-2">
+              <div class="col-md-6 d-flex flex-column">
+                <label class="control-label">From </label>
+                <div class="position-relative d-flex">
+                  <input readonly matInput class="form-control bg-white" (click)="reportStartPicker2.open()" [matDatepicker]="reportStartPicker2" [max] = "currentDate" placeholder="Choose Date" (dateChange)="onReportDateChange($event, 'start')" formControlName="report_start">
+                <mat-datepicker #reportStartPicker2 ></mat-datepicker>
+                </div>
+              </div>
+              <div class="col-md-6 d-flex flex-column">
+                <label class="control-label">Till</label>
+                <div class="position-relative d-flex">
+                  <input readonly matInput class="form-control bg-white" (click)="reportEndPicker2.open()" [matDatepicker]="reportEndPicker2" [max] = "currentDate" placeholder="Choose Date" (dateChange)="onReportDateChange($event, 'end')" formControlName="report_end">
+                  <mat-datepicker #reportEndPicker2 ></mat-datepicker>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" (click)="fetchAttendanceReport()">Send to Bot</button>
+          </div>
+        </form>
+      </div>
+    <div>
+      <p class="leave-user__label mt-3 ml-2">Punch Card</p>
+      <div class="position-relative mb-2">
+        <button class="btn btn-secondary btn-range-picker" (click)="show_date_range_picker = !show_date_range_picker">
+          <i class="fa fa-calendar"></i>
+          {{date_range_picker_obj.start_date | date}} - {{date_range_picker_obj.end_date | date}}
+        </button>
+        <app-date-range-picker *ngIf="show_date_range_picker" [btn_class_name]="'btn-range-picker'" [input_date_obj]="date_range_picker_obj"
+                               (dateSelectEvent)="onDateSelected($event)" [max_date]="range_max_date"
+                               (closePicker)="show_date_range_picker = false"></app-date-range-picker>
+      </div>
+      <div>
+        <table mat-table [dataSource]="selectedUserPunchData" class="w-100">
+          <ng-container matColumnDef="name_card">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+              <div class="d-flex align-items-center justify-content-center rounded-img-fugu
+                 p-2 alphabet-circle bg-light">{{element.punch_event.substring(0,1)}}</div> </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element"> {{element.punch_event}} </td>
+          </ng-container>
+          <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.timestamp | date: 'MMM d, y, HH:mm'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+             <button class="no-btn-style" (click)="onEditPunchClick(element)" [disabled]="disableEditFields"><i class="fas fa-pencil-alt cursor-hand"></i></button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="['name_card', 'action', 'timestamp', 'edit']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name_card', 'action', 'timestamp', 'edit'];"></tr>
+        </table>
+        <mat-paginator [length]="selectedUserPunchData.data.length" [pageSize]="5"
+                       #punchTablePaginator></mat-paginator>
+      </div>
+    </div>
+    <div>
+      <p class="leave-user__label mt-3 ml-2">Vacation Log</p>
+      <table mat-table [dataSource]="userVacationData" class="w-100">
+        <ng-container matColumnDef="leaveType">
+          <th mat-header-cell *matHeaderCellDef>Leave Type</th>
+          <td mat-cell *matCellDef="let element"> {{element.leaveType}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container>
+              <div [class]="'mat-leave-status'" [ngClass]="{'success': ['APPROVED'].includes(element.status)
+              , 'danger': ['REJECTED', 'CANCELLED'].includes(element.status)}">
+                {{element.status}}</div>
+            </ng-container>
+          </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="approved_by">
+          <th mat-header-cell *matHeaderCellDef>Approved By</th>
+          <td mat-cell *matCellDef="let element"> {{element.approved_by}} </td>
+        </ng-container> -->
+        <ng-container matColumnDef="start_days">
+          <th mat-header-cell *matHeaderCellDef>Start Days</th>
+          <td mat-cell *matCellDef="let element"> {{element.start_days}} </td>
+        </ng-container>
+        <ng-container matColumnDef="applied_at">
+          <th mat-header-cell *matHeaderCellDef>Applied At</th>
+          <td mat-cell *matCellDef="let element"> {{element.applied_at}} </td>
+        </ng-container>
+        <ng-container matColumnDef="duration">
+          <th mat-header-cell *matHeaderCellDef>Duration</th>
+          <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['leaveType', 'status', 'applied_at', 'start_days', 'duration']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['leaveType', 'status', 'applied_at', 'start_days', 'duration'];"></tr>
+      </table>
+      <mat-paginator [length]="userVacationData.data.length" [pageSize]="5"
+                     #vacationDataPaginator></mat-paginator>
+    </div>
+    <div>
+      <p class="leave-user__label mt-3 ml-2">Leave Quota</p>
+      <table mat-table [dataSource]="userLeavesData" class="w-100">
+        <ng-container matColumnDef="leave_title">
+          <th mat-header-cell *matHeaderCellDef>Leave Title</th>
+          <td mat-cell *matCellDef="let element"> {{element.leave_title}} </td>
+        </ng-container>
+        <ng-container matColumnDef="balance">
+          <th mat-header-cell *matHeaderCellDef>Balance</th>
+          <td mat-cell *matCellDef="let element"> {{leaveTypesDict[element.leave_type_id].total_count < 0 ? 'Unlimited' : element.balance}} </td>
+        </ng-container>
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let element"> {{element.total < 0 ? 'Unlimited' : element.total}} </td>
+        </ng-container>
+        <ng-container matColumnDef="accrual_interval">
+          <th mat-header-cell *matHeaderCellDef>Accrual Interval</th>
+          <td mat-cell *matCellDef="let element"> {{element.accrual_interval}} </td>
+        </ng-container>
+        <ng-container matColumnDef="adjust">
+          <th mat-header-cell *matHeaderCellDef>Adjust</th>
+          <td mat-cell *matCellDef="let element">
+           <button (click)="onEditUserLeaveClick(element)" data-toggle="modal" data-target="#leaveAdjustModal" class="no-btn-style" [disabled]="disableEditFields"><i class="fas fa-pencil-alt cursor-hand"></i></button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['leave_title', 'balance', 'total', 'accrual_interval', 'adjust']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['leave_title', 'balance', 'total', 'accrual_interval', 'adjust'];"></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="leaveAdjustModal" tabindex="-1" role="dialog" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Adjust Leave</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+        <p>Adjust Count</p>
+        <input id="adjust-leave-count" type="number" class="form-control w-25" min="0" (input)="onLeaveAdjust($event)">
+        <div class="d-flex w-50 mt-3 mb-2 justify-content-space-evenly">
+          <button class="btn btn-small btn-success" (click)="setLeaveAdjustMode('add')">Add</button>
+          <button class="btn btn-small btn-danger" (click)="setLeaveAdjustMode('subtract')">Subtract</button>
+        </div>
+        <p class="mt-2 mb-2">Current Balance: {{selectedLeaveAdjustData ? selectedLeaveAdjustData.balance : ''}}</p>
+        <p class="mb-2">New Balance: {{selectedLeaveAdjustData ? selectedLeaveAdjustData.new_balance : ''}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="saveUserLeave()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="punchTimingUpdateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Punch Timings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+        <div class="mt-2 mb-2 d-flex flex-column">
+          <form [formGroup]="editPunchForm" role="form">
+            <div>
+              <label for="date_picker_select">Date</label>
+              <select id="date_picker_select" class="form-control" formControlName="selected_date">
+                <option *ngFor="let item of editPunchObject.date_array" [value]="item.id">
+                  {{item.date | date}}
+                </option>
+              </select>
+            </div>
+            <label class="control-label">Punch {{editPunchObject.punch_event}}</label>
+            <input readonly (click)="punchEditTimePicker = !punchEditTimePicker" class="form-control bg-white time-picker-input"
+                   formControlName="punch_timestamp"
+                   placeholder="Enter time">
+            <app-time-picker *ngIf="punchEditTimePicker" [hour]="editPunchObject.hour" [formControlInput]="editPunchForm.get('punch_timestamp')"
+                             (timeChange)="onPunchTimeChange($event)" [min]="editPunchObject.min"
+                             click-outside
+                             (clickOutside)="onTimePickerClickOutside($event, 'punchTime')">
+            </app-time-picker>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="updatePunchTiming()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

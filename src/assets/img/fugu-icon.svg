@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Fugu-favicon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="14.8469597%" y1="64.4841698%" x2="65.0010271%" y2="50.5743508%" id="linearGradient-1">
+            <stop stop-color="#6FC37B" offset="0%"></stop>
+            <stop stop-color="#6BC17D" offset="30%"></stop>
+            <stop stop-color="#5FBB81" offset="59%"></stop>
+            <stop stop-color="#4BB289" offset="88%"></stop>
+            <stop stop-color="#41AD8D" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Fugu-favicon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="fugu_1" transform="translate(2.470812, 4.126904)" fill="url(#linearGradient-1)" fill-rule="nonzero">
+            <path d="M38.1188071,32.4748477 C41.2428861,29.0193682 42.9800313,24.5314154 42.9965482,19.8730964 C42.9965482,8.89652284 33.3691371,0 21.4982741,0 C9.62741117,0 0,8.89873096 0,19.8730964 C0,30.8474619 9.62520305,39.7462692 21.4982741,39.7462692 L21.4982741,39.7462692 C25.2597264,39.7559313 28.9649731,38.8334129 32.2827411,37.0611168 C33.1306599,37.7831726 36.975,40.7773858 40.7884264,39.3774365 C38.9688613,37.5534606 38.0000457,35.0484835 38.1188071,32.4748477 Z M11.0406091,20.716599 C7.69309645,20.716599 4.98814721,18.106599 4.98814721,14.8717005 C4.98814721,11.636802 7.69309645,9.02680203 11.0406091,9.02680203 C14.3881218,9.02680203 17.0798223,11.6412183 17.0798223,14.8717005 C17.0798223,18.1021827 14.3748731,20.716599 11.0406091,20.716599 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,8 @@
+<div class="h-100 w-100">
+  <iframe
+    id="frameEl"
+    class="installation-iframe h-100 w-100"
+    allow="microphone; camera"
+    [src]="commonService.paymentUrl | safeHtml: 'resourceUrl'"
+  ></iframe>
+</div>

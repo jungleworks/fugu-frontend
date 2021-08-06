@@ -1,0 +1,19 @@
+<app-message-modal [width]="'40%'" [@messageModalAnimation]>
+  <div class="h-100 d-flex flex-column justify-content-between">
+    <div class="d-flex align-items-center justify-content-between header-broadcast">
+      <div>
+        <span class="message-modal-heading mr-3">Invite guests</span>
+      </div>
+      <span (click)="closeGuestInvitePopup()" class="margin-close-icon cursor-hand">
+        <img src="assets/img/cross-icon.svg" class="cursor-hand close-icon">
+      </span>
+    </div>
+    <div class="message-modal-description d-flex flex-column">
+      <span class="invite-desc">Guests have limited access</span>
+      <app-invite-input-fields #inputFields></app-invite-input-fields>
+    </div>
+    <div>
+      <button class="btn btn-primary btn-bg-color mt-3 w-100 outline-none box-shadow-none" (click)="specifyMembersandChannels()">Invite Guests</button>
+    </div>
+  </div>
+</app-message-modal>

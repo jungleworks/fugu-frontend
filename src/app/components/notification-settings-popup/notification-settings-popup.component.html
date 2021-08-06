@@ -1,0 +1,77 @@
+<app-message-modal *ngIf="!commonService.notification_snooze_time"  [width]="'30%'" [@messageModalAnimation]
+  (closeMessageModal)=" closeNotificationPopup.emit()" [bgColor] = "commonService.notification_snooze_time">
+  <div class="d-flex justify-content-between align-items-baseline">
+  <p class="message-modal-heading">Notification Settings</p>
+  </div>
+  <div  *ngIf="!commonService.notification_snooze_time">
+  <div class="d-flex flex-column">
+    <div class="radio">
+      <input id="ALL_CHATS" name="radio" type="radio" [(ngModel)]="notificationType" value="ALL_CHATS" />
+      <label for="ALL_CHATS" class="radio-label">ALL CHATS</label>
+    </div>
+
+    <div class="radio">
+      <input id="DIRECT_MESSAGES" name="radio" type="radio" [(ngModel)]="notificationType" value="DIRECT_MESSAGES" />
+      <label for="DIRECT_MESSAGES" class="radio-label">DIRECT MESSAGES & MENTIONS</label>
+    </div>
+
+    <div class="radio d-flex">
+      <div class="mr-4">
+        <input id="SNOOZE" name="radio" type="radio" [(ngModel)]="notificationType" value="SNOOZE" />
+        <label for="SNOOZE" class="radio-label">SNOOZE</label>
+      </div>
+      <div *ngIf="notificationType == 'SNOOZE'"
+        class="recurring-box d-flex align-items-center pl-3 pr-3 pt-2 pb-2 position-relative">
+        <div (click)="showSnoozeBox = true" class="cursor-hand d-flex align-items-center theme-font-color" click-outside (clickOutside)="onSnoozeClickOutside($event)">
+          <input type="text" readonly class="form-control-plaintext input-custom outline-none cursor-hand theme-font-color"
+            [(ngModel)]="selectedSnoozeTime.description" [ngModelOptions]="{standalone: true}">
+          <span class="fa fa-caret-down d-flex" aria-hidden="true"></span>
+        </div>
+        <div [hidden]="!showSnoozeBox" class="recurring-box-selection p-2 cursor-hand">
+          <div *ngFor="let item of commonService.snoozeArray;let i = index" class="recurring-box-selection__option p-2"
+            (click)="chooseSnoozeTime(i)"    [ngClass]="{'recurring-box-selection__option--selected': item.time_slot == selectedSnoozeTime.time_slot}">
+            {{item.description}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="radio">
+      <input id="NONE" name="radio" type="radio" [(ngModel)]="notificationType" value="NONE" />
+      <label for="NONE" class="radio-label">NONE</label>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none message-modal-button-red btn-red outline-none mr-2"
+      (click)="closeNotificationPopup.emit()">
+      Cancel
+    </button>
+    <button class="message-modal-button outline-none" (click)="editNotificationInfo()">
+      Save
+    </button>
+  </div>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="commonService.notification_snooze_time" [width]="'24%'" [@messageModalAnimation]
+  (closeMessageModal)="showNotificationSettingsPopup = false" [padding]="'0'" [bgColor] = "'#000'">
+  <div class="d-flex justify-content-end align-items-baseline pl-3 pr-3 pt-3 pb-1">
+    <span class="cursor-hand d-flex align-items-center" (click)="showNotificationSettingsPopup = false">
+      <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+        <path opacity=".65" fill="#fff"
+          d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z">
+        </path>
+      </svg>
+    </span>
+  </div>
+  <div class="d-flex flex-column snooze-parent pl-3 pr-3 pb-3 position-relative">
+    <img src="assets/img/emoji-snooze.svg" class="cursor-hand emoji-snooze position-absolute" />
+    <span class="color-white font">Snooze is <span class="on-text">ON</span></span>
+    <span class="scheduled color-white">
+      Scheduled until {{commonService.notification_snooze_time | time_converter:'chat'}} ,
+      {{commonService.notification_snooze_time | date:'shortTime'}}
+    </span>
+  </div>
+  <div class="d-flex button-send-message" (click)="endSnooze()">
+    End Snooze
+  </div>
+</app-message-modal>

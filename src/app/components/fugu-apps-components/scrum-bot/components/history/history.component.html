@@ -1,0 +1,124 @@
+<div class="d-flex align-items-center justify-content-center w-100 h-100 overflow-hidden bg-gray">
+  <div class="d-flex p-3 w-75 h-100 bg-white round-border font-proxima">
+    <div class="d-flex flex-column w-100">
+      <h2>{{spaceData.workspace_name}}</h2>
+      <div class="d-flex">
+        <div class="d-flex flex-column w-50 p-2 position-relative">
+          <label class="form-label">Choose your Reports</label>
+          <div (click)="showChooseReportBox = true" class="cursor-hand d-flex align-items-center" click-outside
+            (clickOutside)="onChooseReportClickOutside($event)">
+            <input type="text" readonly
+              class="form-control form-input-custom ellipsis bordered shadowed-box outline-none cursor-hand bg-white"
+              [value]="setChoosenReportsName()">
+            <span class="fa fa-caret-down d-flex input-drop" aria-hidden="true"></span>
+          </div>
+          <div [hidden]="!showChooseReportBox" class="report-selection-box bordered shadowed-box p-2 cursor-hand">
+            <label class="d-block mb-0 p-1" *ngFor="let item of availableReports;let i = index"
+              (change)="onReportChoose(item)">
+              <span class="p-1 pl-2 cursor-hand overflow-hidden report-option d-flex align-items-center">
+                <input type="checkbox" name="checkbox" [checked]="choosenReports[item.report_id]"
+                  class="checkbox-input">
+                <div class="ml-2 report-option-name">{{item.report_name}}</div>
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="d-flex flex-column w-50 p-2">
+          <label class="form-label">Select your Date</label>
+          <div class="position-relative mb-2">
+            <button class="btn btn-secondary btn-range-picker"
+              (click)="show_date_range_picker = !show_date_range_picker">
+              <i class="fa fa-calendar"></i>
+              {{date_range_picker_obj.start_date | date}} - {{date_range_picker_obj.end_date | date}}
+            </button>
+            <app-date-range-picker *ngIf="show_date_range_picker" [btn_class_name]="'btn-range-picker'"
+              [input_date_obj]="date_range_picker_obj" (dateSelectEvent)="onDateSelected($event)"
+              [max_date]="range_max_date" (closePicker)="show_date_range_picker = false"></app-date-range-picker>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-column mt-4 overflow-auto">
+        <div class="d-flex flex-column bordered shadowed-box round-border p-3 mb-4"
+          *ngFor="let item of choosenReports | keyvalue">
+          <p class="font-proxima-bold mb-0">ScrumBot</p>
+          <p class="mb-0">Here are the results on <b>{{item.value.report_name}}</b> from
+            <b>{{ item.value.report_start_date | date : mediumDate}}</b></p>
+          <ng-container *ngIf="filterType == '0'">
+            <ng-container *ngFor="let user of item.value.report_responses">
+              <div class="bordered-left mb-3 mt-3" *ngIf="!isHideEmptyAnswers || ( user.report_questions.length )">
+                <p class="text-muted mb-0">{{user.full_name}}</p>
+                <ng-container *ngIf="user.report_questions.length == 0">
+                  <p class="mb-0 font-proxima-bold">No responses</p>
+                </ng-container>
+                <ng-container *ngIf="user.report_questions.length">
+                  <div class="mb-3" *ngFor="let ques of user.report_questions">
+                    <p class="mb-0 font-proxima-bold">{{ques.report_question}}</p>
+                    <p class="mb-0">{{ques.report_answer}}</p>
+                  </div>
+                  <p class="text-muted mb-0">Yesterday at 11:46pm</p>
+                </ng-container>
+              </div>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="filterType == '1'">
+            <div class="bordered-left mb-3 mt-3" *ngFor="let questionObj of item.value.questions | keyvalue">
+              <p class="text-muted mb-0">{{questionObj.value.report_question}}</p>
+              <div class="mb-3" *ngFor="let user of questionObj.value.reportees">
+                <p class="mb-0 font-proxima-bold">{{user.full_name}}</p>
+                <p *ngIf="user.report_answer" class="mb-0">{{user.report_answer}}</p>
+                <p *ngIf="!user.report_answer" class="mb-0 font-proxima-bold">No responses</p>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column">
+      <div class="min-w-290 w-290 ml-5">
+        <div class="d-flex flex-column bordered round-border shadowed-box p-3">
+          <p class="font-proxima-bold mb-0">Filters</p>
+          <label class="d-block mb-0 p-1">
+            <span class="p-1 pl-2 cursor-hand overflow-hidden report-option d-flex align-items-center">
+              <input type="radio" name="filter" [(ngModel)]="filterType" value="0">
+              <div class="ml-2 report-option-name">Group by people</div>
+            </span>
+          </label>
+          <label class="d-block mb-0 p-1">
+            <span class="p-1 pl-2 cursor-hand overflow-hidden report-option d-flex align-items-center">
+              <input type="radio" name="filter" [(ngModel)]="filterType" value="1">
+              <div class="ml-2 report-option-name">Group by questions</div>
+            </span>
+          </label>
+          <label class="d-block mt-2 mb-0 p-1">
+            <span class="p-1 pl-2 cursor-hand overflow-hidden report-option d-flex align-items-center">
+              <input type="checkbox" name="checkbox" [(ngModel)]="isHideEmptyAnswers" class="checkbox-input">
+              <div class="ml-2 report-option-name">Hide empty answers</div>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="min-w-290 w-290 ml-5 mt-4">
+        <div class="d-flex flex-column bordered round-border shadowed-box p-3">
+          <p class="font-proxima-bold mb-0">Respondents</p>
+          <label class="d-block mb-0 p-1">
+            <span class="p-1 pl-2 cursor-hand overflow-hidden report-option d-flex align-items-center">
+              <input type="radio" name="Respondents" [(ngModel)]="respondentsType" value="0">
+              <div class="ml-2 report-option-name">Show all</div>
+            </span>
+          </label>
+          <label class="d-block mb-0 p-1">
+            <span class="p-1 pl-2 cursor-hand overflow-hidden report-option d-flex align-items-center">
+              <input type="radio" name="Respondents" [(ngModel)]="respondentsType" value="1">
+              <div class="ml-2 report-option-name">Show selected</div>
+            </span>
+          </label>
+          <label class="d-block mt-2 mb-0 p-1" *ngIf="respondentsType == 1">
+            <span class="p-1 pl-2 cursor-hand overflow-hidden report-option d-flex align-items-center">
+              <input type="search" class="form-control outline-none" placeholder="Type a user name here">
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

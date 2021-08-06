@@ -1,0 +1,18 @@
+<app-message-modal [width]="'23%'" >
+  <div class="pl-4 pr-4 pt-2 pb-2 d-flex flex-column align-items-center justify-content-center">
+    <p class="text-center">
+      <b class="TitilliumWeb-bold">Incoming
+        {{call_type != 'CONFERENCE' ? caller_info.call_type == RTCCallTypeEnum.VIDEO ? 'Video' : 'Audio' : 'Conference'}} call</b>
+    </p>
+    <p class="text-center">
+      <b class="TitilliumWeb-bold">{{call_type == 'CONFERENCE' ? caller_info.caller_text : caller_info.full_name + ' is calling you.'}}</b>
+    </p>
+    <img [src]="call_type != 'CONFERENCE' ? caller_info.user_thumbnail_image || '../../../assets/img/placeholder.png' : '../../../assets/img/conference-icon.svg'"
+          class="caller-image rounded-img-fugu">
+  </div>
+  <div class="d-flex justify-content-end pt-2">
+    <button class="btn btn-color-red no-btn-style bg-transparent" (click)="rejectVideoCall()">Reject</button>
+    <button class="btn app-color no-btn-style box-shadow-none outline-none bg-transparent" (click)="acceptVideoCall()">Answer
+    </button>
+  </div>
+</app-message-modal>

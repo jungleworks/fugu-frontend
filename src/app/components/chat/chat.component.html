@@ -1,0 +1,1752 @@
+<div id="fugu-messenger-parent-div" class="d-flex flex-column fugu-messenger h-100 position-relative"
+     [ngClass]="{'drag': showImageDropOverlay, 'overflow-hidden' : !showReplyCard}"
+     (paste)="clipboardPasteEvent($event)">
+  <div *ngIf="commonService.showOtherWSCallPopup && callerAnotherWSInfo"
+       class="d-flex flex-column position-absolute popup-other-ws">
+    <div class="d-flex align-items-center mb-3">
+      <img *ngIf="wsCallingData.user_thumbnail_image" [src]="wsCallingData?.user_thumbnail_image"
+           class="caller-img mr-2">
+      <span><span
+        class="bold-text">{{wsCallingData.full_name}}</span> is calling you on {{callerAnotherWSInfo.workspace}}</span>
+    </div>
+    <div class="d-flex justify-content-center">
+      <a class="d-flex justify-content-center cursor-hand mr-4 button-call-reject w-100"
+         (click)="cancelCallingWSPopup()">Reject</a>
+      <a class="d-flex justify-content-center cursor-hand button-call-answer w-100"
+         (click)="switchToCallingWS()">Accept</a>
+    </div>
+  </div>
+  <header id="fugu-messenger-header-div" [@fadeSlideIn]="alive"
+          class="d-flex align-items-center flex-direction-row border-bottom">
+    <div class="label-header flex-grow d-flex flex-column justify-content-center">
+      <span class="d-flex align-items-baseline">
+        <span>{{label_header}}</span>
+        <ng-container [ngSwitch]="leave_role">
+          <ng-container *ngSwitchCase="leaveRoleEnum.ABSENT">
+            <span class="small text-presence ml-1 mb-0">
+              is on leave</span>
+          </ng-container>
+          <ng-container *ngSwitchCase="leaveRoleEnum.WORK_FROM_HOME">
+            <span class="small text-presence ml-1 mb-0">
+              is on WFH</span>
+          </ng-container>
+<!--          <ng-container *ngSwitchCase="leaveRoleEnum.PRESENT">-->
+<!--            <span class="small text-presence ml-1 mb-0">-->
+<!--              is present</span>-->
+<!--          </ng-container>-->
+        </ng-container>
+      </span>
+      <span class="typing-message text-muted" *ngIf="userTyping">
+        {{chat_type != ChatTypeEnum.ONE_TO_ONE ? userTypingName.split(' ')[0] + ' is' : ''}}
+        typing...
+      </span>
+      <div class="d-flex"
+           *ngIf="commonService.channelStatus != 'DISABLED' && userPresenceStatus && !userTyping && chat_type == ChatTypeEnum.ONE_TO_ONE">
+        <span class="mr-1 online-container-dot" *ngIf="userPresenceStatus.type == presenceTypeEnum.AVAILABLE"><i
+          class="fas fa-circle online-icon"></i></span>
+        <span class="typing-message text-presence">
+          {{userPresenceStatus.type == presenceTypeEnum.AVAILABLE ? 'Online' : 'last seen' + ' ' + ( ( userPresenceStatus.timestamp | time_converter:'chat':'timestamp' ) | lowercase )}}
+        </span>
+      </div>
+      <span class="typing-message text-presence"
+            *ngIf="commonService.channelStatus == 'DISABLED' && chat_type == ChatTypeEnum.ONE_TO_ONE">
+          Deactivated Account
+        </span>
+      <span (click)="showProfile ? '' : onShowProfile()" class="typing-message text-presence cursor-hand"
+            *ngIf="!userTyping && [3, 4, 5, 6, 8].includes(chat_type)">
+          {{user_count}} members
+        </span>
+    </div>
+    <div class="toggleButton" id="membersInfo">
+      <!--Video call conference-->
+      <!-- <svg *ngIf="[3,4].includes(chat_type) && is_group_joined && commonService.userDetails.is_conferencing_enabled == 1" xmlns="http://www.w3.org/2000/svg"
+      width="28" height="18" viewBox="0 0 28 18" class="info-button cursor-hand mr-3" (click)="openConferencingPopup  = true;;isAudioConference = false">
+        <path fill="var(--icon-color)" title="Start a conference" fill-rule="evenodd" d="M21.226 6.792V3.964A3.39 3.39 0 0 0 17.839.571H4.29A3.39 3.39 0 0 0 .903 3.964v10.179a3.39 3.39 0 0 0 3.387 3.393H17.84a3.39 3.39 0 0 0 3.387-3.393v-2.828l5.87 4.411c.373.28.904.014.904-.452V2.834a.565.565 0 0 0-.903-.453l-5.871 4.41" />
+      </svg> -->
+      <svg (click)="openConferencingPopup  = true;;isAudioConference = false" class="cursor-hand mr-3"
+           *ngIf="spaceData.config.create_meet_permission && spaceData.config.create_meet_permission.includes(spaceData.role) && [3,4].includes(chat_type) && is_group_joined && commonService.userDetails.is_conferencing_enabled == 1"
+           xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <g fill="none" fill-rule="evenodd">
+          <path d="M0 0h24v24H0z"/>
+          <path class="info-button" stroke="#2F2F2F" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M16 7v3.47l5-1.912v6.883l-5-1.912V17H3V7h13z"/>
+        </g>
+      </svg>
+      <!--Audio call conference-->
+      <!-- <svg *ngIf="[3,4].includes(chat_type) && is_group_joined && commonService.userDetails.is_conferencing_enabled == 1" xmlns="http://www.w3.org/2000/svg"
+      width="28" height="18" viewBox="0 0 44 44" class="info-button cursor-hand mr-3 hw-22" (click)="openConferencingPopup  = true;isAudioConference = true">
+      <path fill="var(--icon-color)" title="Start a conference" fill-rule="evenodd" d="M34.129 44c-2.471 0-11.397-.852-22.34-11.792C.852 21.268 0 12.345 0 9.868 0 5.809 5.23.018 6.565 0h2.969c.403 0 .767.242.922.614l4.384 10.337c.177.423.041.914-.325 1.189-4.128 3.105-5.493 4.055-5.517 5.619 0 3.365 13.871 17.24 17.213 17.24 1.587-.017 2.637-1.368 5.742-5.501a1.008 1.008 0 0 1 1.19-.326l10.244 4.37a1 1 0 0 1 .613.922v2.974C43.984 38.773 38.191 44 34.129 44" />
+    </svg> -->
+      <!--audio call button-->
+      <!-- <svg *ngIf="!commonService.external_perm_options.suspend_call && spaceData?.config.audio_call_enabled == '1' && [2].includes(chat_type) && !is_deactivated_user && otherUserData['user_id']"  xmlns="http://www.w3.org/2000/svg"
+      width="44" height="44" viewBox="0 0 44 44" class="info-button cursor-hand mr-3 hw-22" (click)="openVideoAudioCallPopup(RTCCallTypeEnum.AUDIO)">
+        <path fill="var(--icon-color)" fill-rule="evenodd" d="M34.129 44c-2.471 0-11.397-.852-22.34-11.792C.852 21.268 0 12.345 0 9.868 0 5.809 5.23.018 6.565 0h2.969c.403 0 .767.242.922.614l4.384 10.337c.177.423.041.914-.325 1.189-4.128 3.105-5.493 4.055-5.517 5.619 0 3.365 13.871 17.24 17.213 17.24 1.587-.017 2.637-1.368 5.742-5.501a1.008 1.008 0 0 1 1.19-.326l10.244 4.37a1 1 0 0 1 .613.922v2.974C43.984 38.773 38.191 44 34.129 44" />
+      </svg> -->
+      <svg class="cursor-hand mr-3 hw-22" (click)="openVideoAudioCallPopup(RTCCallTypeEnum.AUDIO)"
+           *ngIf="!commonService.external_perm_options.suspend_call && spaceData?.config.audio_call_enabled == '1' && [2].includes(chat_type) && !is_deactivated_user && otherUserData['user_id']"
+           xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <g fill="none" fill-rule="evenodd">
+          <path d="M0 0h24v24H0z"/>
+          <path class="info-button" stroke="#2F2F2F" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M18.917 16.679c0-.651-.69-.617-1.041-.617-1.632 0-3.168-.4-4.527-1.098l-1.815 1.815a12.454 12.454 0 0 1-4.312-4.313l1.814-1.815a9.872 9.872 0 0 1-1.098-4.527c0-.352-.172-1.041-.847-1.041H3.685C3 5.083 3 5.773 3 6.124 3 14.34 9.66 21 17.876 21c.352 0 1.041-.124 1.041-.677V16.68z"/>
+        </g>
+      </svg>
+
+      <!--video call button-->
+      <!-- <svg *ngIf="!commonService.external_perm_options.suspend_call && spaceData?.config.video_call_enabled == '1' && [2].includes(chat_type) && !is_deactivated_user  && otherUserData['user_id']" xmlns="http://www.w3.org/2000/svg"
+      width="28" height="18" viewBox="0 0 28 18" class="info-button cursor-hand mr-3" (click)="openVideoAudioCallPopup(RTCCallTypeEnum.VIDEO)">
+        <path fill="var(--icon-color)" fill-rule="evenodd" d="M21.226 6.792V3.964A3.39 3.39 0 0 0 17.839.571H4.29A3.39 3.39 0 0 0 .903 3.964v10.179a3.39 3.39 0 0 0 3.387 3.393H17.84a3.39 3.39 0 0 0 3.387-3.393v-2.828l5.87 4.411c.373.28.904.014.904-.452V2.834a.565.565 0 0 0-.903-.453l-5.871 4.41" />
+      </svg> -->
+      <svg class=" cursor-hand mr-3" (click)="openVideoAudioCallPopup(RTCCallTypeEnum.VIDEO)"
+           *ngIf="!commonService.external_perm_options.suspend_call && spaceData?.config.video_call_enabled == '1' && [2].includes(chat_type) && !is_deactivated_user  && otherUserData['user_id']"
+           xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <g fill="none" fill-rule="evenodd">
+          <path d="M0 0h24v24H0z"/>
+          <path class="info-button" stroke="#2F2F2F" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M16 7v3.47l5-1.912v6.883l-5-1.912V17H3V7h13z"/>
+        </g>
+      </svg>
+
+      <svg
+        *ngIf="spaceData.installed_apps && spaceData.installed_apps.includes(botsEnum.FUGU_LIVE) && [ChatTypeEnum.PRIVATE,ChatTypeEnum.PUBLIC].includes(chat_type) && spaceData.config.is_group_live_stream_enabled && spaceData.config.is_group_live_stream_enabled == '1' && spaceData.config.livestream_permission && spaceData.config.livestream_permission.includes(spaceData.role)"
+        class="cursor-hand mr-3" (click)="openSelectLivestreamPopup  = true;"
+        fill="#2F2F2F"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 20 20"
+      >
+        <path
+          class="info-button"
+          d="M16.084 4.535c-.184-.18-.483-.18-.666 0-.18.178-.18.462 0 .638 1.448 1.422 2.246 3.315 2.246 5.327s-.798 3.905-2.246 5.327c-.18.177-.18.46 0 .638.089.087.208.135.333.135.125 0 .244-.047.333-.135 1.623-1.594 2.516-3.711 2.516-5.965 0-2.15-.813-4.178-2.3-5.744l-.216-.221zm-11.502 0c-.183-.18-.482-.18-.666 0C2.293 6.129 1.4 8.246 1.4 10.5s.893 4.37 2.516 5.965c.09.088.208.135.333.135.125 0 .244-.048.333-.135.18-.178.18-.461 0-.638-1.448-1.422-2.246-3.315-2.246-5.327s.798-3.905 2.246-5.327c.157-.155.177-.391.06-.566l-.06-.071zm9.539 2.514c-.184-.18-.483-.18-.666.001-.18.177-.18.461 0 .638.764.75 1.186 1.75 1.186 2.812 0 1.062-.422 2.062-1.186 2.812-.18.177-.18.461 0 .638.089.088.208.136.333.136.125 0 .243-.048.333-.135.94-.923 1.455-2.147 1.455-3.45 0-1.218-.45-2.365-1.273-3.263l-.182-.189zm-7.576.001c-.183-.18-.482-.18-.666 0-.94.922-1.455 2.146-1.455 3.45 0 1.304.516 2.528 1.455 3.45.09.088.208.136.333.136.125 0 .244-.048.334-.136.179-.177.179-.461-.001-.638-.764-.75-1.186-1.75-1.186-2.812 0-1.062.422-2.062 1.186-2.812.157-.155.177-.392.06-.567l-.06-.071zm4.468 2.467c-.557-.547-1.464-.547-2.022 0-.553.544-.553 1.422 0 1.966.558.547 1.465.547 2.022 0 .519-.51.551-1.314.098-1.86l-.098-.106z"
+        />
+      </svg>
+
+      <!-- <span class="tooltip-static position-relative">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="44" height="44" viewBox="0 0 44 44" class="rit-call-pulse info-button cursor-hand mr-3 hw-22"
+             (click)="showRitPopup = true">
+          <path fill="var(--icon-color)" fill-rule="evenodd"
+                d="M34.129 44c-2.471 0-11.397-.852-22.34-11.792C.852 21.268 0 12.345 0 9.868 0 5.809 5.23.018 6.565 0h2.969c.403 0 .767.242.922.614l4.384 10.337c.177.423.041.914-.325 1.189-4.128 3.105-5.493 4.055-5.517 5.619 0 3.365 13.871 17.24 17.213 17.24 1.587-.017 2.637-1.368 5.742-5.501a1.008 1.008 0 0 1 1.19-.326l10.244 4.37a1 1 0 0 1 .613.922v2.974C43.984 38.773 38.191 44 34.129 44"/>
+        </svg>
+        <span class="tooltiptext mt-1">Request Callback</span>
+      </span> -->
+      <span *ngIf="chat_type != ChatTypeEnum.BOT" aria-hidden="true" (click)="onShowProfile()" class="cursor-hand">
+        <!-- <defs>
+          <path id="a" d="M0 .022h23.978v23.975H0z" />
+        </defs>
+        <g fill="none" fill-rule="evenodd">
+          <path fill="var(--icon-color)" d="M10.63 7.847c.044.087.088.175.132.24.043.066.11.132.153.198.066.066.132.131.22.197.065.044.153.11.262.132a1.348 1.348 0 0 0 .57.11c.088 0 .197 0 .285-.023.088-.022.175-.043.241-.087h.022c.088-.044.175-.088.263-.154.066-.044.132-.11.197-.175l.022-.022c.066-.066.11-.131.154-.197s.087-.132.11-.22c0-.021 0-.021.021-.043.044-.088.066-.198.088-.285.022-.088.022-.197.022-.285 0-.088 0-.197-.022-.285a2.036 2.036 0 0 0-.088-.285 1.244 1.244 0 0 0-.263-.395l-.044-.043c-.065-.066-.131-.11-.219-.176-.088-.044-.153-.087-.24-.131-.089-.044-.176-.066-.264-.088-.11-.022-.197-.022-.285-.022-.088 0-.197 0-.285.022a1.236 1.236 0 0 0-.263.088h-.022a2.39 2.39 0 0 0-.24.131c-.089.066-.154.11-.22.176-.066.065-.132.131-.175.197-.044.066-.088.153-.132.241a1.236 1.236 0 0 0-.088.263c-.021.11-.021.197-.021.285 0 .088 0 .197.021.285.022.175.066.263.088.35" />
+          <g>
+            <mask id="b" fill="#fff">
+              <use xlink:href="#a" />
+            </mask>
+            <path fill="var(--icon-color)" d="M13.677 15.868h-.504v-5.37a.566.566 0 0 0-.57-.57H10.3a.566.566 0 0 0-.57.57v1.184c0 .307.242.57.57.57h.46v3.638h-.46a.566.566 0 0 0-.57.57v1.184c0 .307.242.57.57.57h3.376c.307 0 .57-.241.57-.57V16.46a.585.585 0 0 0-.57-.592"
+              mask="url(#b)" />
+            <path fill="var(--icon-color)" d="M11.989 22.422c-5.742 0-10.41-4.669-10.41-10.411C1.578 6.268 6.246 1.6 11.988 1.6 17.732 1.6 22.4 6.268 22.4 12.011c0 5.742-4.668 10.41-10.411 10.41zm0-22.4C5.369.022 0 5.392 0 12.01 0 18.631 5.37 24 11.989 24c6.62 0 11.99-5.37 11.99-11.989 0-6.62-5.37-11.99-11.99-11.99z"
+              mask="url(#b)" />
+          </g>
+        </g> -->
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path class="info-button"  fill-rule="evenodd" d="M12 3c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9zm0 1.385A7.606 7.606 0 0 1 19.615 12 7.606 7.606 0 0 1 12 19.615 7.606 7.606 0 0 1 4.385 12 7.606 7.606 0 0 1 12 4.385zm-.692 2.769v1.384h1.384V7.154h-1.384zm0 2.77v6.922h1.384V9.923h-1.384z"/>
+      </svg>
+       -->
+
+       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class=""><path
+         fill="var(--chat-header-text)" fill-rule="evenodd"
+         d="M12 3c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9zm0 1.385A7.606 7.606 0 0 1 19.615 12 7.606 7.606 0 0 1 12 19.615 7.606 7.606 0 0 1 4.385 12 7.606 7.606 0 0 1 12 4.385zm-.692 2.769v1.384h1.384V7.154h-1.384zm0 2.77v6.922h1.384V9.923h-1.384z"
+         class="">
+
+       </path></svg>
+
+        <!-- <svg *ngIf="!showProfile" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <defs>
+              <linearGradient id="a" x1="100%" x2="0%" y1="19.133%" y2="80.867%">
+                  <stop offset="0%" stop-color="#00C8FE"/>
+                  <stop offset="100%" stop-color="#4FACFE"/>
+              </linearGradient>
+              <linearGradient id="b" x1="100%" x2="0%" y1="48.98%" y2="51.02%">
+                  <stop offset="0%" stop-color="#00C8FE"/>
+                  <stop offset="100%" stop-color="#4FACFE"/>
+              </linearGradient>
+              <linearGradient id="c" x1="100%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#00C8FE"/>
+                  <stop offset="100%" stop-color="#4FACFE"/>
+              </linearGradient>
+          </defs>
+          <g fill="none" fill-rule="evenodd">
+              <path d="M0 0h24v24H0z"/>
+              <path fill="#2F2F2F" d="M4.929 5C3.869 5 3 5.869 3 6.929v10.285c0 1.06.869 1.929 1.929 1.929H19.07c1.06 0 1.929-.869 1.929-1.929V6.93C21 5.869 20.131 5 19.071 5H4.93zm0 1.286h10.928v11.571H4.93a.635.635 0 0 1-.643-.643V6.93c0-.362.281-.643.643-.643zm12.214 0h1.928c.362 0 .643.281.643.643v10.285a.635.635 0 0 1-.643.643h-1.928V6.286z" transform="matrix(-1 0 0 1 24 0)"/>
+              <g stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                  <path stroke="#2F2F2F" d="M6.5 2.5h-6" transform="matrix(-1 0 0 1 16.5 9.5)"/>
+                  <path stroke="#2F2F2F" d="M2.5.5l-2 2M2.5 4.5l-2-2" transform="matrix(-1 0 0 1 16.5 9.5)"/>
+              </g>
+          </g>
+      </svg> -->
+        <!-- <svg *ngIf="showProfile"xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <g fill="none" fill-rule="evenodd">
+              <path d="M0 0h24v24H0z"/>
+              <path fill="#2F2F2F" d="M4.929 5C3.869 5 3 5.869 3 6.929v10.285c0 1.06.869 1.929 1.929 1.929H19.07c1.06 0 1.929-.869 1.929-1.929V6.93C21 5.869 20.131 5 19.071 5H4.93zm0 1.286h10.928v11.571H4.93a.635.635 0 0 1-.643-.643V6.93c0-.362.281-.643.643-.643zm12.214 0h1.928c.362 0 .643.281.643.643v10.285a.635.635 0 0 1-.643.643h-1.928V6.286z"/>
+              <g stroke="#2F2F2F" stroke-linecap="round" stroke-width="1.5">
+                  <path d="M13.5 12h-6M9.5 10l-2 2M9.5 14l-2-2"/>
+              </g>
+          </g>
+      </svg> -->
+      </span>
+
+    </div>
+  </header>
+  <!--START div for showing faye connection status -->
+  <div class="network-bar position-absolute w-99" *ngIf="!isOnline || socketConnectionState == 'DISCONNECTED'"
+       [@barFadeInOut]>
+    <div id="fayeConnectionStatus" class="d-flex justify-content-center align-items-center"
+         *ngIf="isOnline && !socketService.socket?.connected && activeChannelId && messages.length>0">
+      <img src="../../../assets/img/loading-gif.svg" class="loading-image-height" alt="loader-gif"/> &nbsp;
+      <span>Connecting to network.
+        <a class="cursor-hand underline" (click)="reload()">Retry</a>
+      </span>
+    </div>
+
+    <!--END div for showing faye connection status -->
+
+    <!--START  Network status -->
+    <div id="networkStatus" *ngIf="!isOnline" class="d-flex justify-content-center align-items-center">No internet
+      access.
+      <a class="cursor-hand underline" (click)="reload()">Retry</a>
+    </div>
+  </div>
+  <div id="connectionStatus"
+       class="network-bar connected-success position-absolute w-99 d-flex justify-content-center align-items-center"
+       *ngIf="socketReconnectState" [@barFadeInOut]>
+    <span>Connected!</span>
+  </div>
+  <div id="billingPlanExpire" (click)="redirectToBilling()"
+       *ngIf="role_status == roleStatusEnum.isOwner && showBillingStrip && layoutService.expireBillingDetails"
+       class="billing-bar  position-absolute w-99 d-flex justify-content-center align-items-center" [@barFadeInOut]>
+    <span>Your {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }}
+      trial expires in {{layoutService.expireBillingDetails.days_left}} days, <span class="bill-upgrade">Upgrade your subscription now</span></span>
+    <span class="billing-hide" (click)="showBillingStrip = false;"><i class="fas fa-times"></i></span>
+  </div>
+  <!--END  Network status -->
+  <div id="loader-div" class="d-flex justify-content-center align-items-center mt-2 position-absolute w-100"
+       *ngIf="showLoader && isOnline">
+    <svg width="50px" height="50px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+         preserveAspectRatio="xMidYMid" class="lds-rolling"
+         style="background: white;border-radius:50%;">
+      <circle cx="50" cy="50" fill="none" stroke="var(--loader-color)" stroke-width="6" r="35"
+              stroke-dasharray="164.93361431346415 56.97787143782138"
+              transform="rotate(144 50 50)">
+        <animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50"
+                          keyTimes="0;1" dur="1s"
+                          begin="0s" repeatCount="indefinite"></animateTransform>
+      </circle>
+    </svg>
+  </div>
+  <div class="d-flex flex-grow position-relative scrolling-chat-parent overflow-auto">
+    <div *ngIf="!isScrollToBottomComplete" class="message-div-hider"></div>
+    <div class="chat-window messages-container d-flex flex-column flex-grow position-relative" id="chat-window"
+         [ngClass]="{'chat-online-window':isOnline, 'chat-offline-window':!isOnline}"
+         #chatScroll appScrollToUnread [unread_bar_id]="!scrollToMessageId ? 'scrollToDiv' : scrollToMessageId"
+         [(scrollEnabled)]="is_scroll_enabled">
+
+      <div *ngFor="let date_group of messages_map | keyvalue;trackBy: trackById;let map_index = index;">
+        <div class="notification-messages mt-2 mb-2 position-sticky sticky-date">
+          <span class='date-dividers chatDays text-center'>{{date_group.key | time_converter:'chat'}}</span>
+        </div>
+        <div *ngFor="let messageItem of date_group.value;let i=index;trackBy: trackByMuid"
+             [@fadeSlideInMessages]="messageItem.state?messageItem.state:'new'">
+          <div *ngIf="commonService.showUnreadCount && unread_count > 0 && (date_group.value[i].unread_start)"
+               class="unread-message-bar d-flex justify-content-center p-1 mt-2 mb-2"
+               id="scrollToDiv"> {{unread_count != 1 ? unread_count + ' Unread Messages' : unread_count + ' Unread Message'}}
+          </div>
+          <div class="message-container d-flex flex-column"
+               *ngIf="messageItem.message_type!=MessageTypeEnum.Public_Notes && (messageItem.message?.trim()!='' || messageItem.image_url!='')"
+               [ngClass]="{'emoji-container-padding':messageItem.user_reaction
+             && messageItem.user_reaction['reaction'].length, 'message-container-padding': messageItem.user_id != commonService.userDetails.user_id && chat_type != 2 && (i== 0
+              || (date_group.value[i - 1].user_id!=messageItem.user_id)
+             || (date_group.value[i - 1].user_id==messageItem.user_id && date_group.value[i - 1].message_type == MessageTypeEnum.Public_Notes)) ,'other-message': messageItem.user_id != commonService.userDetails.user_id,
+            'user-message': messageItem.user_id == commonService.userDetails.user_id, 'message-user-padding':
+            i != 0 && date_group.value[i - 1].user_id != messageItem.user_id
+            && messageItem.user_id == commonService.userDetails.user_id}"
+               [id]="messageItem.muid || messageItem.id.toString()">
+            <!-- show user name on chat bubble only on it's chat group -->
+            <!-- div agent/user chat message -->
+            <h5 *ngIf="messageItem.user_id != commonService.userDetails.user_id && ![2,7].includes(chat_type) && (i == 0  || (date_group.value[i - 1].user_id != messageItem.user_id)
+          || (date_group.value[i - 1].user_id==messageItem.user_id && date_group.value[i - 1].message_type == MessageTypeEnum.Public_Notes))"
+                class="col-xs-12 header-pointer">
+           <span [ngStyle]="{'color': messageItem.user_id | randomColor}" class="user-name cursor-hand"
+                 (click)="messageItem.user_id && messageItem.user_type != 0 ? openProfileNamePopover($event, messageItem.user_id) : ''">
+             {{messageItem.full_name}}
+             <span *ngIf="messageItem.user_id != commonService.userDetails.user_id && messageItem.user_type == 0"
+                   class="edited-text mr-1 ml-0">(bot)
+             </span>
+           </span>
+            </h5>
+            <div class="d-flex align-items-center mw-100 emoji-msg-container" [ngClass]="{'justify-content-end' : messageItem.user_id ==
+          commonService.userDetails.user_id, 'justify-content-start' : messageItem.user_id
+          != commonService.userDetails.user_id}">
+              <div class="emoji-reaction pr-2 pl-2 d-flex" [ngClass]="{'flex-row-reverse' : messageItem.user_id
+             == commonService.userDetails.user_id,'visible' : map_index + ',' + i == menu_open_index}"
+                   [ngStyle]="{'order': messageItem.user_id == commonService.userDetails.user_id ? 0 : 1}"
+                   *ngIf="messageItem.muid && is_group_joined && !is_deactivated_user
+               && (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED)
+               && chat_type != ChatTypeEnum.BOT && chat_type != ChatTypeEnum.BOT && messageItem.message_type != MessageTypeEnum.Video_Call && !(messageItem.is_uploading || messageItem.upload_fail)
+               || user_type == userTypeEnum.SelfNote">
+                <!-- <span  > -->
+                <!-- <svg *ngIf="![MessageTypeEnum.Poll].includes(messageItem.message_type)" src="/assets/img/emoji.svg" class="emoji-trigger position-relative cursor-hand"
+                [ngClass]="{'ml-1' : messageItem.user_id == commonService.userDetails.user_id,
+            'mr-2' : messageItem.user_id != commonService.userDetails.user_id}"
+                (click)="!showEmojiPicker ? openEmojiPicker($event, 1, messageItem) : showEmojiPicker = false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path opacity=".45" fill="var(--light-font)" d="M9.153 11.603c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962zm-3.204 1.362c-.026-.307-.131 5.218 6.063 5.551 6.066-.25 6.066-5.551 6.066-5.551-6.078 1.416-12.129 0-12.129 0zm11.363 1.108s-.669 1.959-5.051 1.959c-3.505 0-5.388-1.164-5.607-1.959 0 0 5.912 1.055 10.658 0zM11.804 1.011C5.609 1.011.978 6.033.978 12.228s4.826 10.761 11.021 10.761S23.02 18.423 23.02 12.228c.001-6.195-5.021-11.217-11.216-11.217zM12 21.354c-5.273 0-9.381-3.886-9.381-9.159s3.942-9.548 9.215-9.548 9.548 4.275 9.548 9.548c-.001 5.272-4.109 9.159-9.382 9.159zm3.108-9.751c.795 0 1.439-.879 1.439-1.962s-.644-1.962-1.439-1.962-1.439.879-1.439 1.962.644 1.962 1.439 1.962z"></path></svg> -->
+                <!-- </span> -->
+                <img draggable="false" *ngIf="![MessageTypeEnum.Poll].includes(messageItem.message_type)"
+                     src="/assets/img/emoji-chat.svg" class="emoji-trigger cursor-hand"
+                     [ngClass]="{'ml-1' : messageItem.user_id == commonService.userDetails.user_id,
+               'mr-2' : messageItem.user_id != commonService.userDetails.user_id}"
+                     (click)="!showEmojiPicker ? openEmojiPicker($event, 1, messageItem) : showEmojiPicker = false"
+                     alt="emoji-icon">
+                <div class="fave cursor-hand mr-3" *ngIf="![MessageTypeEnum.Poll].includes(messageItem.message_type)"
+                     [ngClass]="{'ml-3' : messageItem.user_id == commonService.userDetails.user_id,
+              'ml-2' : messageItem.user_id != commonService.userDetails.user_id}"
+                     (click)="starredMessages(messageItem)">
+                  <div class="shine"
+                       [ngClass]="{'shine-after': starred_messages_ids && starred_messages_ids.includes(messageItem.muid)}">
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                  </div>
+                  <i class="fa fa-star star-fa-icon"
+                     [ngClass]="{'starred-click': starred_messages_ids && starred_messages_ids.includes(messageItem.muid)}"></i>
+                </div>
+                <div class="cursor-hand ">
+                  <img draggable="false" src="/assets/img/three-dots.svg" [hidden]="messageItem.message_type == MessageTypeEnum.Poll
+                 && messageItem.user_id != commonService.userDetails.user_id"
+                       class="hw-24 three-dots ml-1" alt="three-dots-icon"
+                       (click)="temp_message_menu_object = messageItem;openMessageMenu($event,0);menu_open_index = map_index + ',' + i">
+                </div>
+              </div>
+              <!-- <div class="d-flex flex-column"> -->
+              <!-- <h5 *ngIf="messageItem.user_id != commonService.userDetails.user_id && ![2,7].includes(chat_type) && (i == 0  || (date_group.value[i - 1].user_id != messageItem.user_id)
+              || (date_group.value[i - 1].user_id==messageItem.user_id && date_group.value[i - 1].message_type == MessageTypeEnum.Public_Notes))"
+                 class="col-xs-12 header-pointer">
+               <span [ngStyle]="{'color': messageItem.user_id | randomColor}" class="user-name cursor-hand"
+                     (click)="messageItem.user_id && messageItem.user_type != 0 ? openProfileNamePopover($event, messageItem.user_id) : ''">
+                 {{messageItem.full_name}}
+                 <span *ngIf="messageItem.user_id != commonService.userDetails.user_id && messageItem.user_type == 0"
+                   class="edited-text mr-1 ml-0">(bot)
+                 </span>
+               </span>
+             </h5> -->
+              <div class="message-content position-relative" ondragstart="return false;" [ngClass]="{'media-padding' :
+               messageItem.message_type == MessageTypeEnum.Media_Message || messageItem.message_type == MessageTypeEnum.Video_Message,
+               'single-emoji-background' : (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED)
+                   && messageItem.message_type == MessageTypeEnum.Text_Message && (messageItem.message | emoji:'':'is_chat':true),
+                            'conv-start': (i!=0 && date_group.value[i-1].user_id == messageItem.user_id && messageItem.message_type
+                             != MessageTypeEnum.Media_Message && (i == date_group.value.length-1 || date_group.value[i+1].user_id!=messageItem.user_id ||
+                              date_group.value[i+1].message_type!=messageItem.message_type) && date_group.value[i-1].message_type==messageItem.message_type),
+                            'conv-end': (i==0 || date_group.value[i-1].user_id!=messageItem.user_id || date_group.value[i-1].message_type
+                            !=messageItem.message_type) && messageItem.message_type != MessageTypeEnum.Media_Message
+                            && (i!= date_group.value.length - 1 && (date_group.value[i+1].user_id==messageItem.user_id
+                            && date_group.value[i+1].message_type==messageItem.message_type)),
+                            'red-border': messageItem.message_status == MessageStatusEnum.Sending,
+                               'pb-0 mb-2' : messageItem.user_reaction && messageItem.user_reaction['reaction']
+                               && messageItem.user_reaction['reaction'].length && (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED),
+                               'w-75': (messageItem.message_type == MessageTypeEnum.Poll && messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED),
+                               'button-msg-div': messageItem.message_type == MessageTypeEnum.Button_Message, 'poll-container': messageItem.message_type == MessageTypeEnum.Poll,
+                              'other-calling-bg': messageItem.message_state == MessageStateTypes.COMPLETED_CALL && messageItem.user_id != commonService.userDetails.user_id,
+                              'other-calling-bg-missed': messageItem.message_state == MessageStateTypes.MISSED_CALL && messageItem.user_id != commonService.userDetails.user_id}">
+                <!-- <h5 *ngIf="messageItem.user_id != commonService.userDetails.user_id && ![2,7].includes(chat_type) && (i == 0  || (date_group.value[i - 1].user_id != messageItem.user_id)
+                 || (date_group.value[i - 1].user_id==messageItem.user_id && date_group.value[i - 1].message_type == MessageTypeEnum.Public_Notes))"
+                    class="col-xs-12 header-pointer">
+                  <span [ngStyle]="{'color': messageItem.user_id | randomColor}" class="user-name cursor-hand"
+                        (click)="messageItem.user_id && messageItem.user_type != 0 ? openProfileNamePopover($event, messageItem.user_id) : ''">
+                    {{messageItem.full_name}}
+                    <span *ngIf="messageItem.user_id != commonService.userDetails.user_id && messageItem.user_type == 0"
+                      class="edited-text mr-1 ml-0">(bot)
+                    </span>
+                  </span>
+                </h5> -->
+                <div
+                  *ngIf="messageItem.message_state || (!messageItem.message_state && messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED)">
+                  <p (copy)="onTextCopied($event)" class="message-to-be-send"
+                     *ngIf="messageItem.message_type == MessageTypeEnum.Text_Message"
+                     [innerHTML]="messageItem.message|markdown|url_phone|emoji:'':'is_chat'|edited: messageItem.message_state|safeHtml:'html'"></p>
+                  <!--------------------------------------------- poll message ---------------------------------------------->
+                  <div class="poll_message" *ngIf="messageItem.message_type == MessageTypeEnum.Poll">
+                    <p class="font-18 mb-2" [innerHTML]="messageItem.question | markdown"></p>
+                    <div
+                      *ngFor="let option of messageItem.poll_options | sortVotes: commonService.userDetails.user_id | slice:0:3"
+
+                      class="poll_option p-2 mb-2 position-relative no-wrap"
+                      [ngClass]="{'current_user_color' : option.users_map && option.users_map[commonService.userDetails.user_id]}">
+                      <div class="background_fill position-absolute" [style.width]="((option.poll_count / messageItem.total_votes
+                       * 100) || 0) + '%'"></div>
+                      <div class="mb-0 d-flex align-items-center justify-content-between">
+                        <span class="poll_input_text"><input *ngIf="option.users_map && !messageItem.is_expired"
+                                                             [type]="messageItem.multiple_select ? 'checkbox' : 'radio'"
+                                                             class="ml-1 mr-3"
+                                                             [name]="i"
+                                                             [checked]="option.users_map[commonService.userDetails.user_id]"
+                                                             (change)="onPollVote(messageItem, option)"
+                        >{{option.label}}</span>
+                        <span class="d-flex justify-content-end small cursor-hand text-muted poll_option_count font-16"
+                              (click)="$event.stopPropagation();$event.preventDefault();temp_poll_view_data=messageItem;selectedVote = option;total_votes_open = true;detectChanges()"
+                        >{{option.poll_count}} {{option.poll_count > 1 ? 'votes' : 'vote'}}</span>
+                      </div>
+                    </div>
+                    <div class="pt-1 pb-1">
+                      <span class="cursor-hand pb-1" [ngClass]="{'app-color' : messageItem.poll_options.length > 3}"
+                            (click)="poll_view_open = true;temp_poll_view_data = messageItem;detectChanges()">
+                        <span class="TitilliumWeb-bold"
+                              *ngIf="messageItem.poll_options.length > 3">+ {{( messageItem.poll_options.length - 3 ).toString()}}
+                          more options...</span>
+                        <span *ngIf="messageItem.poll_options.length <= 3" class="text-view-poll"><i
+                          class="fa fa-eye"></i> View details</span>
+                    </span>
+                    </div>
+                    <div class="d-flex justify-content-between more_poll_options pt-1">
+                      <span class="TitilliumWeb-bold"
+                            [style.color]="messageItem.is_expired ? 'red' : 'var(--chat-header-text)'">{{messageItem.is_expired ?
+                        'Poll Expired' : 'Poll Expiry: ' + ( messageItem.expire_at ? ( messageItem.expire_at | date:'d MMM, h:mm a' ) : '' )}}</span>
+                      <span>Total Votes: {{messageItem.total_votes}}</span>
+                    </div>
+                  </div>
+                  <div class="image-messages-container"
+                       *ngIf="messageItem.message_type == MessageTypeEnum.Media_Message">
+                    <div class="image-messages overflow-hidden cursor-hand message-to-be-send position-relative"
+                         [ngStyle]="messageItem | imageDimension" (click)="openImage(messageItem)">
+                      <div *ngIf="messageItem.is_uploading"
+                           class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute">
+                        <svg viewBox="0 0 36 36" width="44" height="44" class="circular-chart loader-color">
+                          <path class="circle-bg" d="M18 2.0845
+                                                                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                                                                    a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                          <path class="circle" [attr.stroke-dasharray]="messageItem.progress_percent + ',100'" d="M18 2.0845
+                                                                                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                                                                                    a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <span (click)="cancelUpload(messageItem, $event)"
+                              class="cross-icon-svg d-flex justify-content-center align-items-center position-absolute">
+                          <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44"
+                               height="44">
+                            <path fill="#FFF"
+                                  d="M29.377 16.099l-1.475-1.475L22 20.525l-5.901-5.901-1.476 1.475L20.525 22l-5.901 5.901 1.476 1.475 5.9-5.901 5.901 5.901 1.475-1.475L23.475 22l5.902-5.901z">
+                            </path>
+                          </svg>
+                        </span>
+                      </div>
+                      <span *ngIf="messageItem.upload_fail"
+                            class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute"
+                            (click)="retrySendAttachment(messageItem, messageItem.retry_obj)">
+                        <div class="retry-container">
+                            <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M5 10.102h4.3v6.5c0 .5.4.9.9.9h4.3c.5 0 .9-.4.9-.9v-6.5h4.3c.8 0 1-.5.5-1.1l-6.9-7.2c-.7-.9-1.3-.7-2 0l-6.7 7.2c-.6.6-.4 1.1.4 1.1zm15.1 9.9H4.5c-.3 0-.5.2-.5.5v1c0 .3.2.5.5.5h15.6c.3 0 .5-.2.5-.5v-1c0-.2-.2-.5-.5-.5z"
+                                fill="#FFF"></path>
+                            </svg>
+                            <span class="color-white">RETRY</span>
+                        </div>
+                      </span>
+                      <img loading="lazy" [src]="messageItem.thumbnail_url | safeHtml: 'url'"
+                           (click)="openImage(messageItem)"
+                           [ngStyle]="messageItem.thumbnail_url | checkGif" [ngClass]="{'blur-bg': messageItem.is_uploading || messageItem.upload_fail, 'image-has-caption': messageItem.message && messageItem.thumbnail_url && messageItem.user_id == commonService.userDetails.user_id,
+                        'other-image-has-caption': messageItem.message && messageItem.thumbnail_url && messageItem.user_id != commonService.userDetails.user_id}"
+                           alt="thumbnail">
+                    </div>
+                    <p *ngIf="messageItem.message" class="caption-text"
+                       [innerHTML]="messageItem.message|markdown|url_phone|emoji:'':'is_chat'|edited: messageItem.message_state|safeHtml:'html'"></p>
+                  </div>
+                  <div class="video-call-bubble d-flex flex-column"
+                       *ngIf="messageItem.message_type == MessageTypeEnum.Video_Call">
+                    <div class="TitilliumWeb-bold video-message-text  pr-2"
+                         *ngIf="messageItem.user_id == commonService.userDetails.user_id">
+                      <p class="TitilliumWeb-bold video-message-text"
+                         *ngIf="messageItem.message_state == MessageStateTypes.MISSED_CALL">
+                        {{label_header}} missed a {{messageItem.call_type == RTCCallTypeEnum.AUDIO ? 'audio' : 'video'}}
+                        call with you.
+                      </p>
+                      <p class="TitilliumWeb-bold video-message-text"
+                         *ngIf="messageItem.message_state == MessageStateTypes.COMPLETED_CALL">
+                        The {{messageItem.call_type == RTCCallTypeEnum.AUDIO ? 'audio' : 'video'}} call ended.
+                      </p>
+                    </div>
+                    <div class="TitilliumWeb-bold video-message-text pr-2"
+                         *ngIf="messageItem.user_id != commonService.userDetails.user_id">
+                      <p class="missed-call-text TitilliumWeb-bold mb-0"
+                         *ngIf="messageItem.message_state == MessageStateTypes.MISSED_CALL">
+                        <!-- You missed a {{messageItem.call_type == RTCCallTypeEnum.AUDIO ? 'audio' : 'video'}} call with {{label_header}}. -->
+                        Missed call
+                      </p>
+                      <p class="TitilliumWeb-bold mb-0"
+                         *ngIf="messageItem.message_state == MessageStateTypes.COMPLETED_CALL">
+                        The {{messageItem.call_type == RTCCallTypeEnum.AUDIO ? 'audio' : 'video'}} call ended.
+                      </p>
+                    </div>
+                    <div class="w-100 d-flex justify-content-between align-items-center video-time-message pb-2 pt-1">
+                      <div class="d-flex calling-duration">
+                        <svg *ngIf="messageItem.message_state == MessageStateTypes.COMPLETED_CALL"
+                             xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+                          <g fill="none" fill-rule="evenodd"
+                             [attr.stroke]="messageItem.user_id != commonService.userDetails.user_id ? '#FFF': 'var(--text-receiver)'"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                              d="M8 .571V4h3.429M12 0L8 4M11.429 9.097v1.714a1.143 1.143 0 0 1-1.246 1.143A11.309 11.309 0 0 1 5.25 10.2a11.143 11.143 0 0 1-3.428-3.429A11.309 11.309 0 0 1 .069 1.817 1.143 1.143 0 0 1 1.206.571H2.92a1.143 1.143 0 0 1 1.143.983c.072.549.206 1.088.4 1.606.157.418.056.888-.257 1.206l-.726.725A9.143 9.143 0 0 0 6.909 8.52l.725-.726a1.143 1.143 0 0 1 1.206-.257 7.337 7.337 0 0 0 1.606.4c.574.081.997.58.983 1.16z"/>
+                          </g>
+                        </svg>
+                        <svg *ngIf="messageItem.message_state == MessageStateTypes.MISSED_CALL"
+                             xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+                          <g fill="none" fill-rule="evenodd"
+                             [attr.stroke]="messageItem.user_id != commonService.userDetails.user_id ? '#FFF': '#2f2f2f'"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                              d="M12 0L8.571 3.429M8.571 0L12 3.429M11.429 9.097v1.714a1.143 1.143 0 0 1-1.246 1.143A11.309 11.309 0 0 1 5.25 10.2a11.143 11.143 0 0 1-3.428-3.429A11.309 11.309 0 0 1 .069 1.817 1.143 1.143 0 0 1 1.206.571H2.92a1.143 1.143 0 0 1 1.143.983c.072.549.206 1.088.4 1.606.157.418.056.888-.257 1.206l-.726.725A9.143 9.143 0 0 0 6.909 8.52l.725-.726a1.143 1.143 0 0 1 1.206-.257 7.337 7.337 0 0 0 1.606.4c.574.081.997.58.983 1.16z"/>
+                          </g>
+                        </svg>
+                        <p class="video-duration-message ml-2"
+                           *ngIf="messageItem.video_call_duration">{{messageItem.video_call_duration
+                          | duration}}</p>
+                        <p class="video-duration-message ml-2"
+                           *ngIf="messageItem.message_state == MessageStateTypes.MISSED_CALL">
+                          The {{messageItem.call_type == RTCCallTypeEnum.AUDIO ? 'voice' : 'video'}} call
+                        </p>
+                      </div>
+                      <!-- <span class="video-duration-message" *ngIf="messageItem.video_call_duration">&nbsp;at&nbsp;</span> -->
+                      <p class="video-duration-message"
+                         [ngClass]="{'d-flex align-items-center justify-content-end w-100': !messageItem.video_call_duration}">
+                        {{messageItem.date_time | date:"shortTime"}}
+                      </p>
+                    </div>
+                    <button class="no-btn-style call-again-btn cursor-hand pt-1 outline-none box-shadow-none"
+                            (click)="openVideoAudioCallPopup(messageItem.call_type)">
+                      Call Again
+                    </button>
+                  </div>
+                  <div class="image-messages-container"
+                       *ngIf="messageItem.message_type == MessageTypeEnum.Video_Message">
+                    <div
+                      class="image-messages cursor-hand position-relative d-flex justify-content-center align-items-center"
+                      [ngStyle]="messageItem | imageDimension" (click)="openImage(messageItem)">
+                      <div *ngIf="messageItem.is_uploading && !messageItem.upload_fail"
+                           class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute">
+                        <svg viewBox="0 0 36 36" class="circular-chart loader-color">
+                          <path class="circle-bg" d="M18 2.0845
+                                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                          <path class="circle" [attr.stroke-dasharray]="messageItem.progress_percent + ',100'" d="M18 2.0845
+                                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <span (click)="cancelUpload(messageItem, $event)"
+                              class="cross-icon-svg d-flex justify-content-center align-items-center position-absolute">
+                            <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44"
+                                 height="44">
+                              <path fill="#FFF"
+                                    d="M29.377 16.099l-1.475-1.475L22 20.525l-5.901-5.901-1.476 1.475L20.525 22l-5.901 5.901 1.476 1.475 5.9-5.901 5.901 5.901 1.475-1.475L23.475 22l5.902-5.901z">
+                              </path>
+                            </svg>
+                          </span>
+                      </div>
+                      <span *ngIf="messageItem.upload_fail"
+                            class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute"
+                            (click)="retrySendAttachment(messageItem, messageItem.retry_obj)">
+                            <div class="retry-container d-flex justify-content-center align-items-center">
+                                <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path
+                                    d="M5 10.102h4.3v6.5c0 .5.4.9.9.9h4.3c.5 0 .9-.4.9-.9v-6.5h4.3c.8 0 1-.5.5-1.1l-6.9-7.2c-.7-.9-1.3-.7-2 0l-6.7 7.2c-.6.6-.4 1.1.4 1.1zm15.1 9.9H4.5c-.3 0-.5.2-.5.5v1c0 .3.2.5.5.5h15.6c.3 0 .5-.2.5-.5v-1c0-.2-.2-.5-.5-.5z"
+                                    fill="#FFF"></path>
+                                </svg>
+                                <span class="color-white pl-1">RETRY</span>
+                            </div>
+                        </span>
+                      <img src="assets/img/video-play.svg" *ngIf="!messageItem.is_uploading"
+                           class="position-absolute video-play-image">
+                      <img [src]="messageItem.thumbnail_url | safeHtml:'url' || 'assets/img/video.svg'"
+                           [ngClass]="{'blur-bg': messageItem.is_uploading || messageItem.upload_fail}"
+                           (click)="openImage(messageItem)" [ngStyle]="messageItem.thumbnail_url | checkGif"
+                           alt="thumbnail">
+                    </div>
+                    <p *ngIf="messageItem.message" class="caption-text"
+                       [innerHTML]="messageItem.message|markdown|url_phone|emoji:'':'is_chat'"></p>
+                  </div>
+                  <div class="image-footer"
+                       *ngIf="!messageItem.message && (messageItem.message_type == MessageTypeEnum.Media_Message || messageItem.message_type == MessageTypeEnum.Video_Message)">
+                  </div>
+                  <div class="" *ngIf="messageItem.message_type == MessageTypeEnum.File_Message">
+                    <!-- <a [href]="messageItem.url | safeHtml : 'url'"> -->
+                    <a #fileAnchor class="cursor-hand" (click)="onFileClick($event, fileAnchor, messageItem)" download>
+                      <div class="p-3 d-flex align-items-center justify-items-center background-file-type"
+                           [ngClass]="{'background-file-type-receive': messageItem.user_id != commonService.userDetails.user_id, 'background-file-type-send': messageItem.user_id == commonService.userDetails.user_id}">
+                        <div class="position-relative attachment-img-div d-flex align-items-center">
+                          <img class="cursor-hand attachment-icon" src="/assets/img/download-icon.png"
+                               alt="download-icon">
+                          <span
+                            class="position-absolute attachment-img-text">{{messageItem.file_name?.split('.')[messageItem.file_name.split('.').length
+                          - 1] && messageItem.file_name.split('.').length > 1 ? messageItem.file_name.split('.')[messageItem.file_name.split('.').length -
+                            1].toUpperCase()
+                            : 'FILE'}}
+                        </span>
+                        </div>
+                        <div class="p-1 attachment-link-container d-flex flex-column">
+                          <span class="attachment-link outline-none pl-1">{{messageItem.file_name}}</span>
+                          <span class="pl-1 file-size">
+                        {{( messageItem.message_type == MessageTypeEnum.File_Message || messageItem.message_type ==
+                            MessageTypeEnum.Video_Message )
+                          && messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED ? messageItem.file_size : ''}}
+                        </span>
+                        </div>
+                        <div class="attachment-icon-svg">
+                          <!-- *ngIf="messageItem.is_uploading && !messageItem.upload_fail" -->
+                          <div *ngIf="messageItem.is_uploading && !messageItem.upload_fail"
+                               (click)="cancelUpload(messageItem, $event)">
+                            <svg viewBox="0 0 36 36" height="34" width="34"
+                                 class="position-absolute circular-chart-file loader-color">
+                              <path class="circle-bg"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                              <path class="circle" [attr.stroke-dasharray]="messageItem.progress_percent + ',100'"
+                                    d="M18 2.0845  a 15.9155 15.9155 0 0 1 0 31.831  a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"
+                                 width="34" height="34">
+                              <path fill="#7d9199"
+                                    d="M29.377 16.099l-1.475-1.475L22 20.525l-5.901-5.901-1.476 1.475L20.525 22l-5.901 5.901 1.476 1.475 5.9-5.901 5.901 5.901 1.475-1.475L23.475 22l5.902-5.901z">
+                              </path>
+                            </svg>
+                          </div>
+                          <svg *ngIf="!messageItem.is_uploading && !messageItem.upload_fail"
+                               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
+                            <path
+                              [attr.fill]="messageItem.user_id != commonService.userDetails.user_id ? '#ffffff' : '#263238'"
+                              fill-opacity=".5"
+                              d="M17 2c8.3 0 15 6.7 15 15s-6.7 15-15 15S2 25.3 2 17 8.7 2 17 2m0-1C8.2 1 1 8.2 1 17s7.2 16 16 16 16-7.2 16-16S25.8 1 17 1z">
+                            </path>
+                            <path
+                              [attr.fill]="messageItem.user_id != commonService.userDetails.user_id ? '#ffffff' : '#263238'"
+                              fill-opacity=".5"
+                              d="M22.4 17.5h-3.2v-6.8c0-.4-.3-.7-.7-.7h-3.2c-.4 0-.7.3-.7.7v6.8h-3.2c-.6 0-.8.4-.4.8l5 5.3c.5.7 1 .5 1.5 0l5-5.3c.7-.5.5-.8-.1-.8z">
+                            </path>
+                          </svg>
+                          <svg *ngIf="messageItem.upload_fail" id=" Layer_1"
+                               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
+                            <path fill="#263238" fill-opacity=".5"
+                                  d="M17 2c8.3 0 15 6.7 15 15s-6.7 15-15 15S2 25.3 2 17 8.7 2 17 2m0-1C8.2 1 1 8.2 1 17s7.2 16 16 16 16-7.2 16-16S25.8 1 17 1z">
+                            </path>
+                            <path fill="#263238" fill-opacity=".5"
+                                  d="M22 22.5H12c-.3 0-.5.2-.5.5v.5c0 .3.2.5.5.5h10c.3 0 .5-.2.5-.5V23c0-.3-.2-.5-.5-.5zM15 16v4.3c0 .3.3.6.6.6h2.8c.3 0 .6-.3.6-.6V16h2.8c.5 0 .7-.3.3-.7l-4.5-4.8c-.5-.6-.9-.5-1.3 0l-4.5 4.8c-.4.4-.2.7.3.7H15z">
+                            </path>
+                          </svg>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="button-message" *ngIf="messageItem.message_type == MessageTypeEnum.Button_Message">
+                    <p *ngIf="messageItem.message" class="message-to-be-send"
+                       [innerHTML]="messageItem.message|markdown|url_phone|emoji:'':'is_chat'|safeHtml:'html'"></p>
+                    <div class="button-message__actions">
+                      <div *ngFor="let action of messageItem.custom_actions"
+                           class="question-block button-message__action-block mt-1">
+                        <p class="button-message__action-block-title mb-2" *ngIf="action.title.length"
+                           [innerHTML]="action.title|markdown|url_phone|emoji:'':'is_chat'"></p>
+                        <p *ngIf="action.comment && action.action != 'SEND_INVITE_MESSAGE'"
+                           class="button-message__comment mb-2"
+                           [innerHTML]="'*Comment:* ' + action.comment|markdown|url_phone|emoji:'':'is_chat'"></p>
+                        <p *ngIf="action.comment && action.action == 'SEND_INVITE_MESSAGE'"
+                           class="button-message__comment mb-2"
+                           [innerHTML]="'*Invite sent to:* ' + action.comment|markdown|url_phone|emoji:'':'is_chat'"></p>
+                        <p *ngIf="action.remark" class="button-message__comment mb-2"
+                           [innerHTML]="'*Remark:* ' + action.remark|markdown|url_phone|emoji:'':'is_chat'"></p>
+                        <div class="d-flex button-message__comment-box mb-3"
+                             *ngIf="(action.default_text_field && !action.is_action_taken && !action[action.default_text_field.output]) || action.showCommentBox">
+                          <div (keydown)="onButtonMessageTextfieldKeyEvent($event, messageItem, action)"
+                               class="button-message__comment-field flex-grow-1"
+                               [id]="'button-message-comment-' + (action.question_id ? action.question_id : action.leave_id)"
+                               contenteditable="true"
+                               [attr.data-placeholder]="(action.default_text_field && action.default_text_field.hint) ? action.default_text_field.hint : ''"
+                               (paste)="onInputPaste($event)">
+                          </div>
+                          <button class="btn-white border-left-0"
+                                  (click)="sendButtonMessageComment(messageItem, action)"><img
+                            draggable="false" src="assets/img/green-tick.svg" class="cursor-hand green-tick-icon"
+                            alt="green-tick"/></button>
+                        </div>
+                        <div class="d-flex flex-wrap" *ngIf="!action.is_action_taken">
+                          <button *ngFor="let button of action.buttons"
+                                  class="btn message-action-buttons button-message__action-block-buttons mr-2 mb-2"
+                                  [ngClass]="button.style"
+                                  (click)="onButtonMessageClick(button, action, messageItem)">
+                            {{button.label}}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="messageItem.message_state == MessageStateTypes.MESSAGE_DELETED">
+                  <p class="message-to-be-send text-muted d-flex align-items-center deleted-text-message">
+                    <i class="fa fa-ban mr-1"></i>
+                    {{messageItem.user_id != commonService.userDetails.user_id ? 'This message was deleted.' : 'You deleted this message.'}}
+                  </p>
+                </div>
+                <div class="reaction-btn d-flex flex-column">
+                  <!-- time and file size div-->
+                  <p class="time-message d-non-imp-flex align-items-center justify-content-end" [ngClass]="{'time-message-margin': messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED && messageItem.user_reaction && messageItem.user_reaction['reaction'].length,
+                  'time-message-image': messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED &&
+                     !messageItem.message && [MessageTypeEnum.Media_Message,MessageTypeEnum.Video_Message].includes(messageItem.message_type),
+                     'position-inherit': (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED && messageItem.message &&
+                      [MessageTypeEnum.Media_Message,MessageTypeEnum.Video_Message,MessageTypeEnum.Poll].includes(messageItem.message_type)),
+                      'd-none': [MessageTypeEnum.Video_Call].includes(messageItem.message_type), 'time-message-sender' : messageItem.user_id == commonService.userDetails.user_id, 'time-message-img-caption' : messageItem.message && messageItem.thumbnail_url }"
+                  >
+                    <!-- {{(messageItem.message_type == MessageTypeEnum.File_Message || messageItem.message_type ==
+                    MessageTypeEnum.Video_Message)
+                    && messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED ? messageItem.file_size + '&bull;' : ''}} -->
+                    {{messageItem.date_time | date:"shortTime"}}
+                    <!-- message status div, tick 2 tick clock-->
+                    <span class="ml-1 margin-tick-icon"
+                          *ngIf="messageItem.user_id == commonService.userDetails.user_id">
+                      <ng-container *ngIf="messageItem.message_status != MessageStatusEnum.Sending">
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 13" width="15" height="13">
+                          <path [attr.fill]="messageItem.message_status == MessageStatusEnum.Read ? '#2296ff' : '#92A58C'"
+                                d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0
+                          1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32
+                          1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365
+                          0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0
+                          0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365
+                          0 0 0-.063-.51z">
+                          </path>
+                        </svg> -->
+                        <img
+                          [src]="messageItem.message_status == MessageStatusEnum.Read ? '../../../assets/img/message-read-tick.svg' : '../../../assets/img/message-unread-tick.svg'">
+                      </ng-container>
+                      <ng-container *ngIf="messageItem.message_status == MessageStatusEnum.Sending">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 14" width="15" height="14">
+                          <path fill="#859479"
+                                d="M9.75 7.713H8.244V5.359a.5.5 0 0 0-.5-.5H7.65a.5.5 0 0 0-.5.5v2.947a.5.5 0 0 0 .5.5h.094l.003-.001.003.002h2a.5.5 0 0 0 .5-.5v-.094a.5.5 0 0 0-.5-.5zm0-5.263h-3.5c-1.82 0-3.3 1.48-3.3 3.3v3.5c0 1.82 1.48 3.3 3.3 3.3h3.5c1.82 0 3.3-1.48 3.3-3.3v-3.5c0-1.82-1.48-3.3-3.3-3.3zm2 6.8a2 2 0 0 1-2 2h-3.5a2 2 0 0 1-2-2v-3.5a2 2 0 0 1 2-2h3.5a2 2 0 0 1 2 2v3.5z">
+                          </path>
+                        </svg>
+                      </ng-container>
+                    </span>
+                  </p>
+                  <div class="d-flex" [ngClass]="{'emoji-position':!messageItem.message && messageItem.message_type == MessageTypeEnum.Media_Message ||
+                   messageItem.message_type == MessageTypeEnum.Video_Message}"
+                       *ngIf="messageItem.user_reaction && (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED)">
+                    <div
+                      *ngFor="let reaction of messageItem.user_reaction['reaction'] | sortReactions : commonService.userDetails.user_id;let i = index"
+                      class="d-flex emoji-circle-parent align-items-center cursor-hand">
+                      <div *ngIf="i < 3" class="d-flex align-items-center justify-content-center cursor-hand
+                      emoji-reaction-circle"
+                           [ngClass]="{'light-background' : reaction.users
+                      | checkUser: commonService.userDetails.user_id, 'single-emoji': reaction.total_count == 1}"
+                           (click)="createReactionFayeMessage(messageItem,reaction.reaction);animateOnClickReaction(messageItem.user_reaction['reaction'], i)">
+                        <div class="d-flex justify-content-center align-items-center w-100"
+                             [innerHTML]="reaction.reaction | emoji : 'reaction-emoji-msg'"
+                             [@onEmojiClick]="reaction.state" class="d-flex"></div>
+                        <span *ngIf="reaction.total_count > 1" class="reaction-count text-center d-flex" [ngStyle]="{'width' : reaction.total_count.toString().length < 3
+                        ? reaction.total_count.toString().length * 12 + 'px' : reaction.total_count.toString().length * 8 + 'px'}"
+                              [ngClass]="{'color-selected-count' : reaction.users | checkUser: commonService.userDetails.user_id}">
+                          {{reaction.total_count}}</span>
+                        <span class="tooltip d-flex" *ngIf="i < 3" [ngClass]="{'left-0' : messageItem.user_id != commonService.userDetails.user_id,
+                       'right-0' : messageItem.user_id == commonService.userDetails.user_id}"
+                              (click)="$event.stopPropagation();
+                       total_reaction_count = messageItem.user_reaction['total_reaction'];
+                          getMessageReactions(messageItem);">
+                          <div *ngFor="let name of reaction.full_names;let i = index;let first = first;let last = last"
+                               [ngClass]="{'add-more-tooltip' : i == 2}">
+                            <span *ngIf="i < 2"
+                                  class="padding-l-2">{{name.split(' ')[0]}}{{!last && i != 1 ? ', ' : ''}}</span>
+                            <span *ngIf="i == 2"
+                                  class="cursor-hand">and {{reaction.full_names.length - 2 + ' more'}}</span>
+                          </div>
+                        </span>
+                      </div>
+                      <div *ngIf="i == 3" (click)="total_reaction_count = messageItem.user_reaction['total_reaction'];
+                      getMessageReactions(messageItem)"
+                           class="d-flex align-items-center justify-content-center cursor-hand emoji-reaction-circle">
+                        <span class="reaction-count-add">+ {{messageItem.user_reaction['reaction'].length - 3}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- </div> -->
+            </div>
+            <!-- showing replies on messages -->
+            <div class="reply-count-text text-muted d-flex align-items-center pt-1 pb-1"
+                 *ngIf="messageItem.thread_message"
+                 [ngClass]="{'pt-2' : messageItem.user_reaction &&
+                messageItem.user_reaction['reaction'] && messageItem.user_reaction['reaction'].length,'flex-row-reverse'
+                 : messageItem.user_id == commonService.userDetails.user_id
+                 ,'pr-2':messageItem.user_id == commonService.userDetails.user_id}">
+              <div (click)="openReplyPopup(messageItem)" *ngIf="messageItem.thread_message_count"
+                   class="d-flex cursor-hand align-items-center"
+                   [ngClass]="{'flex-row-reverse'
+                 : messageItem.user_id == commonService.userDetails.user_id}">
+                <div *ngIf="messageItem.thread_message_data && messageItem.thread_message_data.length"
+                     class=" d-flex justify-content-center align-items-center">
+                  <div *ngFor="let img of messageItem.thread_message_data | slice: -2">
+                    <img *ngIf="img.user_image_50x50 ;else ImgElse" [src]="img.user_image_50x50" class="hw-14 ml-1"
+                         alt="reply-arrow"/>
+                    <ng-template #ImgElse>
+                      <ng-container>
+                        <div class="hw-no-img ml-1 mt-1 custom-image d-flex
+                       justify-content-center align-items-center" [ngStyle]="{
+                 'background-color': img.user_id | randomColor
+               }">
+                          {{
+                          img.full_name?.substring(0, 1) == "+"
+                            ? "U"
+                            : img.full_name?.substring(0, 1)
+                          }}
+                        </div>
+                      </ng-container>
+                    </ng-template>
+                  </div>
+
+                </div>
+                <p
+                  class="app-color mb-0 pl-1">{{messageItem.thread_message_count}} {{messageItem.thread_message_count > 1 ? 'Replies' :
+                  'reply'}}</p>
+              </div>
+              <!-- <p class="ml-2 mb-0 last-reply-text">Last reply -
+                <span *ngIf="messageItem.last_reply">{{messageItem.last_reply |
+                  time_converter:"conversations"}}</span>
+              </p> -->
+            </div>
+          </div>
+
+          <div *ngIf="messageItem.message_type == MessageTypeEnum.Public_Notes && messageItem.message?.trim()!=''"
+               class="notification-messages">
+            <div class='f-divide-ul ui-f-divide-ul d-flex justify-content-center p-1'>
+              <span
+                class='date-dividers pr-1 messageItem-datetime-color'>{{messageItem.date_time | date:"shortTime"}}</span>
+              <span class="date-dividers text-center">{{messageItem.message}}</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- scroll to bottom floating button -->
+    <span class="floating-btn d-flex justify-content-center align-items-center"
+          *ngIf="showFloatingBtn && messages.length"
+          (click)="scrollToBottom()" [@scaleInOut]>
+      <span class="badge-unread"
+            *ngIf="(messages.length - showFloatingBtnLength) && showFloatingBtnLength && unread_count == 0 && !is_search_conversation">
+        <span class="badge-floating-btn">{{messages.length - showFloatingBtnLength}}</span>
+      </span>
+
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" width="21" height="21">
+        <path fill="#263238" fill-opacity=".33" d="M4.8 6.1l5.7 5.7 5.7-5.7 1.6 1.6-7.3 7.2-7.3-7.2 1.6-1.6z"></path>
+      </svg>
+
+    </span>
+  </div>
+  <div class="message-footer">
+
+
+    <app-contenteditable-input #chatInput *ngIf="((commonService.external_perm_options.is_one_to_one_chat_allowed && user_channel_status == 1)) && is_group_joined && !is_deactivated_user && !is_search_conversation && ( !(+layoutService.sendMessagePermission) || (layoutService.groupAdminData.includes(commonService.userDetails.user_id) && (+layoutService.sendMessagePermission))) &&
+      ((chat_type == ChatTypeEnum.ONE_TO_ONE && (spaceData.config.enable_one_to_one_chat.length != 0  &&  spaceData.config.enable_one_to_one_chat.includes(spaceData.role))) || isGroupType)"
+                               class="w-100" [editMessageEvent]="editMsgObj" [input_id]="contentEditableData.input_id"
+                               [contentEditableData]="contentEditableData"
+                               (fileUpload)="fileUpload($event,false)" (typingEvent)="sendTypingStartEvent()"
+                               (publishGif)="sendGif($event)"
+                               (editMessage)="saveEditedMessage($event)"
+                               (publishPollMessage)="createPollMessageAndSend($event)"
+                               (publishMessage)="onSendClick($event)" [activeChannelId]="activeChannelId">
+    </app-contenteditable-input>
+
+
+    <div *ngIf="is_group_joined == false && chat_type != 3 && messages.length"
+         class="d-flex justify-content-center join-group-button">
+      <button class="btn btn-success btn-block no-radius cursor-hand" (click)="joinGroup()">
+        <i class="fa fa-plus"></i> Join Group
+      </button>
+    </div>
+    <div *ngIf="is_search_conversation && messages.length" class="d-flex justify-content-center join-group-button">
+      <button class="btn btn-success btn-block no-radius cursor-hand" (click)="goToChannelFromSearch()">
+        Go To {{label_header}}</button>
+    </div>
+    <div *ngIf="commonService.channelStatus == 'DISABLED' && !layoutService.sendMessagePermission || ((!commonService.external_perm_options.is_one_to_one_chat_allowed || user_channel_status == 2)) || is_deactivated_user && messages.length ||
+      ((+layoutService.sendMessagePermission) &&  !layoutService.groupAdminData.includes(commonService.userDetails.user_id)) || ((chat_type == ChatTypeEnum.ONE_TO_ONE
+      && spaceData.config.enable_one_to_one_chat.length == 0 )
+       || (chat_type == ChatTypeEnum.ONE_TO_ONE && !spaceData.config.enable_one_to_one_chat.includes(spaceData.role)))"
+         class="d-flex justify-content-center align-items-center deactivated-msg-bar border-top">
+      <p class="mb-0">You cannot reply to this conversation.</p>
+    </div>
+  </div>
+  <div *ngIf="showImageDropOverlay" [@fadeSlideIn]="true"
+       class="image-drop-overlay justify-content-center align-items-center">
+    <div class="image-drop-popup">
+      <p class="image-drop-header mb-0">Drop to send file to {{label_header}}</p>
+    </div>
+  </div>
+</div>
+<app-image-preview class="image-preview-selector" *ngIf="image_preview_open" [files]="image_preview_files"
+                   [contentData]="imageContentData"
+                   (closeImagePreview)="openPreviewPopup()" [@imagePreviewAnimation]="image_preview_open"
+                   (mediaMessageData)="onMediaMessageDataReceived($event)"
+                   [activeChannelId]="activeChannelId"></app-image-preview>
+<app-capture-photo class="capture-photo-selector" *ngIf="webcam_object.is_open" [input_data]="webcam_object"
+                   (output_data)="webcamDataReceived($event)"
+                   (closeWebCamPopup)="webcam_object.is_open = false" [@openWebcamAnimation]="webcam_object.is_open"
+></app-capture-photo>
+
+<app-emoji-picker keyboard-events (esc)="showEmojiPicker = false" [isEnabled]="showEmojiPicker"
+                  (emojiClick)="emojiClickEvent($event)"
+                  [hidden]="!showEmojiPicker" click-outside
+                  (clickOutside)="emojiPickerClickOutside($event)"></app-emoji-picker>
+<app-profile-popup keyboard-events (esc)="showProfilePopover = false" (closePopup)="showProfilePopover = false"
+                   [isEnabled]="showProfilePopover" [id]="'profile-popover-menu'" [user_id]="mentionProfileId"
+                   [hidden]="!showProfilePopover"
+                   click-outside (clickOutside)="popoverClickOutside($event)"></app-profile-popup>
+<app-gallery-carousel (closeCarousel)="showImageCarousel = false" [parentData]="dataForCarousel"
+                      *ngIf="showImageCarousel">
+</app-gallery-carousel>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="reactionsModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <!--HEADER-->
+      <div class="modal-header d-flex align-items-center justify-content-between">
+        <p class="mb-0">Message Reactions</p>
+        <button class="btn cursor-hand app-color outline-none bg-transparent" data-dismiss="modal" aria-label="Close">
+          Close
+        </button>
+      </div>
+      <!--BODY-->
+      <div class="modal-body modal-body-padding">
+        <div id="reactionScrollspy" class="sticky">
+          <div class="wrapper" id="reactionCalScroll">
+            <ul class="scroll-bar list cursor-hand ul-right-padding" id="reactionTab">
+              <li class="p-2 catalog-list-item d-flex align-items-center"
+                  (click)="selectedemoji = null; currentindex = null"
+                  [ngClass]="{'active': !currentindex && currentindex != 0}">
+                <span class="text-place">All {{total_reaction_count}}</span>
+              </li>
+              <li class="catalog-list-item p-2 cursor-hand d-flex align-items-center reaction-list-height"
+                  *ngFor="let key of allReactionsArray;let i = index"
+                  [ngClass]="{'active': i == currentindex}"
+                  (click)="selectedemoji = key; currentindex = i; selectCategory(i)">
+                <div [innerHTML]="key.reaction | emoji:'popup-emoji'" class="mr-1"></div>
+                <span class="count-place">{{key.total_count}}</span>
+              </li>
+            </ul>
+          </div>
+          <button class="fa fa-chevron-left swiper" (click)="scrollReactionHeader('left')"
+                  [ngClass]="{'hidden': hideLeft}"></button>
+          <button class="fa fa-chevron-right swiper right" (click)="scrollReactionHeader('right')"
+                  [ngClass]="{'hidden': hideRight}"></button>
+        </div>
+        <!--REACTION LIST IN MODAL-->
+        <div class="reaction-list flex-grow">
+          <div *ngIf="!selectedemoji">
+            <div *ngFor="let item of allReactionsArray" class="d-flex justify-content-between">
+              <div class="d-flex flex-column flex-grow">
+                <div *ngFor="let name of item.full_names" class="d-flex w-100 border-bottom">
+                  <div [innerHTML]="item.reaction | emoji:'popup-emoji'" class="mr-2"></div>
+                  <span>{{name}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="selectedemoji" class="flex-grow">
+            <div *ngFor="let name of selectedemoji.full_names" class="mb-0 d-flex align-items-baseline show_more">
+              <div class="flex-grow d-flex border-bottom">
+                <span [innerHTML]="selectedemoji.reaction | emoji :'popup-emoji'" class="mr-2"></span>
+                <span class="flex-grow ">{{name}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!---- reply message card position fixed right bottom ------>
+<div class="card-thread h-100 w-100 reply-mask"
+     [ngClass]="{' d-flex align-items-center justify-content-center' : reply_popup_enlarged}"
+     id="replyMessageMask" #replyMessageMask *ngIf="showReplyCard" keyboard-events
+     (esc)="replyClickOutside($event, true)"
+     [isEnabled]="showReplyCard && !showStickerPopupThread && !image_preview_open"
+     (click)="replyClickOutside($event)">
+  <div id="replyMessageCard"
+       (paste)="clipboardPasteEvent($event)"
+       [ngClass]="{'reply-expanded-card': reply_popup_enlarged, 'reply-dimished-card': !reply_popup_enlarged, 'drag': showThreadImageDropOverlay}">
+    <div class="d-flex flex-column reply-message-header justify-content-center border-bottom-thread">
+      <div class="d-flex align-items-center justify-content-between w-100 thread-heading pl-16 pr-16">
+        <p class="mb-0">Message Replies</p>
+        <div>
+          <!--<button class="btn cursor-hand outline-none box-shadow-none bg-transparent text-right"-->
+          <!--(click)="reply_popup_enlarged = !reply_popup_enlarged">-->
+          <!--<i class="fa" [ngClass]="{'fa-compress' : reply_popup_enlarged, 'fa-expand': !reply_popup_enlarged}"></i></button>-->
+          <span class="cursor-hand outline-none box-shadow-none bg-transparent text-right" (click)="closeReplyPopup()">
+            <!-- <i class="fa fa-times"></i> -->
+            <!-- <img src="assets/img/cross-icon-dark.svg"> -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <g fill="none" fill-rule="evenodd">
+                  <path d="M0 0h24v24H0z"/>
+                  <g stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                      <path d="M18 6L6 18M6 6l12 12"/>
+                  </g>
+              </g>
+          </svg>
+
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body d-flex flex-grow reply-modal-content flex-column p-0 overflow-x-hidden" appScrollToUnread
+         [unread_bar_id]="scrollToThreadId" [(scrollEnabled)]="is_thread_scroll_enabled"
+         (afterScrollEmit)="emptyScrollId()"
+         (scrollEnabledEmit)="is_thread_scroll_enabled = false;scrollToThreadId = null"
+         [ngClass]="{'mh-60' : !reply_popup_enlarged, 'mh-70': reply_popup_enlarged}" #replyModalContainer>
+      <div class="header-reply-message pr-16 pl-16 pt-16" *ngIf="replyCommentObject">
+        <div class="col-xs-12 pb-12 d-flex align-items-center">
+          <div *ngIf="!replyCommentObject.user_image" class="reply-user-image reply-user-name rounded-img-fugu d-flex
+            justify-content-center align-items-center">
+            {{replyCommentObject.full_name?.substring(0, 1)}}
+          </div>
+          <img *ngIf="replyCommentObject.user_image" [src]="replyCommentObject.user_image"
+               class="img-fluid reply-user-image rounded-img-fugu"
+               alt="user-img"/>
+          <div class="d-flex flex-column pl-16 w-100">
+            <div class="font-thread d-flex align-items-center">
+              <b class="theme-font-color">{{replyCommentObject.full_name}}</b>
+              <!-- <div class="cursor-hand float-right mr-3 reply-follow-dots" *ngIf="chat_type != 2 && is_group_joined && !is_deactivated_user">
+                <img class="hw-24 three-dots" src="assets/img/three-dots.svg" *ngIf="(replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED)"
+                     (click)="replyCommentObject.thread_menu_open = !replyCommentObject.thread_menu_open">
+                <ng-container *ngIf="replyCommentObject.thread_menu_open">
+                  <div class="position-fixed w-100 h-100 thread-menu-mask" (click)="replyCommentObject.thread_menu_open = false">
+                  </div>
+                  <span class="thread-options-menu position-absolute">
+                    <button class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand
+                   chat-menu-option"
+                            (click)="muteThread(replyCommentObject,
+                   replyCommentObject.is_following_thread ? 0 : 1)">
+                      {{replyCommentObject.is_following_thread ? 'Unfollow Thread' : 'Follow Thread'}}
+                    </button>
+                  </span>
+                </ng-container>
+              </div> -->
+            </div>
+            <span
+              class="text-time-thread">{{replyCommentObject.date_time | date:"MMMM d 'at' h:mm a"}}{{replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED ? '   (edited)' : ''}}</span>
+          </div>
+          <div class="cursor-hand float-right mr-3 reply-follow-dots"
+               *ngIf="chat_type != 2 && is_group_joined && !is_deactivated_user">
+            <img class="hw-24 three-dots" src="assets/img/three-dots.svg"
+                 *ngIf="(replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED)"
+                 (click)="replyCommentObject.thread_menu_open = !replyCommentObject.thread_menu_open">
+            <ng-container *ngIf="replyCommentObject.thread_menu_open">
+              <div class="position-fixed w-100 h-100 thread-menu-mask"
+                   (click)="replyCommentObject.thread_menu_open = false">
+              </div>
+              <span class="thread-options-menu position-absolute">
+                <button class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand
+               chat-menu-option"
+                        (click)="muteThread(replyCommentObject,
+               replyCommentObject.is_following_thread ? 0 : 1)">
+                  {{replyCommentObject.is_following_thread ? 'Unfollow Thread' : 'Follow Thread'}}
+                </button>
+              </span>
+            </ng-container>
+          </div>
+          <!--<img src="/assets/img/emoji.svg" class="emoji-trigger ml-2 cursor-hand">-->
+        </div>
+        <div
+          *ngIf="(replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED)">
+          <p (copy)="onTextCopied($event)" class="message-to-be-send top-reply-message mb-1" #readMoreText
+             [ngStyle]="{'max-height' : view_more_bool ? 'max-content' : '170px'}"
+             *ngIf="![MessageTypeEnum.Media_Message,MessageTypeEnum.File_Message, MessageTypeEnum.Video_Message].includes(replyCommentObject.message_type)"
+             [innerHTML]="replyCommentObject.message|markdown|url_phone|emoji:'':'is_chat'|safeHtml:'html'"></p>
+          <p *ngIf="show_more_text" class="app-color small cursor-hand"
+             (click)="view_more_bool = !view_more_bool">{{view_more_bool
+            ? 'View less' : 'View More'}}</p>
+          <div class="image-messages-container"
+               *ngIf="replyCommentObject.message_type == MessageTypeEnum.Media_Message">
+            <div class="image-messages cursor-hand message-to-be-send" [ngStyle]="replyCommentObject | imageDimension"
+                 (click)="openImage(replyCommentObject)">
+              <img [src]="replyCommentObject.thumbnail_url | safeHtml:'url'" (click)="openImage(replyCommentObject)"
+                   [ngStyle]="replyCommentObject.thumbnail_url | checkGif"
+                   alt="thumbnail">
+            </div>
+            <p *ngIf="replyCommentObject.message" class="caption-text"
+               [innerHTML]="replyCommentObject.message|markdown|url_phone|emoji:'':'is_chat'|safeHtml:'html'"></p>
+          </div>
+          <div class="image-messages-container"
+               *ngIf="replyCommentObject.message_type == MessageTypeEnum.Video_Message">
+            <div class="image-messages cursor-hand caption-text position-relative
+            d-flex justify-content-center align-items-center"
+                 [ngStyle]="replyCommentObject | imageDimension" (click)="openImage(replyCommentObject)">
+              <img src="assets/img/video-play.svg" class="position-absolute video-play-image">
+              <img [src]="replyCommentObject.thumbnail_url | safeHtml: 'url'" (click)="openImage(replyCommentObject)"
+                   [ngStyle]="replyCommentObject.thumbnail_url | checkGif"
+                   alt="thumbnail">
+            </div>
+            <p *ngIf="replyCommentObject.message" class="caption-text"
+               [innerHTML]="replyCommentObject.message|markdown|url_phone|emoji:'':'is_chat'|safeHtml:'html'"></p>
+          </div>
+          <div class="d-flex align-items-center pt-1 pb-1"
+               *ngIf="replyCommentObject.message_type == MessageTypeEnum.File_Message">
+            <div class="position-relative attachment-img-div d-flex align-items-center justify-content-start"
+                 *ngIf="replyCommentObject.file_name">
+              <img class="float-right cursor-hand attachment-icon" src="/assets/img/download-icon.png"
+                   alt="download-icon">
+              <span
+                class="position-absolute attachment-img-text">{{replyCommentObject.file_name.split('.')[replyCommentObject.file_name.split('.').length
+              - 1] && replyCommentObject.file_name.split('.').length > 1 ? replyCommentObject.file_name.split('.')[replyCommentObject.file_name.split('.').length -
+                1].toUpperCase()
+                : 'FILE'}}</span>
+            </div>
+            <a [href]="replyCommentObject.url | safeHtml: 'url'"
+               class="attachment-link message-to-be-send d-flex outline-none pl-1 overflow-hidden">
+              {{replyCommentObject.file_name}}
+            </a>
+          </div>
+        </div>
+        <div *ngIf="replyCommentObject.message_state == MessageStateTypes.MESSAGE_DELETED">
+          <p class="message-to-be-send text-muted d-flex align-items-center mb-0 deleted-text-message">
+            <i class="fa fa-ban mr-1"></i>
+            {{replyCommentObject.user_id != commonService.userDetails.user_id ? 'This message was deleted.' : 'You deleted this message.'}}
+          </p>
+        </div>
+        <div class="reaction-btn d-flex pt-1 pb-1"
+             *ngIf="replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED">
+          <div class="d-flex" *ngIf="replyCommentObject.user_reaction">
+            <div
+              *ngFor="let reaction of replyCommentObject.user_reaction['reaction'] | sortReactions : commonService.userDetails.user_id;let i = index"
+              class="d-flex emoji-circle-parent align-items-center cursor-hand">
+              <div *ngIf="i < 3" class="d-flex align-items-center justify-content-center cursor-hand
+                    emoji-reaction-circle"
+                   [ngClass]="{'light-background' : reaction.users
+                    | checkUser: commonService.userDetails.user_id, 'single-emoji': reaction.total_count == 1} "
+                   (click)="createReactionFayeMessage(replyCommentObject,reaction.reaction);animateOnClickReaction(replyCommentObject.user_reaction['reaction'], i)">
+                <div class="" [innerHTML]="reaction.reaction | emoji : 'reaction-emoji-msg'"
+                     [@onEmojiClick]="reaction.state"></div>
+                <span *ngIf="reaction.total_count > 1" class="reaction-count text-center" [ngStyle]="{'width' : reaction.total_count.toString().length < 3
+                      ? reaction.total_count.toString().length * 12 + 'px' : reaction.total_count.toString().length * 8 + 'px'}"
+                      [ngClass]="{'color-selected-count' : reaction.users | checkUser: commonService.userDetails.user_id}">
+                  {{reaction.total_count}}</span>
+                <span class="tooltip d-flex left-0" *ngIf="i < 3" (click)="$event.stopPropagation();total_reaction_count = replyCommentObject.user_reaction['total_reaction'];
+                        getMessageReactions(replyCommentObject)">
+                  <div *ngFor="let name of reaction.full_names;let i = index;let first = first;let last = last"
+                       [ngClass]="{'add-more-tooltip' : i == 2}">
+                    <span *ngIf="i < 2" class="padding-l-2">{{name.split(' ')[0]}}{{!last && i != 1 ? ', ' : ''}}</span>
+                    <span *ngIf="i == 2" class="cursor-hand underline">
+                      and {{reaction.full_names.length - 2 + ' more'}}</span>
+                  </div>
+                </span>
+              </div>
+              <div *ngIf="i == 3" (click)="total_reaction_count = replyCommentObject.user_reaction['total_reaction'];
+              getMessageReactions(replyCommentObject);"
+                   class="d-flex align-items-center justify-content-center cursor-hand emoji-reaction-circle">
+                <span class="reaction-count-add">+ {{replyCommentObject.user_reaction['reaction'].length - 3}}</span>
+              </div>
+            </div>
+          </div>
+          <img *ngIf="is_group_joined && !is_deactivated_user" src="/assets/img/reaction-thread.svg"
+               (click)="!showEmojiPicker ? openEmojiPicker($event, 3, replyCommentObject) : showEmojiPicker = false"
+               class="single-emoji-icon emoji-trigger d-flex align-items-center justify-content-center cursor-hand"
+               alt="emoji-add-icon"/>
+        </div>
+        <div class="d-flex align-items-center pt-3">
+          <p class="mb-0 mr-2 reply-count-text">
+            {{replyMessageArray.length ? replyMessageArray.length > 1 ? ( replyMessageArray.length + ' replies' ) :
+            ( replyMessageArray.length
+              + ' reply' ) : 'No replies'}}
+          </p>
+          <hr class="flex-grow m-0 hr">
+        </div>
+      </div>
+      <div class="body-reply-message p-2 pl-3">
+        <div class="d-flex justify-content-center align-items-center mt-2" *ngIf="showReplyLoader">
+          <svg width="50px" height="50px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+               preserveAspectRatio="xMidYMid" class="lds-rolling"
+               style="background: white;border-radius:50%;">
+            <circle cx="50" cy="50" fill="none" stroke="var(--app-color)" stroke-width="6" r="35"
+                    stroke-dasharray="164.93361431346415 56.97787143782138"
+                    transform="rotate(144 50 50)">
+              <animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50"
+                                keyTimes="0;1" dur="1s"
+                                begin="0s" repeatCount="indefinite"></animateTransform>
+            </circle>
+          </svg>
+        </div>
+        <div *ngFor="let messageItem of replyMessageArray;let i=index"
+             [@fadeSlideInMessages]="messageItem.state?messageItem.state:'new'">
+          <div class="notification-messages d-flex justify-content-center mt-2 mb-2 position-sticky"
+               *ngIf="(i != 0 && ((replyMessageArray[i-1].date_time | date) != (replyMessageArray[i].date_time | date))) || i == 0">
+            <span class='date-dividers chatDays text-center'>{{messageItem.date_time | time_converter:'chat'}}</span>
+          </div>
+          <div [id]="messageItem.thread_muid" class="message-container d-flex flex-column "
+               *ngIf="(messageItem.message?.trim()!='' || messageItem.image_url!='')"
+               [ngClass]="{'emoji-container-padding':messageItem.user_reaction
+               && messageItem.user_reaction['reaction'].length,'message-container-padding': messageItem.user_id != commonService.userDetails.user_id
+                && chat_type != 2 && (i == 0 || replyMessageArray[i-1].user_id!=messageItem.user_id) ,'other-message': messageItem.user_id != commonService.userDetails.user_id,
+            'user-message': messageItem.user_id == commonService.userDetails.user_id, 'message-user-padding': i != replyMessageArray.length - 1 && replyMessageArray[i+1].user_id != messageItem.user_id
+            && messageItem.user_id == commonService.userDetails.user_id}">
+            <!-- show user name on chat bubble only on it's chat group -->
+            <!-- div agent/user chat message -->
+            <h5 class="header-pointer col-xs-12 mt-0"
+                *ngIf="messageItem.user_id != commonService.userDetails.user_id && (![2,7].includes(chat_type) || user_type == userTypeEnum.ScrumBot) && (i == 0 || replyMessageArray[i-1].user_id!=messageItem.user_id)">
+              <span [ngStyle]="{'color': messageItem.user_id | randomColor}" class="user-name cursor-hand"
+                    (click)="messageItem.user_id ? openProfileNamePopover($event, messageItem.user_id) : ''">{{messageItem.full_name
+                }}
+              </span>
+            </h5>
+            <div class="d-flex align-items-center mw-100 emoji-msg-container" [ngClass]="{'justify-content-end' : messageItem.user_id ==
+          commonService.userDetails.user_id, 'justify-content-start' : messageItem.user_id
+          != commonService.userDetails.user_id}">
+              <div class="emoji-reaction pr-2 pl-2 cursor-hand d-flex" [ngClass]="{'flex-row-reverse' : messageItem.user_id
+             == commonService.userDetails.user_id,'visible' : i == reply_menu_open_index}"
+                   [ngStyle]="{'order': messageItem.user_id == commonService.userDetails.user_id ? 0 : 1}" *ngIf="!(messageItem.is_uploading || messageItem.upload_fail) && (((messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED) &&
+                   (replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED)) ||
+                   messageItem.user_id == commonService.userDetails.user_id && is_group_joined && !is_deactivated_user || user_type == userTypeEnum.SelfNote)">
+                <!-- <div class="emoji-reaction pr-2 pl-2 cursor-hand d-flex" [ngClass]="{'flex-row-reverse' : messageItem.user_id
+               == commonService.userDetails.user_id,'visible' : i == reply_menu_open_index}"
+                     [ngStyle]="{'order': messageItem.user_id == commonService.userDetails.user_id ? 0 : 1}" *ngIf="!(messageItem.is_uploading || messageItem.upload_fail) && ((messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED) &&
+                     (replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED)) ||
+                     messageItem.user_id == commonService.userDetails.user_id && is_group_joined && !is_deactivated_user"> -->
+                <div
+                  *ngIf="messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED"
+                  class="fave cursor-hand mr-3" [ngClass]="{'ml-3' : messageItem.user_id == commonService.userDetails.user_id,
+                   'ml-2' : messageItem.user_id != commonService.userDetails.user_id}"
+                  (click)="starredMessages(messageItem)">
+                  <div class="shine" [ngClass]="{'shine-after':messageItem.is_starred}">
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                    <div class="shiner"></div>
+                  </div>
+                  <i class="fa fa-star star-fa-icon" [ngClass]="{'starred-click': messageItem.is_starred}"></i>
+                </div>
+                <div class="cursor-hand mr-2"
+                     *ngIf="(messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED)">
+                  <img src="/assets/img/three-dots.svg" class="hw-24 three-dots"
+                       (click)="temp_message_menu_object = messageItem;openMessageMenu($event,1);reply_menu_open_index = i"
+                       alt="three-dots">
+                </div>
+              </div>
+              <div class="message-content position-relative thread-bubble" ondragstart="return false;" [ngClass]="{'media-padding' : messageItem.message_type == MessageTypeEnum.Media_Message
+              || messageItem.message_type == MessageTypeEnum.Video_Message,'single-emoji-background' :
+              (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED) && (messageItem.message | emoji:'':'is_chat':true),
+                             'pb-0 mb-2' : messageItem.user_reaction && messageItem.user_reaction['reaction'] && messageItem.user_reaction['reaction'].length && messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED}">
+                <div
+                  *ngIf="messageItem.message_state || (!messageItem.message_state && messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED)">
+                  <p class="message-to-be-send" *ngIf="![MessageTypeEnum.Media_Message,MessageTypeEnum.File_Message,
+                   MessageTypeEnum.Video_Message].includes(messageItem.message_type)"
+                     [innerHTML]="messageItem.message|markdown|url_phone|emoji:'':'is_chat'|edited: messageItem.message_state|safeHtml:'html'"
+                     (copy)="onTextCopied($event)"></p>
+                  <div class="image-messages-container"
+                       *ngIf="messageItem.message_type == MessageTypeEnum.Media_Message">
+                    <div class="image-messages cursor-hand" [ngStyle]="messageItem | imageDimension"
+                         (click)="openImage(messageItem)">
+                      <div *ngIf="messageItem.is_uploading"
+                           class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute">
+                        <svg (click)="cancelUpload(messageItem, $event)" viewBox="0 0 36 36"
+                             class="circular-chart loader-color">
+                          <path class="circle-bg"
+                                d="M18 2.0845
+                                  a 15.9155 15.9155 0 0 1 0 31.831
+                                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <path class="circle"
+                                [attr.stroke-dasharray]="messageItem.progress_percent + ',100'"
+                                d="M18 2.0845
+                                  a 15.9155 15.9155 0 0 1 0 31.831
+                                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                        </svg>
+                        <span
+                          class="cross-icon-svg d-flex justify-content-center align-items-center position-absolute">
+                             <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44"
+                                  height="44">
+                              <path fill="#FFF"
+                                    d="M29.377 16.099l-1.475-1.475L22 20.525l-5.901-5.901-1.476 1.475L20.525 22l-5.901 5.901 1.476 1.475 5.9-5.901 5.901 5.901 1.475-1.475L23.475 22l5.902-5.901z">
+                              </path>
+                             </svg>
+                           </span>
+                      </div>
+                      <span *ngIf="messageItem.upload_fail"
+                            class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute"
+                            (click)="retrySendAttachment(messageItem, messageItem.retry_obj)">
+                            <div class="retry-container">
+                                <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path
+                                    d="M5 10.102h4.3v6.5c0 .5.4.9.9.9h4.3c.5 0 .9-.4.9-.9v-6.5h4.3c.8 0 1-.5.5-1.1l-6.9-7.2c-.7-.9-1.3-.7-2 0l-6.7 7.2c-.6.6-.4 1.1.4 1.1zm15.1 9.9H4.5c-.3 0-.5.2-.5.5v1c0 .3.2.5.5.5h15.6c.3 0 .5-.2.5-.5v-1c0-.2-.2-.5-.5-.5z"
+                                    fill="#FFF"></path>
+                                </svg>
+                                <span class="color-white pl-1">RETRY</span>
+                            </div>
+                        </span>
+                      <img [src]="messageItem.thumbnail_url | safeHtml:'url'"
+                           [ngClass]="{'blur-bg': messageItem.is_uploading || messageItem.upload_fail}"
+                           (click)="openImage(messageItem)" [ngStyle]="messageItem.thumbnail_url | checkGif"
+                           alt="thumbnail">
+                    </div>
+                    <p *ngIf="messageItem.message" class="caption-text"
+                       [innerHTML]="messageItem.message|markdown|url_phone|emoji:'':'is_chat'|edited: messageItem.message_state|safeHtml:'html'"></p>
+                  </div>
+                  <div *ngIf="messageItem.message_type == MessageTypeEnum.File_Message">
+                    <a class="d-flex align-items-center jutify-content-center p-3 cursor-hand"
+                       #fileAnchorThread (click)="onFileClick($event, fileAnchorThread, messageItem)" download>
+                      <div class="position-relative attachment-img-div d-flex align-items-center justify-content-start"
+                           *ngIf="messageItem.file_name">
+                        <img class="float-right cursor-hand attachment-icon" src="/assets/img/download-icon.png"
+                             alt="download-icon">
+                        <span
+                          class="position-absolute attachment-img-text">{{messageItem.file_name?.split('.')[messageItem.file_name.split('.').length
+                        - 1] && messageItem.file_name.split('.').length > 1 ? messageItem.file_name.split('.')[messageItem.file_name.split('.').length -
+                          1].toUpperCase()
+                          : 'FILE'}}</span>
+                      </div>
+                      <div class="p-1 attachment-link-container d-flex flex-column">
+                      <span class="attachment-link outline-none pl-1">
+                        {{messageItem.file_name}}
+                      </span>
+                        <span class="pl-1 file-size">
+                        {{( messageItem.message_type == MessageTypeEnum.File_Message || messageItem.message_type ==
+                          MessageTypeEnum.Video_Message )
+                        && messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED ? messageItem.file_size : ''}}
+                        </span>
+                      </div>
+                      <div class="attachment-icon-svg">
+                        <div *ngIf="messageItem.is_uploading && !messageItem.upload_fail"
+                             (click)="cancelUpload(messageItem, $event)">
+                          <svg viewBox="0 0 36 36" height="34" width="34"
+                               class="position-absolute circular-chart-file loader-color">
+                            <path class="circle-bg"
+                                  d="M18 2.0845
+                                                                                                                                                          a 15.9155 15.9155 0 0 1 0 31.831
+                                                                                                                                                          a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="circle" [attr.stroke-dasharray]="messageItem.progress_percent + ',100'"
+                                  d="M18 2.0845
+                                                                                                                                                          a 15.9155 15.9155 0 0 1 0 31.831
+                                                                                                                                                          a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                          </svg>
+                          <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="34"
+                               height="34">
+                            <path fill="#7d9199"
+                                  d="M29.377 16.099l-1.475-1.475L22 20.525l-5.901-5.901-1.476 1.475L20.525 22l-5.901 5.901 1.476 1.475 5.9-5.901 5.901 5.901 1.475-1.475L23.475 22l5.902-5.901z">
+                            </path>
+                          </svg>
+                        </div>
+                        <svg *ngIf="!messageItem.is_uploading && !messageItem.upload_fail"
+                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
+                          <path
+                            [attr.fill]="messageItem.user_id != commonService.userDetails.user_id ? '#ffffff' : '#263238'"
+                            fill-opacity=".5"
+                            d="M17 2c8.3 0 15 6.7 15 15s-6.7 15-15 15S2 25.3 2 17 8.7 2 17 2m0-1C8.2 1 1 8.2 1 17s7.2 16 16 16 16-7.2 16-16S25.8 1 17 1z">
+                          </path>
+                          <path
+                            [attr.fill]="messageItem.user_id != commonService.userDetails.user_id ? '#ffffff' : '#263238'"
+                            fill-opacity=".5"
+                            d="M22.4 17.5h-3.2v-6.8c0-.4-.3-.7-.7-.7h-3.2c-.4 0-.7.3-.7.7v6.8h-3.2c-.6 0-.8.4-.4.8l5 5.3c.5.7 1 .5 1.5 0l5-5.3c.7-.5.5-.8-.1-.8z">
+                          </path>
+                        </svg>
+                        <svg *ngIf="messageItem.upload_fail" id="Layer_1"
+                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
+                          <path fill="#263238" fill-opacity=".5"
+                                d="M17 2c8.3 0 15 6.7 15 15s-6.7 15-15 15S2 25.3 2 17 8.7 2 17 2m0-1C8.2 1 1 8.2 1 17s7.2 16 16 16 16-7.2 16-16S25.8 1 17 1z">
+                          </path>
+                          <path fill="#263238" fill-opacity=".5"
+                                d="M22 22.5H12c-.3 0-.5.2-.5.5v.5c0 .3.2.5.5.5h10c.3 0 .5-.2.5-.5V23c0-.3-.2-.5-.5-.5zM15 16v4.3c0 .3.3.6.6.6h2.8c.3 0 .6-.3.6-.6V16h2.8c.5 0 .7-.3.3-.7l-4.5-4.8c-.5-.6-.9-.5-1.3 0l-4.5 4.8c-.4.4-.2.7.3.7H15z">
+                          </path>
+                        </svg>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="image-messages-container"
+                       *ngIf="messageItem.message_type == MessageTypeEnum.Video_Message">
+                    <div class="image-messages cursor-hand position-relative
+                    d-flex justify-content-center align-items-center"
+                         [ngStyle]="messageItem | imageDimension" (click)="openImage(messageItem)">
+                      <div *ngIf="messageItem.is_uploading"
+                           class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute">
+                        <svg (click)="cancelUpload(messageItem, $event)" viewBox="0 0 36 36"
+                             class="circular-chart loader-color">
+                          <path class="circle-bg" d="M18 2.0845
+                                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                          <path class="circle" [attr.stroke-dasharray]="messageItem.progress_percent + ',100'" d="M18 2.0845
+                                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <span (click)="cancelUpload(messageItem, $event)"
+                              class="cross-icon-svg d-flex justify-content-center align-items-center position-absolute">
+                            <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44"
+                                 height="44">
+                              <path fill="#FFF"
+                                    d="M29.377 16.099l-1.475-1.475L22 20.525l-5.901-5.901-1.476 1.475L20.525 22l-5.901 5.901 1.476 1.475 5.9-5.901 5.901 5.901 1.475-1.475L23.475 22l5.902-5.901z">
+                              </path>
+                            </svg>
+                          </span>
+                      </div>
+                      <span *ngIf="messageItem.upload_fail"
+                            class="d-flex justify-content-center align-items-center h-100 w-100 position-absolute"
+                            (click)="retrySendAttachment(messageItem, messageItem.retry_obj)">
+                            <div class="retry-container">
+                                <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path
+                                    d="M5 10.102h4.3v6.5c0 .5.4.9.9.9h4.3c.5 0 .9-.4.9-.9v-6.5h4.3c.8 0 1-.5.5-1.1l-6.9-7.2c-.7-.9-1.3-.7-2 0l-6.7 7.2c-.6.6-.4 1.1.4 1.1zm15.1 9.9H4.5c-.3 0-.5.2-.5.5v1c0 .3.2.5.5.5h15.6c.3 0 .5-.2.5-.5v-1c0-.2-.2-.5-.5-.5z"
+                                    fill="#FFF"></path>
+                                </svg>
+                                <span class="color-white">RETRY</span>
+                            </div>
+                        </span>
+                      <img src="assets/img/video-play.svg" *ngIf="!messageItem.is_uploading"
+                           class="position-absolute video-play-image">
+                      <img [src]="messageItem.thumbnail_url | safeHtml:'url'"
+                           [ngClass]="{'blur-bg': messageItem.is_uploading || messageItem.upload_fail}"
+                           (click)="openImage(messageItem)" [ngStyle]="messageItem.thumbnail_url | checkGif"
+                           alt="thumbnail">
+                    </div>
+                    <p *ngIf="messageItem.message" class="caption-text"
+                       [innerHTML]="messageItem.message|markdown|url_phone|emoji:'':'is_chat'"></p>
+                  </div>
+                </div>
+                <div *ngIf="messageItem.message_state == MessageStateTypes.MESSAGE_DELETED">
+                  <p class="message-to-be-send text-muted d-flex align-items-center deleted-text-message">
+                    <i class="fa fa-ban mr-1"></i>
+                    {{messageItem.user_id != commonService.userDetails.user_id ? 'This message was deleted.' : 'You deleted this message.'}}
+                  </p>
+                </div>
+                <div class="reaction-btn d-flex flex-column">
+                  <p class="time-message text-right" [ngClass]="{'time-message-margin': (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED) && messageItem.user_reaction && messageItem.user_reaction['reaction'].length,'time-message-image': messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED && !messageItem.message &&
+                   [MessageTypeEnum.Media_Message,MessageTypeEnum.Video_Message].includes(messageItem.message_type),
+                   'position-inherit': (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED) && messageItem.message &&
+                    [MessageTypeEnum.Media_Message,MessageTypeEnum.Video_Message].includes(messageItem.message_type), 'time-message-sender' : messageItem.user_id == commonService.userDetails.user_id, 'time-message-img-caption' : messageItem.message && messageItem.thumbnail_url }">
+                    <!-- {{(messageItem.message_type
+                    == MessageTypeEnum.File_Message || messageItem.message_type == MessageTypeEnum.Video_Message) &&
+                    messageItem.message_state
+                    != 0 ? messageItem.file_size + ' &bull; ': ''}} -->
+                    {{messageItem.date_time | date:"shortTime"}}
+                  </p>
+                  <div
+                    [ngClass]="{'emoji-position':!messageItem.message && messageItem.message_type == MessageTypeEnum.Media_Message || messageItem.message_type == MessageTypeEnum.Video_Message}"
+                    class="d-flex"
+                    *ngIf="messageItem.user_reaction && (messageItem.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || messageItem.message_state == MessageStateTypes.MESSAGE_EDITED) && is_group_joined && !is_deactivated_user">
+                    <div
+                      *ngFor="let reaction of messageItem.user_reaction['reaction'] | sortReactions : commonService.userDetails.user_id;let i = index"
+                      class="d-flex emoji-circle-parent align-items-center cursor-hand">
+                      <div *ngIf="i < 3" class="d-flex align-items-center justify-content-center cursor-hand
+                    emoji-reaction-circle"
+                           [ngClass]="{'light-background' : reaction.users
+                    | checkUser: commonService.userDetails.user_id, 'single-emoji': reaction.total_count == 1}"
+                           (click)="replyCommentObject.message_state !=0 ? createReactionFayeMessage(messageItem,reaction.reaction) : '';animateOnClickReaction(messageItem.user_reaction['reaction'], i)">
+                        <div [innerHTML]="reaction.reaction | emoji : 'reaction-emoji-msg'"
+                             [@onEmojiClick]="reaction.state"></div>
+                        <span *ngIf="reaction.total_count > 1" class="reaction-count text-center" [ngStyle]="{'width' : reaction.total_count.toString().length < 3
+                      ? reaction.total_count.toString().length * 12 + 'px' : reaction.total_count.toString().length * 8 + 'px'}"
+                              [ngClass]="{'color-selected-count' : reaction.users | checkUser: commonService.userDetails.user_id}">
+                          {{reaction.total_count}}</span>
+                        <span class="tooltip d-flex" *ngIf="i < 3" [ngClass]="{'left-0' : messageItem.user_id != commonService.userDetails.user_id,
+                     'right-0' : messageItem.user_id == commonService.userDetails.user_id}"
+                              (click)="$event.stopPropagation();
+                        total_reaction_count = messageItem.user_reaction['total_reaction'];getMessageReactions(messageItem)">
+                          <div *ngFor="let name of reaction.full_names;let i = index;let first = first;let last = last"
+                               [ngClass]="{'add-more-tooltip' : i == 2}">
+                            <span *ngIf="i < 2" class="padding-l-2">{{name.split(' ')[0]}}{{!last && i != 1 ? ', ' :
+                              ''}}</span>
+                            <span *ngIf="i == 2" class="cursor-hand underline">
+                              and {{reaction.full_names.length - 2 + ' more'}}</span>
+                          </div>
+                        </span>
+                      </div>
+                      <div *ngIf="i == 3" (click)="total_reaction_count = messageItem.user_reaction['total_reaction'];
+                      getMessageReactions(messageItem)"
+                           class="d-flex align-items-center justify-content-center cursor-hand emoji-reaction-circle">
+                        <span class="reaction-count-add">+ {{messageItem.user_reaction['reaction'].length - 3}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer reply-message-footer p-0 border-top-0 position-relative">
+
+      <app-contenteditable-input #chatInputReply
+                                 *ngIf="contentEditableReplyData.input_id && ((commonService.external_perm_options.is_one_to_one_chat_allowed && user_channel_status == 1)) && is_group_joined && !showReplyLoader && !is_deactivated_user && ( !(+layoutService.sendMessagePermission) || (layoutService.groupAdminData.includes(commonService.userDetails.user_id) && +layoutService.sendMessagePermission))
+      && (replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED ||
+       replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED) && user_type != userTypeEnum.ScrumBot
+       && ((chat_type == ChatTypeEnum.ONE_TO_ONE && (spaceData.config.enable_one_to_one_chat.length != 0  &&  spaceData.config.enable_one_to_one_chat.includes(spaceData.role))) || isGroupType)"
+
+                                 [input_id]="contentEditableReplyData.input_id" [editMessageEvent]="editMsgObj"
+                                 class="w-100" [contentEditableData]="contentEditableReplyData"
+                                 (fileUpload)="fileUpload($event,false)"
+                                 (editMessage)="saveEditedMessage($event)"
+                                 (publishGif)="sendGif($event)"
+                                 (publishMessage)="onSendClick($event)" [activeChannelId]="activeChannelId">
+      </app-contenteditable-input>
+
+      <div
+        *ngIf="commonService.channelStatus == 'DISABLED' && !layoutService.sendMessagePermission  || ((!commonService.external_perm_options.is_one_to_one_chat_allowed || user_channel_status == 2)) || replyCommentObject && replyCommentObject.message_state == MessageStateTypes.MESSAGE_DELETED || (+layoutService.sendMessagePermission &&  !layoutService.groupAdminData.includes(commonService.userDetails.user_id)) || ((chat_type == ChatTypeEnum.ONE_TO_ONE && spaceData.config.enable_one_to_one_chat.length == 0 )  || (chat_type == ChatTypeEnum.ONE_TO_ONE && !spaceData.config.enable_one_to_one_chat.includes(spaceData.role)))"
+        class="d-flex justify-content-center align-items-center deactivated-msg-bar border-top"
+        class="d-flex justify-content-center align-items-center deactivated-msg-bar border-top">
+        <p class="mb-0">You cannot reply to this conversation.</p>
+      </div>
+    </div>
+    <div *ngIf="showThreadImageDropOverlay" [@fadeSlideIn]="true"
+         class="image-drop-overlay justify-content-center align-items-center">
+      <div class="image-drop-popup">
+        <p class="image-drop-header mb-0">Drop to send file to {{label_header}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div [hidden]="(!menu_open_index && menu_open_index != 0) && (!reply_menu_open_index && reply_menu_open_index != 0)"
+     class="position-fixed message-options-mask w-100 h-100"
+     (click)="menu_open_index = null;reply_menu_open_index = null">
+  <div class="message-options-menu position-absolute" #messageBar
+       [ngClass]="{'padding-message-options-menu': (messageBar.children?.length > 2) }" id="message-menu">
+    <button *ngIf="!reply_menu_open_index && reply_menu_open_index != 0 && temp_message_menu_object &&
+     ![MessageTypeEnum.Poll].includes(temp_message_menu_object.message_type)" class="btn-custom-nostyle outline-none
+     box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+            (click)="openReplyPopup(temp_message_menu_object);menu_open_index = null">
+      Reply
+    </button>
+    <button id="btn-download-video"
+            class="btn-custom-nostyle outline-none box-shadow-none cursor-hand w-100 p-2 pl-3 chat-menu-option"
+            *ngIf="temp_message_menu_object && commonService.userDetails.user_id == temp_message_menu_object.user_id && [2,3,4].includes(chat_type)"
+            (click)="showReadBy(temp_message_menu_object)">
+      Seen By
+    </button>
+    <button
+      class="btn-custom-nostyle outline-none box-shadow-none emoji-trigger w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+      *ngIf="showReplyCard && replyCommentObject &&
+            (replyCommentObject.message_state == MessageStateTypes.MESSAGE_NOT_DELETED || replyCommentObject.message_state == MessageStateTypes.MESSAGE_EDITED)"
+      (click)="!showEmojiPicker ?
+       openEmojiPicker($event, 3, temp_message_menu_object) : showEmojiPicker = false">
+      React
+    </button>
+    <button class="btn-custom-nostyle outline-none
+     box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+            *ngIf="temp_message_menu_object
+     && ![MessageTypeEnum.Text_Message,MessageTypeEnum.Poll].includes(temp_message_menu_object.message_type)"
+            (click)="openForwardPopup()">
+      Forward
+    </button>
+    <button class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+            *ngIf="temp_message_menu_object &&
+            commonService.userDetails.user_id == temp_message_menu_object.user_id &&
+            spaceData?.config.edit_message == '1' &&
+            !message_edit_time_expired &&
+            spaceData?.config.edit_message_role.includes(role_status) &&
+            (temp_message_menu_object.message_type == MessageTypeEnum.Text_Message || temp_message_menu_object.message_type == MessageTypeEnum.Media_Message)"
+            (click)="editMessage(temp_message_menu_object)">
+      Edit
+    </button>
+    <button class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+            *ngIf="(temp_message_menu_object && commonService.userDetails.user_id == temp_message_menu_object.user_id
+            && spaceData?.config.delete_message == '1' && !message_delete_time_expired &&
+             spaceData?.config.delete_message_role.includes(role_status)) || (temp_message_menu_object && replyCommentObject &&
+             replyCommentObject.message_state == MessageStateTypes.MESSAGE_DELETED && commonService.userDetails.user_id == temp_message_menu_object.user_id)"
+            data-toggle="modal" data-target="#deleteMessageModal">
+      Delete
+    </button>
+    <!--<button *ngIf="temp_message_menu_object-->
+    <!--&& temp_message_menu_object.message_type != MessageTypeEnum.Text_Message" class="btn-custom-nostyle outline-none-->
+    <!--box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"-->
+    <!--(click)="openReplyPopup(temp_message_menu_object);menu_open_index = null">-->
+    <!--<a [href]="temp_message_menu_object.image_url || temp_message_menu_object.url">Download</a>-->
+    <!--</button>-->
+    <button class="btn-custom-nostyle outline-none box-shadow-none cursor-hand w-100 p-2 pl-3 chat-menu-option"
+            (click)="openEmailPopup()"
+            *ngIf="temp_message_menu_object && ![MessageTypeEnum.Poll].includes(temp_message_menu_object.message_type) &&
+       commonService.userDetails.user_id == temp_message_menu_object.user_id && send_email_enabled && user_type != userTypeEnum.SelfNote">
+      Send Email
+    </button>
+    <button id="btn-download-video"
+            class="btn-custom-nostyle outline-none box-shadow-none cursor-hand w-100 p-2 pl-3 chat-menu-option"
+            *ngIf="temp_message_menu_object && temp_message_menu_object.message_type == MessageTypeEnum.Video_Message"
+            (click)="downloadVideo(temp_message_menu_object)">
+      Download
+    </button>
+    <button *ngIf="temp_message_menu_object && temp_message_menu_object.message_type == MessageTypeEnum.Text_Message"
+            id="btn-download-video"
+            class="btn-custom-nostyle outline-none box-shadow-none cursor-hand w-100 p-2 pl-3 chat-menu-option"
+            (click)="onCopiedClick($event)">
+      Copy
+    </button>
+  </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="deleteMessageModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p class="remove-popup-text text-left mb-0" *ngIf="spaceData?.config.delete_message != '1'
+        || !spaceData?.config.delete_message_role.includes(role_status)">
+          Sorry, you don't have the rights to delete message.</p>
+        <p class="remove-popup-text text-left mb-0" *ngIf="message_delete_time_expired">
+          Sorry, but you have exceeded the time limit to delete this message.</p>
+        <p class="remove-popup-text text-left mb-0" *ngIf="spaceData?.config.delete_message == '1'
+         && spaceData?.config.delete_message_role.includes(role_status) && !message_delete_time_expired">
+          Are you sure you want to delete this message?</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-cancel" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-common" *ngIf="spaceData?.config.delete_message == '1'
+        && spaceData?.config.delete_message_role.includes(role_status) && !message_delete_time_expired"
+                (click)="deleteMessage(temp_message_menu_object)">Delete
+          for Everyone
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-forward-popup *ngIf="forward_popup_open" (closeForwardPopup)="forward_popup_open = false"
+                   [active_channel_id]="activeChannelId"
+                   [msg_data]="temp_message_menu_object"></app-forward-popup>
+
+<app-email-popup *ngIf="email_popup_open" (sendEmailData)="sendMessageEmail($event)"
+                 [addedMembers]="email_array" [membersCount]="membersCount" [activeChannelId]="activeChannelId"
+                 (closeEmailPopup)="closeEmailPopup()"></app-email-popup>
+
+<app-call-ringer-popup *ngIf="video_call_obj.incoming_call_popup" [call_type]="call_type_popup"
+                       [caller_info]="call_type_popup ? conference_caller_info : caller_info"
+                       [isGoogleMeetCall]="isGoogleMeetCall"
+                       (p2pCallActionButton)="p2pCallActionEvent($event)"
+                       (conferenceCallActionButton)="conferenceCallActionButton($event)"
+                       (meetActionButton)="meetActionButton($event)"></app-call-ringer-popup>
+<div class="modal fade show" tabindex="-1" id="sessionExpirePopup" role="dialog" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+        <img class="mt-4 mb-3 hw-64" src="assets/img/session-warning.svg">
+        <p class="font-20 TitilliumWeb-bold">Your session has expired.</p>
+        <button class="btn btn-common mb-3" (click)="reload()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade show" role="dialog" tabindex="-1" id="pollViewPopup" *ngIf="poll_view_open"
+     (click)="closePollView()" keyboard-events [isEnabled]="poll_view_open"
+     (esc)="closePollView()">
+  <div class="modal-dialog" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <p class="mb-0">Poll</p>
+        <img src="assets/img/close-white.svg" (click)="closePollView()" class="cursor-hand">
+      </div>
+      <div class="modal-body d-flex flex-column justify-content-center">
+        <p class="header-pointer col-xs-12 mt-0 font-18 mb-1 TitilliumWeb-bold"
+           [ngStyle]="{'color': temp_poll_view_data.user_id | randomColor}">
+          {{temp_poll_view_data.full_name}}
+        </p>
+        <p class="font-18 word-break mb-2">{{temp_poll_view_data.question}}</p>
+        <div *ngFor="let option of temp_poll_view_data.poll_options"
+             class="poll_option p-2 mb-2 position-relative"
+             [ngClass]="{'current_user_color' : option.users_map && option.users_map[commonService.userDetails.user_id]}">
+          <div class="background_fill position-absolute" [style.width]="((option.poll_count / temp_poll_view_data.total_votes
+                     * 100) || 0) + '%'"></div>
+          <div class="mb-0 d-flex align-items-center justify-content-between word-break">
+                      <span class="d-flex poll_input_popup"><input
+                        *ngIf="option.users_map && !temp_poll_view_data.is_expired"
+                        [type]="temp_poll_view_data.multiple_select ? 'checkbox' : 'radio'"
+                        class="ml-1 mr-2 mt-1"
+                        name="poll_view" [checked]="option.users_map[commonService.userDetails.user_id]"
+                        (change)="onPollVote(temp_poll_view_data, option)">
+                        {{option.label}}</span>
+            <span class="d-flex justify-content-end small cursor-hand text-muted poll_option_count_popup font-16"
+                  (click)="$event.stopPropagation();$event.preventDefault();selectedVote = option;total_votes_open = true"
+            >{{option.poll_count}} {{option.poll_count > 1 ? 'votes' : 'vote'}}</span>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between more_poll_options pt-1">
+          <span class="TitilliumWeb-bold"
+                [style.color]="temp_poll_view_data.is_expired ? 'red' : 'var(--chat-header-text)'">{{temp_poll_view_data.is_expired ?
+            'Poll Expired' : 'Poll Expiry: ' + ( temp_poll_view_data.expire_at ? ( temp_poll_view_data.expire_at | date:'d MMM, h:mm a' ) : '' )}}</span>
+          <span>Total Votes: {{temp_poll_view_data.total_votes}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade show" tabindex="-1" role="dialog" id="totalVotesModal" *ngIf="total_votes_open"
+     (click)="total_votes_open = false" keyboard-events [isEnabled]="total_votes_open"
+     (esc)="total_votes_open = false">
+  <div class="modal-dialog" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <!--HEADER-->
+      <div class="modal-header d-flex align-items-center justify-content-between">
+        <p class="mb-0">Votes</p>
+        <img src="assets/img/close-white.svg" (click)="total_votes_open = false" class="cursor-hand">
+      </div>
+      <!--BODY-->
+      <div class="modal-body p-0">
+        <p class="font-18 pl-2 pr-3 pt-2 mb-0 d-flex border-bottom word-break">
+          <input *ngIf="selectedVote.users_map && !temp_poll_view_data.is_expired"
+                 [type]="temp_poll_view_data.multiple_select ? 'checkbox' : 'radio'"
+                 class="ml-1 mr-2 mt-1"
+                 name="poll_votes" [checked]="selectedVote.users_map[commonService.userDetails.user_id]"
+                 (change)="$event.preventDefault()" (click)="$event.preventDefault()">
+          {{selectedVote.label}}</p>
+        <div class="reaction-list flex-grow">
+          <div *ngIf="selectedVote" class="flex-grow">
+            <div *ngFor="let user of selectedVote.users" class="mb-0 d-flex align-items-baseline show_more pl-2 pr-2">
+              <div class="flex-grow d-flex border-bottom">
+                <img *ngIf="user.user_image" class="hw-26 object-cover rounded-img-fugu mr-2" [src]="user.user_image">
+                <span *ngIf="!user.user_image" class="d-flex align-items-center justify-content-center color-white
+                hw-26 rounded-img-fugu mr-2"
+                      [ngStyle]="{'background-color': user.user_id | randomColor}">{{user.full_name.substring(0, 1)}}</span>
+                {{user.full_name}}
+              </div>
+            </div>
+            <p *ngIf="(selectedVote.users && !selectedVote.users.length) || (!selectedVote.users)" class="text-center">
+              No votes yet.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-conferencing-popup *ngIf="openConferencingPopup || openSelectLivestreamPopup"
+                        [isLiveStream]="openSelectLivestreamPopup" [@messageModalAnimation]
+                        [active_channel_id]="activeChannelId"
+                        [all_members_data]="selectedMembersInfo" [user_count]="user_count"
+                        [isAudioConference]="isAudioConference"
+                        (closeConferencingModal)="openConferencingPopup = false;openSelectLivestreamPopup = false"></app-conferencing-popup>
+<app-message-modal *ngIf="showRitPopup" [width]="'23%'" [@messageModalAnimation]
+                   (closeMessageModal)="showRitPopup = false">
+    <span class="message-modal-description d-flex justify-content-center mb-1">
+      <h4 class="mb-0">Request Call Back?</h4>
+    </span>
+  <span class="d-flex justify-content-center">Always good to keep in touch</span>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3" type="button"
+            (click)="showRitPopup = false">No
+    </button>
+    <button class="message-modal-button outline-none" (click)="publishMessageOnClickRit()" type="button">Yes</button>
+  </div>
+</app-message-modal>
+<app-message-modal *ngIf="openInfoSafariPopup" [width]="'23%'" [@messageModalAnimation]
+                   (closeMessageModal)="openInfoSafariPopup = false">
+    <span class="message-modal-description d-flex justify-content-center mb-1">
+      <!-- <h4 class="mb-0">Request Call Back?</h4> -->
+    </span>
+  <span class="d-flex justify-content-center">It looks like you're using a browser that doesn't support video calling yet. You will only hear the audio. </span>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3" type="button"
+            (click)="openInfoSafariPopup = false">Dismiss
+    </button>
+    <button class="message-modal-button outline-none" (click)="openVideoAudioCallPopup(RTCCallTypeEnum.VIDEO)"
+            type="button">Call anyway
+    </button>
+  </div>
+</app-message-modal>
+
+
+<app-tasks-calendar *ngIf="showViewTaskPopup" (closePopup)='showViewTaskPopup = false'
+                    [channelId]="activeChannelId"></app-tasks-calendar>
+
+
+
+

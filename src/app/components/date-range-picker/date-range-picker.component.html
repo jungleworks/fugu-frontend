@@ -1,0 +1,85 @@
+<div class="date-range-picker d-flex flex-column" #dateRangeRef>
+  <div class="date-range-picker__header d-flex flex-column">
+    <div class="d-flex justify-content-between align-items-center from_to_container p-2">
+      <div class="d-flex align-items-center">
+        <div class="d-flex flex-column ml-2">
+          <span class="text-muted small">FROM</span>
+          <div class="d-flex">
+            <span class="header_from_to_date pr-2">{{selected_date_obj.start_date | date: 'd'}}</span>
+            <div class="d-flex flex-column justify-content-center">
+              <span class="small">{{selected_date_obj.start_date | date: 'MMM yyyy'}}</span>
+              <span class="small text-muted">{{selected_date_obj.start_date | date: 'EEEE'}}</span>
+            </div>
+          </div>
+        </div>
+        <span><i class="fa fa-chevron-right text-muted ml-5 mr-5"></i></span>
+        <div class="d-flex flex-column">
+          <span class="text-muted small">TO</span>
+          <div class="d-flex">
+            <span class="header_from_to_date pr-2">{{selected_date_obj.end_date | date: 'd'}}</span>
+            <div class="d-flex flex-column justify-content-center">
+              <span class="small">{{selected_date_obj.end_date | date: 'MMM yyyy'}}</span>
+              <span class="small text-muted">{{selected_date_obj.end_date | date: 'EEEE'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="mr-4 cursor-hand">
+        <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="38px" height="38px" (click)="closePicker.emit(true)">
+          <path d="M256,0C114.844,0,0,114.844,0,256s114.844,256,256,256s256-114.844,256-256S397.156,0,256,0z M256,490.667     C126.604,490.667,21.333,385.396,21.333,256S126.604,21.333,256,21.333S490.667,126.604,490.667,256S385.396,490.667,256,490.667     z" fill="#cecece"/>
+          <path d="M359.542,152.458c-4.167-4.167-10.917-4.167-15.083,0L256,240.917l-88.458-88.458c-4.167-4.167-10.917-4.167-15.083,0     c-4.167,4.167-4.167,10.917,0,15.083L240.917,256l-88.458,88.458c-4.167,4.167-4.167,10.917,0,15.083     c2.083,2.083,4.813,3.125,7.542,3.125s5.458-1.042,7.542-3.125L256,271.083l88.458,88.458c2.083,2.083,4.813,3.125,7.542,3.125     c2.729,0,5.458-1.042,7.542-3.125c4.167-4.167,4.167-10.917,0-15.083L271.083,256l88.458-88.458     C363.708,163.375,363.708,156.625,359.542,152.458z" fill="#adadad"/>
+        </svg>
+      </span>
+    </div>
+  </div>
+  <div class="date-range-picker__body d-flex">
+    <div *ngFor="let calendar of calendar_obj | keyvalue" class="d-flex">
+      <div [className]="calendar.value.class_name">
+        <div class="d-flex align-items-center p-2 cal_month">
+          <ng-container *ngIf="calendar.key == 'left_cal'">
+            <span class="p-2 d-flex justify-content-center align-items-center cal_month__arrow cursor-hand"
+                  (click)="previousMonth(calendar.value.current_date)">
+              <i class="fa fa-chevron-left"></i>
+            </span>
+            <div class="d-flex justify-content-center w-100">
+              <span>{{month_names[calendar.value.current_date.getMonth()] + ' ' + calendar.value.current_date.getFullYear()}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="calendar.key == 'right_cal'">
+            <div class="d-flex justify-content-center w-100">
+              <span>{{month_names[calendar_obj.right_cal.current_date.getMonth()] + ' ' + calendar_obj.right_cal.current_date.getFullYear()}}</span>
+            </div>
+            <span class="p-2 d-flex justify-content-center align-items-center cal_month__arrow cursor-hand"
+                  (click)="nextMonth(calendar_obj.left_cal.current_date)">
+              <i class="fa fa-chevron-right"></i>
+            </span>
+          </ng-container>
+        </div>
+        <div class="d-flex flex-wrap p-2">
+        <span class="calendar_header_days d-flex justify-content-center align-items-center p-2 small text-muted"
+              *ngFor="let day of days_header_list">{{day}}</span>
+          <button class="calendar_days d-flex justify-content-center align-items-center"
+                *ngFor="let day of calendar.value.days_array" (click)="onDateChange(day)" [disabled]="!day || day.is_disabled"
+                [ngClass]="{'cursor-hand': day,'selection_start' :
+              selected_date_obj.start_date == day?.formatted_date,
+              'selection_end' : selected_date_obj.end_date == day?.formatted_date, 'highlight_date': highlightDate(day)}">
+          {{day?.date}}
+        </button>
+        </div>
+      </div>
+      <span *ngIf="calendar.key == 'left_cal'" class="border-right-calendar"></span>
+    </div>
+  </div>
+  <div class="date-range-picker__footer d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center p-3">
+      <span class="small text-muted">Following:</span>
+      <span class="predefined_days cursor-hand" (click)="choosePredefinedDate(2)">3 days</span>
+      <span class="predefined_days cursor-hand" (click)="choosePredefinedDate(4)">5 days</span>
+      <span class="predefined_days cursor-hand" (click)="choosePredefinedDate(6)">7 days</span>
+      <span class="predefined_days cursor-hand" (click)="choosePredefinedDate(29)">30 days</span>
+    </div>
+    <div class="pr-2">
+      <button class="btn btn-apply" (click)="submitDate()">Apply</button>
+    </div>
+  </div>
+</div>

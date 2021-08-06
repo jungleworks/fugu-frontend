@@ -1,0 +1,23 @@
+<svg width="18px" height="18px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>poll icon</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
+    </defs>
+    <g id="Assets" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-78.000000, -113.000000)">
+        <g id="poll-icon" transform="translate(74.000000, 109.000000)">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Mask"></g>
+            <g id="Group-6" mask="url(#mask-2)">
+                <g transform="translate(9.962172, 10.006180) scale(-1, 1) translate(-9.962172, -10.006180) translate(4.462172, 4.006180)" id="Group-4">
+                    <g transform="translate(0.000000, 0.000000)">
+                        <rect id="Rectangle-4" fill="#263238" fill-opacity="0.3" x="0" y="4" width="3" height="8" rx="1"></rect>
+                        <rect id="Rectangle-4-Copy" fill="#263238" fill-opacity="0.3" x="4" y="0" width="3" height="12" rx="1"></rect>
+                        <rect id="Rectangle-4-Copy-2" fill="#263238" fill-opacity="0.3" x="8" y="6" width="3" height="6" rx="1"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

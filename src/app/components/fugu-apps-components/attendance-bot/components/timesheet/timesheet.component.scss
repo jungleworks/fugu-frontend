@@ -1,0 +1,77 @@
+.timesheet-container{
+  background-color: #EFEFEF;
+  .timesheet-container__table{
+    .ht-167{
+      height: 167px;
+    }
+    border-radius: 8px;
+    .left-border{
+      border-left: 2px solid rgba(142, 142, 142, 0.5);
+    }
+    .right-border{
+      border-right: 2px solid rgba(142, 142, 142, 0.5);
+    }
+    .timesheet-container__table__header{
+      border-bottom: 2px solid rgba(142, 142, 142, 0.5);
+      .heading-text{
+        color: #797979;
+        font-size: 12px;
+      }
+    }
+    .timesheet-container__table__body{
+      .timesheet-container__table__body__row{
+        .attendance-card{
+          border-top: 2px dashed #eeeeee;
+          border-left: 2px dashed #eeeeee;
+          border-right: 2px dashed #eeeeee;
+          padding: 5px 8px;
+          .attendance-card__detail-box{
+            background-color: #eeeeee;
+            min-width: 112px;
+            padding: 10px;
+            border-radius: 4px;
+            transition: all .2s ease-in-out;
+            cursor: pointer;
+            .time-hours{
+              color: #97a0af;
+            }
+            .clock-status{
+              color: #d6d6d6;
+            }
+            &:hover{
+              background-color: white;
+              -moz-transform: scale(1.1);
+              -ms-transform: scale(1.1);
+              -webkit-transform: scale(1.1);
+              transform: scale(1.1);
+              box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+              z-index: 2;
+              .time-hours{
+                color: #000000;
+                font-family: TitilliumWeb;
+              }
+              .clock-status.in{
+                color: green;
+              }
+              .clock-status.out{
+                color: red;
+              }
+              .clock-status.total{
+                color: #0065ff;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.w-20{
+  width: 20%;
+}
+.w-60{
+  width: 60%;
+}
+.w-20{
+  width: 20%;
+}

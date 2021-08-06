@@ -1,0 +1,9 @@
+<div class="message-modal d-flex justify-content-center align-items-center h-100 w-100">
+  <div class="message-modal__content" [ngStyle]="{'width': width ? width  : '', 'height': height ? height  : '', 'padding': padding ? padding  : '',
+  'margin-top': marginTop ? marginTop  : '',
+  'background-color': bgColor ? bgColor : ''}" [@popup-open]>
+    <div class="h-100 message-modal__body d-flex flex-column">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

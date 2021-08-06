@@ -1,0 +1,124 @@
+:root {
+  --rotate: rotate(0deg);
+}
+.carousel-parent {
+  position: fixed;
+  width: 100%;
+  z-index: 2000;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: var(--bg-opacity);
+}
+.carousel-header {
+  min-height: 60px;
+}
+.carousel-body {
+  height: calc(100% - 180px);
+}
+.carousel-image {
+  height: 100%;
+  object-fit: contain;
+  max-width: 80vw;
+  margin: 0 auto;
+}
+.carousel-footer {
+  min-height: 120px;
+  overflow-y: auto;
+}
+.carousel-control {
+  position: static;
+  width: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  opacity: .5;
+  &:hover {
+    opacity: 1;
+  }
+}
+.nav-icons {
+  font-size: 40px;
+  color: black;
+  color: var(--chat-bar-header);
+}
+.channel-image {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.top-icons{
+  align-self: center;
+  margin-left: auto;
+  margin-right: 15px;
+}
+.thumb-image {
+  max-height: 60px;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+  min-width: calc(100%/11.35);
+  display: flex;
+  align-self: center;
+  object-fit: cover;
+}
+.thumb-image.active {
+  border: 1px solid var(--app-color);
+  transform: scale(1.1);
+}
+.thumb-container {
+  margin: auto 3px;
+  width: calc(100%/11.35);
+}
+.carousel-footer::-webkit-scrollbar{
+  height: 4px !important;
+  order: 1;
+}
+.carousel-footer::-webkit-scrollbar-thumb{
+  background-color: var(--app-color);
+  border-radius: 3px;
+}
+.carousel-footer::-webkit-scrollbar-track{
+  background: #eeeeee;
+  padding: 1px;
+}
+.top-icon {
+  margin-top: -4px;
+  width: 20px;
+}
+.download-link {
+  text-decoration: none;
+  color:inherit;
+}
+.attachment-file {
+  height: auto;
+  margin-bottom: 1rem;
+  margin-top: 15%;
+}
+.attachment-audio {
+  height: auto;
+  margin-bottom: 1rem;
+  margin-top: 10%;
+}
+.hide-nav {
+  visibility: hidden;
+}
+.rotater {
+  transform: var(--rotate);
+}
+.rotate-left{
+  transform: scaleX(-1);
+  font-size: 20px;
+  color: var(--chat-header-text);
+}
+.rotate-right{
+  font-size: 20px;
+  color: var(--chat-header-text);
+}

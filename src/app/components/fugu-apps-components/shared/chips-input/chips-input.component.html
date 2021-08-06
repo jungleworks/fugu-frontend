@@ -1,0 +1,48 @@
+<div class="position-relative">
+  <div class="d-flex chip-input__parent w-100 flex-wrap pt-2 pb-2" #chipComponent>
+    <div class="d-flex chip" *ngFor="let item of selected_chips; let first = first" [ngClass]="{'color-scrum-users' : item.is_scrum_user}"
+    [matTooltip]="item.is_scrum_user ? 'This respondent takes part in other scrum reports at the same time' : ''">
+    <span class="rounded-img-fugu d-flex
+                 justify-content-center align-items-center hw-26"
+          [ngStyle]="{'background-color': item[idString] | randomColor}">
+      {{item[labelString].substring(0,1)}}
+    </span>
+      <span class="chip-text d-flex align-items-center pl-2">{{item[labelString]}}
+        <span *ngIf="chipType == chipsTypeEnum.GUEST_MEMBERS && ((lock_id && lock_id == item.user_id) || (!lock_id && first)); else crossIcon"
+          class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14" viewBox="0 0 11 14">
+            <path fill="#A77D56" fill-rule="evenodd"
+              d="M9.333 4.667h-.666V3.333C8.667 1.5 7.167 0 5.333 0A3.343 3.343 0 0 0 2 3.333v1.334h-.667C.6 4.667 0 5.267 0 6v6.667C0 13.4.6 14 1.333 14h8c.734 0 1.334-.6 1.334-1.333V6c0-.733-.6-1.333-1.334-1.333zm-4 6.066C4.6 10.733 4 10.133 4 9.4s.6-1.333 1.333-1.333c.734 0 1.334.6 1.334 1.333s-.6 1.333-1.334 1.333zM7.4 4.667H3.267V3.333c0-1.133.933-2.066 2.066-2.066 1.134 0 2.067.933 2.067 2.066v1.334z" />
+          </svg>
+        </span>
+        <ng-template #crossIcon>
+          <span (click)="removeChip(item[idString])"
+            class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+              <path opacity=".6" fill="#263238"
+                d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+              </path>
+            </svg>
+          </span>
+        </ng-template>
+    </span>
+    </div>
+    <input class="flex-grow-1 chip-input__input-box" type="text"
+           [placeholder]="!selected_chips.length ? placeholder_text : ''" #searchInput
+           (keydown)="onKeyPressEvent($event)" [formControl]="search_ctrl">
+  </div>
+  <div *ngIf="show_autocomplete && filtered_results.length" class="autocomplete-box" #autocompleteContainer>
+    <div *ngFor="let item of filtered_results;let j = index" class="dropdown-option p-2 cursor-hand d-flex align-items-center"
+         [id]="'chips-autocomplete' + j" [ngClass]="{'active': autocomplete_index == j}"
+         (click)="pushChip(item)">
+      <span class="mr-2">
+        <img [src]="item.user_image || item.channel_thumbnail_url || 'assets/img/placeholder.png'" class="label-image">
+      </span>
+      <div class="d-flex flex-column">
+        <p class="mb-0 small text-label-search">{{item[labelString]}}</p>
+        <span class="mb-0 text-muted small text-label-email">{{item.email}}</span>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,114 @@
+<div class="h-100 w-100 video-parent" id="videoParent">
+  <div class="h-100 w-100 text-overlay d-flex justify-content-center align-items-center" *ngIf="reconnection_overlay">
+    {{reconnection_overlay}}
+  </div>
+  <div [ngClass]="{'blur-effect': reconnection_overlay}" class="h-100 w-100 d-flex flex-column align-items-center justify-content-center" *ngIf="!is_call_connected || (channel_details['call_type'] == RTCCallTypeEnum.AUDIO && !remote_audio_screen_share)">
+    <img [src]="channel_details['channel_image'] || 'assets/img/placeholder.png'" class="opposite-user-image rounded-circle" [ngClass]="{'animation-none': is_call_connected}">
+    <p class="color-white mt-5 font-20 font-weight-light">{{channel_details['user_name']}}</p>
+    <p class="color-white">{{calling_text}}</p>
+    <p class="color-white">{{call_timer}}</p>
+  </div>
+  <div class="d-flex w-100" [ngClass]="{'blur-effect': reconnection_overlay, 'h-100': channel_details['call_type'] == RTCCallTypeEnum.VIDEO && is_call_connected}">
+    <audio id="local_audio" autoplay muted [hidden]="channel_details['call_type'] != RTCCallTypeEnum.AUDIO"></audio>
+    <audio id="received_audio" autoplay [hidden]="channel_details['call_type'] != RTCCallTypeEnum.AUDIO"></audio>
+    <video autoplay id="local_video" [hidden]="channel_details['call_type'] != RTCCallTypeEnum.VIDEO" (click)="!video_interchanged && is_call_connected  && !senderTrackScreen ? video_interchanged = !video_interchanged : ''" [ngClass]="{'large-video': video_interchanged, 'small-video' : !video_interchanged}" class="h-100"></video>
+    <video id="received_video" [hidden]="channel_details['call_type'] != RTCCallTypeEnum.VIDEO" (click)="video_interchanged && is_call_connected  && !senderTrackScreen ? video_interchanged = !video_interchanged : ''" autoplay [ngClass]="{'large-video': !video_interchanged, 'small-video' : video_interchanged}"></video>
+
+    <video autoplay id="local_audio_video" [hidden]="channel_details['call_type'] != RTCCallTypeEnum.AUDIO" class="h-100 small-video"></video>
+    <video autoplay id="received_audio_video" [hidden]="channel_details['call_type'] != RTCCallTypeEnum.AUDIO" class="large-video" ></video>
+  </div>
+  <div class="position-absolute actions-buttons d-flex w-100 justify-content-center align-items-center" id="actionButtons">
+    <span appTooltip [tooltipTitle]="video_disabled ? 'Enable Video' : 'Disable Video'" (click)="disableVideo()" (touch)="disableVideo()" class="action-btn-black" *ngIf="is_call_connected && channel_details['call_type'] == RTCCallTypeEnum.VIDEO" [ngClass]="{'active': video_disabled}">
+      <svg *ngIf="!video_disabled" fill="#fff" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" alt="" class="_4uwr"><path d="M26 17H15c-1.126 0-2 .938-2 2v10c0 1.062.874 2 2 2h11c1.126 0 2-.938 2-2V19c0-1.062-.874-2-2-2zm10 12h1V19h-1v10zm-6-2.727L35 29V19l-5 2.727v4.546z"></path></svg>
+      <svg *ngIf="video_disabled" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" alt="" class="_4uwr"><path d="M36 29h1V19h-1v10zm-6-2.727L35 29V19l-5 2.727v4.546zM19.344 17H26c1.126 0 2 .938 2 2v10c0 .54-.225 1.047-.595 1.415L19.345 17zm-3.5 0H15c-1.126 0-2 .938-2 2v10c0 1.062.874 2 2 2h9.257l-8.413-14zm11.408 17.044l.857-.516-12.362-20.572-.857.516 12.362 20.572z"></path></svg>
+    </span>
+    <span appTooltip [hidden]="channel_details['call_type'] == RTCCallTypeEnum.AUDIO || !show_screen_share" [tooltipTitle]="senderTrackScreen ? 'Stop Sharing' : 'Share screen'" class="action-btn-black" (click)="captureScreen()" (touch)="captureScreen()" [ngClass]="{'active': senderTrackScreen}">
+      <svg *ngIf="!senderTrackScreen" viewBox="0 0 48 48" fill="#fff" preserveAspectRatio="xMidYMid meet" alt="" class="_4uwr"><path d="M12 17v14h24V17H12zm23 13H13V18h22v12zm-16.001 2h10v1h-10zm-4.986-13.005h20.018v10.009H14.013z"></path></svg>
+      <svg *ngIf="senderTrackScreen" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" alt="" class="_4uwr"><path d="M24.706 18l3.182 3.183a.5.5 0 0 1-.707.707L24 18.708l-3.182 3.182a.5.5 0 0 1-.707-.707L23.292 18l-3.182-3.182a.5.5 0 0 1 .707-.707L24 17.294l3.182-3.182a.5.5 0 0 1 .707.707zM28.999 17v1h6v12h-22V18h6v-1h-7v14h24V17h-7zm-10 15h10v1h-10z"></path></svg>
+    </span>
+    <span appTooltip [tooltipTitle]="is_muted ? 'Unmute' : 'Mute'" (click)="muteVideo()" (touch)="muteVideo()" class="action-btn-black" *ngIf="is_call_connected" [ngClass]="{'active': is_muted}">
+      <svg *ngIf="!is_muted" viewBox="0 0 48 48" fill="#fff" preserveAspectRatio="xMidYMid meet" alt="" class="_4uwr"><path d="M29 20v5c0 2.7-2 5-4.5 5S20 27.8 20 25v-5h-1v5.2c0 3.1 2.2 5.6 5 5.8v3h-3v1h7v-1h-3v-3c2.8-.3 5-2.8 5-5.8V20h-1zm-4.5 9c1.9 0 3.5-1.6 3.5-3.5v-9c0-1.9-1.6-3.5-3.5-3.5S21 14.6 21 16.5v9c0 1.9 1.6 3.5 3.5 3.5z"></path></svg>
+      <svg *ngIf="is_muted" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" alt="" class="_4uwr"><path d="M25 31c.7-.1 1.3-.3 1.9-.6l-.5-.9c-.6.3-1.2.5-1.9.5-2.5 0-4.5-2.2-4.5-5v-5h-1v5.2c0 3.1 2.2 5.6 5 5.8v3h-3v1h7v-1h-3v-3zm-.5-2c.5 0 1-.1 1.4-.3L21 20.6v4.9c0 1.9 1.6 3.5 3.5 3.5zm-5.8-16l-.9.5L30.3 34l.9-.5L18.7 13zM30 25.2V20h-1v5c0 .8-.2 1.6-.5 2.2l.6 1c.6-.8.9-1.9.9-3zm-2 .3v-9c0-1.9-1.6-3.5-3.5-3.5-1.5 0-2.7.9-3.2 2.2L28 26.3v-.8z"></path></svg>
+    </span>
+    <span appTooltip [tooltipTitle]="'Hangup'" class="position-relative mr-2" (click)="hangUpCall(false,hangupErrorEnum.CALL_HANGUP)" (touch)="hangUpCall(false ,hangupErrorEnum.CALL_HANGUP)">
+      <svg id="hangup" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="-10 -10 68 68" class="cursor-hand">
+        <circle cx="24" cy="24" r="34">
+        </circle>
+        <path transform="scale(0.7), translate(11,10)" d="M24 18c-3.21 0-6.3.5-9.2 1.44v6.21c0 .79-.46 1.47-1.12 1.8-1.95.98-3.74 2.23-5.33 3.7-.36.35-.85.57-1.4.57-.55 0-1.05-.22-1.41-.59L.59 26.18c-.37-.37-.59-.87-.59-1.42 0-.55.22-1.05.59-1.42C6.68 17.55 14.93 14 24 14s17.32 3.55 23.41 9.34c.37.36.59.87.59 1.42 0 .55-.22 1.05-.59 1.41l-4.95 4.95c-.36.36-.86.59-1.41.59-.54 0-1.04-.22-1.4-.57-1.59-1.47-3.38-2.72-5.33-3.7-.66-.33-1.12-1.01-1.12-1.8v-6.21C30.3 18.5 27.21 18 24 18z" fill="white"></path>
+      </svg>
+    </span>
+    <span appTooltip [tooltipTitle]="'Add members'" (click)="addMembersToConference()"
+    *ngIf="is_call_connected && channel_details['call_type'] != RTCCallTypeEnum.AUDIO" class="action-btn-black">
+      <svg fill="#fff" viewBox="0 0 48 48" preserveAspectRatio="xMidYMid meet" alt="" class="_4uwr"><g transform="translate(11 16)"><path d="M13.21 1.644c-1.023.763-.748 1.669-.656 3.21-.421 0-.37.31-.29.709.073.364.11.838.283.838a.123.123 0 0 0 .053-.013c.604 2.518 1.073.438.712 2.73l-.292.067c-.038.136-.09.617-.293.94C8.281 12 8.24 11.397 7.8 16H24c-.441-4.603-.46-4-4.905-5.875-.203-.323-.255-.804-.293-.94l-.292-.066c-.362-2.293.082-.213.685-2.731a.12.12 0 0 0 .053.013c.174 0 .21-.474.283-.838.08-.398.146-.71-.276-.71.09-1.54.371-2.438-.595-3.209-.763-1.14-2.693-1.05-2.76-1.05 0 0-1.374.067-2.69 1.05z" fill-rule="evenodd"></path><path d="M5.738 4.407V0H4.463v4.407H0v1.26h4.463v4.407h1.275V5.667H10.2v-1.26z" fill-rule="evenodd"></path></g></svg>
+    </span>
+    <span appTooltip [tooltipTitle]="'Fullscreen'" (click)="is_fullscreen ? closeFullscreen() : openFullscreen()" [ngClass]="{'active': is_fullscreen}" class="action-btn-black" (touch)="is_fullscreen ? closeFullscreen() : openFullscreen()">
+      <svg [attr.fill]="is_fullscreen ? '#000' : '#fff'" viewBox="0 0 50 50"><defs><filter id="ZenonDropShadowFilter.3" height="24" width="24" x="-2" y="-1"><feGaussianBlur in="SourceAlpha" result="blur" stdDeviation="2"></feGaussianBlur><feOffset dx="0" dy="1" in="blur" result="offsetBlur"></feOffset><feFlood flood-color="#000" flood-opacity="0.2"></feFlood><feComposite in2="offsetBlur" operator="in" result="shadow"></feComposite><feMorphology operator="dilate" radius="1" in="SourceAlpha" result="outline"></feMorphology><feFlood flood-color="#000" flood-opacity="0.1"></feFlood><feComposite in2="outline" operator="in" result="stroke"></feComposite><feMerge><feMergeNode in="shadow"></feMergeNode><feMergeNode in="stroke"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><g filter="url(#ZenonDropShadowFilter.3)"><path d="M33.7 16.3c-.2-.2-.4-.3-.7-.3h-6c-.5 0-1 .4-1 1s.4 1 1 1h3.6l-4.8 4.8c-.4.4-.4 1 0 1.4s1 .4 1.4 0l4.8-4.8V23c0 .5.4 1 1 1s1-.4 1-1v-6c0-.3-.1-.5-.3-.7zM16.3 33.7c-.2-.2-.3-.4-.3-.7v-6c0-.5.4-1 1-1s1 .4 1 1v3.6l4.8-4.8c.4-.4 1-.4 1.4 0s.4 1 0 1.4L19.5 32h3.6c.5 0 1 .4 1 1s-.4 1-1 1h-6c-.3 0-.6-.1-.8-.3z"></path></g>
+      </svg>
+    </span>
+
+      <span appTooltip [tooltipTitle]="'Switch camera'" (click)="showVideoCamOptions = true" (touch)="showVideoCamOptions = true" class="action-btn-black d-flex justify-content-center align-items-center" *ngIf="is_call_connected && channel_details['call_type'] == RTCCallTypeEnum.VIDEO && enumeratorVideoDevices.length > 1">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 480 480" style="enable-background:new 0 0 480 480;" xml:space="preserve" width="25" height="25" class=""><g><g>
+              <path d="M440,116v-16c0-4.418-3.582-8-8-8h-48c-4.418,0-8,3.582-8,8v16h-19.352L336.16,80.16     c-7.132-12.452-20.378-20.142-34.728-20.16H178.568c-14.35,0.018-27.596,7.708-34.728,20.16L123.352,116H120V92     c0-4.418-3.582-8-8-8H48c-4.418,0-8,3.582-8,8v24c-22.08,0.026-39.974,17.92-40,40v224c0.026,22.08,17.92,39.974,40,40h400     c22.08-0.026,39.974-17.92,40-40V156C479.974,133.92,462.08,116.026,440,116z M392,108h32v8h-32V108z M56,100h48v16H56V100z      M464,380c0,13.255-10.745,24-24,24H40c-13.255,0-24-10.745-24-24V156c0-13.255,10.745-24,24-24h88     c2.864,0.006,5.512-1.52,6.944-4l22.784-39.872c4.275-7.481,12.223-12.107,20.84-12.128h122.864     c8.596,0.029,16.524,4.64,20.8,12.096L345.056,128c1.432,2.48,4.08,4.006,6.944,4h88c13.255,0,24,10.745,24,24V380z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+              <path d="M347.532,284.504c-0.007-0.003-0.013-0.005-0.02-0.008c-4.127-1.577-8.75,0.49-10.328,4.616     c-20.569,53.628-80.718,80.428-134.346,59.859c-36.074-13.836-61.504-46.53-66.038-84.899l19.528,19.528     c3.07,3.178,8.134,3.266,11.312,0.196c3.178-3.07,3.266-8.134,0.196-11.312c-0.064-0.067-0.13-0.132-0.196-0.196l-33.944-33.944     c-3.124-3.123-8.188-3.123-11.312,0L88.4,272.288c-3.07,3.178-2.982,8.242,0.196,11.312c3.1,2.995,8.016,2.995,11.116,0     l20.8-20.8c5.983,66.004,64.339,114.66,130.343,108.677c45.602-4.133,84.876-33.857,101.241-76.622     C353.694,290.737,351.651,286.102,347.532,284.504z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+              <path d="M380.484,220.204c-0.067,0.064-0.132,0.13-0.196,0.196l-20.8,20.8c-5.97-66.005-64.317-114.672-130.322-108.702     c-45.794,4.142-85.195,34.088-101.446,77.102c-1.562,4.133,0.523,8.75,4.656,10.312c4.133,1.562,8.75-0.523,10.312-4.656     c20.341-53.715,80.375-80.771,134.09-60.431c36.31,13.75,61.938,46.581,66.462,85.143L323.712,220.4     c-3.069-3.178-8.134-3.266-11.312-0.196c-3.178,3.069-3.266,8.134-0.196,11.312c0.064,0.067,0.13,0.132,0.196,0.196     l33.944,33.944c3.124,3.123,8.188,3.123,11.312,0l33.944-33.944c3.178-3.069,3.266-8.134,0.196-11.312     C388.727,217.222,383.662,217.134,380.484,220.204z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+
+        </g></g> </svg>
+      </span>
+  </div>
+</div>
+<app-message-modal *ngIf="showExtensionPopup" [width]="'50%'" [@messageModalAnimation] (closeMessageModal)="showFeedbackPopup = false">
+  <p class="message-modal-heading">Add {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} Screen Sharing Extension</p>
+  <p>To share your screen during video call on {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }}, you'll need to add the {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} Screen Sharing extension. The
+    extension will not save images of your screen during your call or share your data with other apps or websites.</p>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-color-red no-btn-style" (click)="showExtensionPopup = false">Cancel</button>
+    <button type="button" class="btn app-color no-btn-style box-shadow-none outline-none" (click)="openChromeStore()">Add Extension</button>
+  </div>
+</app-message-modal>
+<app-message-modal *ngIf="showFeedbackPopup" [@messageModalAnimation] (closeMessageModal)="showFeedbackPopup = false">
+  <p class="message-modal-heading">Rate your meeting experience</p>
+  <span class="d-flex justify-content-center">{{feedback_object.selectedStar?.label}}</span>
+  <div class="message-modal-description d-flex flex-column">
+    <div class="d-flex justify-content-between">
+      <div class="stars cursor-hand" *ngFor="let star of feedback_object.starsArray; let i = index" (click)="feedback_object.selectedStar = star">
+        <span><i class="fa fa-star star-icon"
+            [ngClass]="{'star-icon-active': feedback_object.selectedStar?.value >= i+1}"></i></span>
+      </div>
+    </div>
+    <div class="mt-4">
+      <span>Tell us more about it</span>
+    </div>
+    <div class="mt-2">
+      <textarea type="text" appAutofocus class="textarea-size form-control box-shadow-none" [(ngModel)]="feedback_object.feedbackText">
+      </textarea>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button mr-3 message-modal-button-red btn-red outline-none" type="button" (click)="closeFeedbackWindow()">Skip</button>
+    <button class="message-modal-button outline-none" type="button" (click)="submitFeedback()">Submit</button>
+  </div>
+</app-message-modal>
+<app-switch-conference-popup *ngIf="showAddMemberConferencingPopup" [isAudioConference]="isAudioConference" (inviteMembersEvent)="inviteMembers($event)" (closeConferenceInvitePopup)="showAddMemberConferencingPopup = false" [channel_info]="channel_details"></app-switch-conference-popup>
+<app-message-modal *ngIf="permScreenSharing" [width]="'50%'" [@messageModalAnimation] (closeMessageModal)="permScreenSharing = false">
+  <p class="message-modal-heading">Can't share your screen</p>
+  <div class="text-ss-popup">Google Chrome might not have permission to use screen recording on your computer. To grant permission, open
+    <span class="ss-system-pref cursor-hand" (click)="openSystemPreferences()">System preferences</span>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn app-color no-btn-style box-shadow-none outline-none" (click)="permScreenSharing = false">Dismiss</button>
+  </div>
+</app-message-modal>
+<app-message-modal *ngIf="showVideoCamOptions" [width]="'26%'" [@messageModalAnimation]
+  (closeMessageModal)="showVideoCamOptions = false">
+  <p class="message-modal-heading">Choose video output device</p>
+  <div class="">
+    <select id="select" class="form-control outline-none" [(ngModel)]="deviceSelected" (change)="deviceSelected != 0 ? changeVideoCam(deviceSelected) : ''" >
+      <option value='0'>Choose video camera</option>
+      <option [value]="device.deviceId"  *ngFor="let device of enumeratorVideoDevices">{{device.label}}</option>
+    </select>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn app-color no-btn-style box-shadow-none outline-none"
+      (click)="showVideoCamOptions = false">Dismiss</button>
+  </div>
+</app-message-modal>

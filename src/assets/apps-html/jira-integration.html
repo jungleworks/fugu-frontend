@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      height: 100%;
+      font-family: "Open Sans", sans-serif;
+    }
+    .parent {
+      background: #f7f7f7;
+      height: 100%;
+      width: 100%;
+    }
+    .d-flex {
+      display: flex !important;
+      display: -ms-flexbox !important;
+      display: -webkit-flex !important;
+    }
+    .flex-column {
+      flex-direction: column !important;
+      -ms-flex-direction: column !important;
+      -webkit-flex-direction: column !important;
+    }
+    .justify-content-center {
+      justify-content: center !important;
+      -webkit-justify-content: center !important;
+    }
+    .justify-content-around {
+      justify-content: space-around !important;
+      -webkit-justify-content: space-around !important;
+    }
+    .justify-content-between {
+      justify-content: space-between !important;
+      -webkit-justify-content: space-between !important;
+    }
+    .justify-content-end {
+      justify-content: flex-end !important;
+      -webkit-justify-content: flex-end !important;
+    }
+    .align-items-center {
+      align-items: center !important;
+      -webkit-align-items: center !important;
+    }
+    .m-0 {
+      margin: 0;
+    }
+    .m-1 {
+      margin: 0.25rem;
+    }
+    .m-2 {
+      margin: 0.5rem;
+    }
+    .m-3 {
+      margin: 1rem;
+    }
+    .m-4 {
+      margin: 1.5rem;
+    }
+    .m-5 {
+      margin: 3rem;
+    }
+    .mt-0 {
+      margin-top: 0;
+    }
+    .mt-1 {
+      margin-top: 0.25rem;
+    }
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+    .mt-3 {
+      margin-top: 1rem;
+    }
+    .mt-4 {
+      margin-top: 1.5rem;
+    }
+    .mt-5 {
+      margin-top: 3rem;
+    }
+    .mb-0 {
+      margin-bottom: 0;
+    }
+    .mb-1 {
+      margin-bottom: 0.25rem;
+    }
+    .mb-2 {
+      margin-bottom: 0.5rem;
+    }
+    .mb-3 {
+      margin-bottom: 1rem;
+    }
+    .mb-4 {
+      margin-bottom: 1.5rem;
+    }
+    .mb-5 {
+      margin-bottom: 3rem;
+    }
+    .mr-0 {
+      margin-right: 0;
+    }
+    .mr-1 {
+      margin-right: 0.25rem;
+    }
+    .mr-2 {
+      margin-right: 0.5rem;
+    }
+    .mr-3 {
+      margin-right: 1rem;
+    }
+    .mr-4 {
+      margin-right: 1.5rem;
+    }
+    .mr-5 {
+      margin-right: 3rem;
+    }
+    .ml-0 {
+      margin-left: 0;
+    }
+    .ml-1 {
+      margin-left: 0.25rem;
+    }
+    .ml-2 {
+      margin-left: 0.5rem;
+    }
+    .ml-3 {
+      margin-left: 1rem;
+    }
+    .ml-4 {
+      margin-left: 1.5rem;
+    }
+    .ml-5 {
+      margin-left: 3rem;
+    }
+
+    .p-0 {
+      padding: 0 !important;
+    }
+    .p-1 {
+      padding: 0.25rem !important;
+    }
+    .p-2 {
+      padding: 0.5rem !important;
+    }
+    .p-3 {
+      padding: 1rem !important;
+    }
+    .p-4 {
+      padding: 1.5rem !important;
+    }
+    .p-5 {
+      padding: 3rem !important;
+    }
+    .pt-0 {
+      padding-top: 0;
+    }
+    .pt-1 {
+      padding-top: 0.25rem;
+    }
+    .pt-2 {
+      padding-top: 0.5rem;
+    }
+    .pt-3 {
+      padding-top: 1rem;
+    }
+    .pt-4 {
+      padding-top: 1.5rem;
+    }
+    .pt-5 {
+      padding-top: 3rem;
+    }
+    .pb-0 {
+      padding-bottom: 0;
+    }
+    .pb-1 {
+      padding-bottom: 0.25rem;
+    }
+    .pb-2 {
+      padding-bottom: 0.5rem;
+    }
+    .pb-3 {
+      padding-bottom: 1rem;
+    }
+    .pb-4 {
+      padding-bottom: 1.5rem;
+    }
+    .pb-5 {
+      padding-bottom: 3rem;
+    }
+    .pr-0 {
+      padding-right: 0;
+    }
+    .pr-1 {
+      padding-right: 0.25rem;
+    }
+    .pr-2 {
+      padding-right: 0.5rem;
+    }
+    .pr-3 {
+      padding-right: 1rem;
+    }
+    .pr-4 {
+      padding-right: 1.5rem;
+    }
+    .pr-5 {
+      padding-right: 3rem;
+    }
+    .pl-0 {
+      padding-left: 0;
+    }
+    .pl-1 {
+      padding-left: 0.25rem;
+    }
+    .pl-2 {
+      padding-left: 0.5rem;
+    }
+    .pl-3 {
+      padding-left: 1rem;
+    }
+    .pl-4 {
+      padding-left: 1.5rem;
+    }
+    .pl-5 {
+      padding-left: 3rem;
+    }
+
+    .w-100 {
+      width: 100%;
+    }
+    .w-50 {
+      width: 50%;
+    }
+    .h-100 {
+      height: 100%;
+    }
+    .container {
+      width: 70%;
+    }
+    .heading {
+      font-size: 22px;
+      color: #2296ff;
+      font-weight: bold;
+    }
+    .step-card {
+      background: white;
+      border-radius: 4px;
+      border: 1px solid #e2e2e2;
+    }
+    .step-card__heading {
+      color: #666666;
+      margin-bottom: 5px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .step-card__description {
+      color: #909090;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .step-card__select {
+      background: #fff
+      url("https://flock-apps.flock.com/jira-notification/images/arrow_down.svg")
+      no-repeat right;
+      border: 1px solid #e2e2e2;
+      border-radius: 5px;
+      color: #676767;
+      font-size: 14px;
+      padding: 16px;
+      outline: none;
+      width: 82%;
+      margin-top: 8px;
+    }
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      padding: 8px !important;
+    }
+    .steps-card__input {
+      margin-top: 8px;
+      background: #fff;
+      border: 1px solid #e2e2e2;
+      border-radius: 5px;
+      color: #676767;
+      font-family: "Open Sans";
+      font-size: 14px;
+      padding: 10px;
+      width: 80%;
+      outline: none;
+    }
+    .update-settings__button {
+      background: #2296ff;
+      border: none;
+      border-radius: 5px;
+      color: #fff !important;
+      cursor: pointer;
+      display: block;
+      font-family: "Open Sans", Arial, Verdana, Geneva, sans-serif;
+      font-size: 16px;
+      margin: 20px auto;
+      outline: none;
+      padding: 10px 30px;
+    }
+    .step-card__description-image {
+      margin-top: 4px;
+      object-fit: contain;
+      max-height: 250px;
+      max-width: 90%;
+    }
+    .logo {
+      height: 40px;
+      width: 40px;
+    }
+  </style>
+</head>
+<body>
+<div class="parent d-flex justify-content-center">
+  <div class="container">
+    <div class="mt-4 d-flex align-items-center justify-content-center">
+      <img
+        class="logo mr-2"
+        src="https://fuguchat.s3.ap-south-1.amazonaws.com/image/w57kHIGrsB.1552385695516.png"
+      />
+      <b>Jira Integration</b>
+    </div>
+    <div>
+      <p class="mt-4 heading">Step 1</p>
+      <div class="step-card p-4">
+        <div>
+          <label class="step-card__heading">Post to a channel</label>
+          <div class="step-card__description">
+            Select a channel where you want to post updates from Jira
+          </div>
+          <select class="step-card__select" id="channelsSelectBox">
+            <option value="-1">Choose a channel</option>
+          </select>
+        </div>
+        <div class="mt-3">
+          <label class="step-card__heading">Post as name (optional)</label>
+          <div class="step-card__description">
+            Customize the name this app will display while posting updates
+          </div>
+          <input
+            class="steps-card__input"
+            id="channelNameInput"
+            type="text"
+            placeholder="Bot name"
+          />
+        </div>
+        <div class="mt-3" id="webhook-url-div" style="display:none">
+          <label class="step-card__heading">Webhook URL</label>
+          <div class="step-card__description">
+            When setting up this integration, this is the URL that you will
+            paste into Jira.
+          </div>
+          <div class="d-flex align-items-center">
+            <input
+              class="steps-card__input"
+              id="webhookURL"
+              name="webhookURL"
+              readonly="readonly"
+              type="text"
+              placeholder="Webook Url"
+            />
+            <img
+              alt="Copy to clipboard"
+              class="copy-icon ml-2"
+              style="cursor: pointer;"
+              onclick="copyToClipboard()"
+              src="https://s3.ap-south-1.amazonaws.com/fuguchat/images/copy.svg"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center" id="button-container"></div>
+    <div>
+      <p class="mt-4 heading">Step 2</p>
+      <div class="step-card p-4" id="instructions-div">
+        <div class="step-card__heading">
+          Actions to be performed in the Jira interface
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  let regex = /[?&]([^=#]+)=([^&#]*)/g,
+    url = window.location.href,
+    params = {},
+    match;
+  while ((match = regex.exec(url))) {
+    params[match[1]] = match[2];
+  }
+  const api_url = "https://" + window.location.hostname + "/fugu-api/api/";
+  const installation_steps = [
+    {
+      label: "Step 1",
+      description:
+        "In Jira, click on <strong>JIRA Administration</strong> menu.",
+      image_src: "step-1.png"
+    },
+    {
+      label: "Step 2",
+      description:
+        "Select <strong>System</strong> under the <strong>settings</strong> sidebar.",
+      image_src: "step-2.png"
+    },
+    {
+      label: "Step 3",
+      description:
+        "Select <strong>Webhooks</strong> under <strong>Advanced</strong> in the sidebar.",
+      image_src: "step-3.png"
+    },
+    {
+      label: "Step 4",
+      description:
+        "Click on the <strong>Create a webhook</strong> button.",
+      image_src: "step-4.png"
+    },
+    {
+      label: "Step 5",
+      description: 'Paste the <strong>Fugu Webhook URL</strong> which you just generated.',
+      image_src: "step-5.png"
+    },
+    {
+      label: "Step 6",
+      description:
+        "Click the <strong>Create</strong> button at the bottom hwn you are done.",
+      image_src: "step-6.png"
+    }
+  ];
+  const instructions_div = document.getElementById("instructions-div");
+  for (step of installation_steps) {
+    const heading = document.createElement("label");
+    heading.className = "step-card__heading";
+    heading.innerHTML = step.label;
+    instructions_div.append(heading);
+    const description = document.createElement("div");
+    description.className = "step-card__description";
+    description.innerHTML = step.description;
+    instructions_div.append(description);
+    const photodiv = document.createElement("div");
+    photodiv.className = "d-flex justify-content-center";
+    const img = document.createElement("img");
+    img.className = "step-card__description-image";
+    img.src =
+      "https://s3.ap-south-1.amazonaws.com/fuguchat/images/new/" +
+      step.image_src;
+    photodiv.append(img);
+    instructions_div.append(photodiv);
+  }
+  fetch(
+    api_url + "chat/getChatGroups?en_user_id=" +
+    params.en_user_id,
+    {
+      headers: {
+        app_secret_key: params.app_secret_key,
+        device_type: 3,
+        app_version: "1.0.0"
+      },
+      mode: "cors"
+    }
+  )
+    .then(function(response) {
+      if (response.status !== 200) {
+        return;
+      }
+
+      // Examine the text in the response
+      response.json().then(function(data) {
+        let channels = data.data.joined_channels;
+        channels = channels.sort((a, b) => {
+            return a.label.toLowerCase().charCodeAt(0) - b.label.toLowerCase().charCodeAt(0);
+          });
+        const select_el = document.getElementById("channelsSelectBox");
+        channels.map(item => {
+          var option = document.createElement("option");
+          option.text = item.label;
+          option.value = item.channel_id;
+          select_el.appendChild(option);
+        });
+      });
+      createButton();
+      if (params.webhook_id) {
+        fetch(
+          api_url + "webhook/get?en_user_id=" +
+          params.en_user_id +
+          "&webhook_id=" +
+          params.webhook_id +
+          "&app_id=" +
+          params.app_id,
+          {
+            headers: {
+              app_secret_key: params.app_secret_key,
+              device_type: 3,
+              app_version: "1.0.0"
+            },
+            mode: "cors"
+          }
+        )
+          .then(function(response) {
+            if (response.status !== 200) {
+              return;
+            }
+
+            // Examine the text in the response
+            response.json().then(function(data) {
+              document.getElementById("channelsSelectBox").value =
+                data.data[0].channel_id;
+              document.getElementById("channelNameInput").value =
+                data.data[0].full_name || '';
+              document.getElementById("webhookURL").value =
+                data.data[0].webhook_link;
+            });
+          })
+          .catch(function(err) {
+            console.log("Fetch Error :-S", err);
+          });
+      }
+    })
+    .catch(function(err) {
+      console.log("Fetch Error :-S", err);
+    });
+  function copyToClipboard() {
+    const el = document.getElementById("webhookURL");
+    el.select();
+    document.execCommand("copy");
+  }
+  function createButton() {
+    const button_el = document.getElementById("button-container");
+    const el = document.createElement("button");
+    el.className = "update-settings__button";
+    if (params.webhook_id) {
+      const inputEl = document.getElementById('webhook-url-div');
+      inputEl.style.display = 'block';
+      el.innerHTML = "Update Webhook";
+      el.onclick = function() {
+        const select_box = document.getElementById("channelsSelectBox");
+        const channel_id =
+          select_box.options[select_box.selectedIndex].value;
+        if (channel_id == -1) {
+          alert("Select a channel id");
+          return;
+        }
+        const bot_name = document.getElementById("channelNameInput")
+          .value;
+        const data = {
+          en_user_id: params.en_user_id,
+          channel_id: channel_id,
+          full_name: bot_name ? bot_name : undefined,
+          webhook_id: params.webhook_id
+        };
+        fetch(api_url + "webhook/edit", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            app_secret_key: params.app_secret_key,
+            device_type: 3,
+            app_version: "1.0.0"
+          },
+          mode: "cors",
+          body: JSON.stringify(data)
+        }).then(function(response) {
+          if (response.status !== 200) {
+            return;
+          }
+          alert('Webhook Updated Successfully');
+        });
+      };
+    } else {
+      el.innerHTML = "Generate Url";
+      el.onclick = function() {
+        const select_box = document.getElementById("channelsSelectBox");
+        const channel_id =
+          select_box.options[select_box.selectedIndex].value;
+        if (channel_id == -1) {
+          alert("Select a channel id");
+          return;
+        }
+        const bot_name = document.getElementById("channelNameInput")
+          .value;
+        const data = {
+          en_user_id: params.en_user_id,
+          channel_id: channel_id,
+          full_name: bot_name ? bot_name : undefined,
+          app_id: params.app_id
+        };
+        fetch(api_url + "webhook/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            app_secret_key: params.app_secret_key,
+            device_type: 3,
+            app_version: "1.0.0"
+          },
+          mode: "cors",
+          body: JSON.stringify(data)
+        }).then(function(response) {
+          if (response.status !== 200) {
+            return;
+          }
+          response.json().then(function(data) {
+            const inputEl = document.getElementById('webhook-url-div');
+            inputEl.style.display = 'block';
+            document.getElementById("webhookURL").value = data.data.webhook_link;
+            params.webhook_id = data.data.webhook_id;
+            button_el.removeChild(el);
+            setTimeout(() => {
+              alert('Webhook Created Successfully');
+            }, 100);
+            createButton();
+          });
+        });
+      };
+    }
+    button_el.appendChild(el);
+  }
+</script>
+</body>
+</html>

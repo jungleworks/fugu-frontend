@@ -1,0 +1,34 @@
+/*.fc-col-header {*/
+/*  width: 530px !important;*/
+/*  min-width: 529px !important;*/
+/*}*/
+
+
+/*.fc table{*/
+/*  table-layout: auto;*/
+/*}*/
+/*.fc-view > table{*/
+/*  min-width: 0;*/
+/*  width: auto;*/
+/*}*/
+/*.fc-axis{*/
+/*  min-width:100px; !*the width of times column*!*/
+/*  width:100px; !*the width of times column*!*/
+/*}*/
+/*.fc-day,.fc-resource-cell,.fc-content-col{*/
+/*  min-width:300px;*/
+/*  width:300px;*/
+/*}*/
+/*@media (min-width: 1170px) {*/
+/*  div.fc-view.fc-agendaDay-view.fc-agenda-view table {*/
+/*    max-width: 100%;*/
+/*  }*/
+/*}*/
+/*@media (max-width: 1170px) {*/
+/*  div.fc-view-container {*/
+/*    overflow-x: scroll;*/
+/*  }*/
+/*  div.fc-view.fc-agendaDay-view.fc-agenda-view table {*/
+/*    min-width: 1170px;*/
+/*  }*/
+/*}*/

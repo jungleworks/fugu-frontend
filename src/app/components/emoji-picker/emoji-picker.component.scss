@@ -1,0 +1,47 @@
+.emoji-container{
+  position: absolute;
+  z-index: 2001;
+  background-color: var(--chat-bar-header);
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer */
+  -webkit-user-select: none; /* Chrome, Safari, and Opera */
+  -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+  width: 328px;
+  box-shadow: var(--box-shadow);
+  border-radius: 4px;
+  ::ng-deep .emoji{
+    height: 25px;
+    width: 25px;
+    &:hover {
+      transform: scale(1.1);
+      -webkit-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+    }
+  }
+}
+.tab-icon{
+  height: 44px;
+  width: 44px;
+}
+.emoji-tabs{
+  background-color: var(--chat-bar-header);
+}
+.active{
+  border-bottom: solid 2px var(--app-color);
+}
+.emoji-panel{
+  height: 156px;
+  overflow: auto;
+}
+*::-webkit-scrollbar{
+  width: 5px !important;
+  height: 6px !important;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: var(--scroll-color);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-track{
+  background: #eeeeee;
+  padding: 1px;
+}

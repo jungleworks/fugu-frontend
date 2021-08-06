@@ -1,0 +1,765 @@
+<div class="right-profile h-100" #profileContainer id="profile-container">
+  <div *ngIf="profileInfo && [2,7].includes(chat_type) && !showAllMedia && !showMorePanel">
+    <form [formGroup]="profileForm" role="form">
+      <div class="profile">
+        <div class="d-flex image-margin margin-right-div margin-left-div align-items-center">
+          <input type="file" #fileInput id="profileImage" name="upload"
+            (change)="onImageFileSelect($event, UploadImageEnum.User)" class="d-none-normal" accept="image/*" />
+          <div id="profile-image" class="profile-image-container">
+            <div *ngIf="profileInfo.status == 'DISABLED'" class="deactivate-layover-search position-absolute"></div>
+            <img [src]="profileInfo?.user_thumbnail_image || '../../../assets/img/placeholder.png'"
+              (click)="viewEnlargedImage()" class="profile-image cursor-hand rounded-img-fugu">
+          </div>
+          <div>
+            <span class="text-center group-name profile-name-info mr-2">{{profileInfo.full_name}}</span>
+            <span
+              *ngIf="['GUEST', 'PAYING_GUEST'].includes(profileInfo.role) && profileInfo.status != UserStatusEnum.invited"
+              class="guest-label mb-2">(Guest)</span>
+            <span *ngIf="profileInfo.status ==  UserStatusEnum.invited" class="guest-label mb-2">(Pending)</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-information border-bottom-gray">
+        <p class="contact-header mb-0 pl-2">
+          <span class="float-right pr-3">
+            <button class="btn btn-common-small"
+              [hidden]="!((roleStatus == RoleStatusEnum.isOwner && !editContact) || (roleStatus == RoleStatusEnum.isAdmin && profileInfo.role != 'OWNER' && !editContact))"
+              (click)="editContact = true">Edit</button>
+            <button [hidden]="!editContact" [disabled]="!profileForm.valid" class="btn btn-common-small mr-1"
+              (click)="saveProfile()">Save</button>
+            <button [hidden]="!editContact" class="btn btn-red btn-small" (click)="cancelForm()">Cancel</button>
+          </span>
+        </p>
+        <div class="no-gutters margin-right-div margin-left-div border-profile-down"
+          *ngIf="!(spaceData.config.hide_contact_number | parseInt) && profileInfo.contact_number">
+          <div class="col-3 contact-info pb-0">
+            Mobile
+          </div>
+          <div class="col-12 d-flex align-items-center text-left break-all pt-0 field-margin-bottom font-common-fields">
+            {{profileInfo.contact_number}}
+          </div>
+        </div>
+
+        <div class="no-gutters margin-right-div margin-left-div border-profile-down"
+          *ngIf="!(spaceData.config.hide_email | parseInt) && profileInfo.email && !profileInfo.email.includes('@junglework.auth')">
+          <div class="col-3 contact-info pb-0 field-margin-top">
+            Email
+          </div>
+          <div class="col-12 d-flex align-items-center text-left break-all pt-0 field-margin-bottom font-common-fields">
+            {{profileInfo.email}}
+          </div>
+        </div>
+
+        <div class="no-gutters margin-right-div margin-left-div" *ngIf="is_owner_admin || profileForm.value.location">
+          <div class="col-12 contact-info pb-0 field-margin-top">
+            Location
+          </div>
+          <div class="col-12 d-flex align-items-center pt-0 field-margin-bottom font-common-fields">
+            <input type="text" class="text-left w-75 bg-transparent font-common-fields"
+              [ngClass]="{'form-read-only': !editContact,'form-edit-only': editContact  }" [readonly]="!editContact"
+              formControlName="location">
+          </div>
+        </div>
+      </div>
+      <div class="border-bottom-gray"
+        *ngIf="(commonService.external_perm_options.is_create_group_allowed) && chat_type != ChatTypeEnum.BOT && (spaceData.role != RoleStatusEnum.isGuest && spaceData.role != RoleStatusEnum.isPayingGuest) && (spaceData.config.enable_create_group.includes(spaceData.role)) ">
+        <div class="d-flex margin-right-div margin-left-div align-items-center cursor-hand">
+          <span class="d-flex mt-16 mb-16 font-common-fields"
+            *ngIf="profileInfo.full_name && userStatus !== UserStatusEnum.deactiveState" (click)="createGroup()">
+            <span class="margin-right-div">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <g fill="none" fill-rule="evenodd" stroke="var(--chat-header-text)" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="1.5" transform="translate(3 3)">
+                  <path d="M11.636 17.09v-1.454a2.91 2.91 0 0 0-2.909-2.909H2.91A2.91 2.91 0 0 0 0 15.637v1.454" />
+                  <circle cx="5.818" cy="6.909" r="2.909" />
+                  <path
+                    d="M16 17.09v-1.454a2.91 2.91 0 0 0-2.182-2.814M10.91 4.095a2.91 2.91 0 0 1 0 5.636M17.182 0v4.364M19.364 2.182H15" />
+                </g>
+              </svg>
+            </span>
+            <!-- <img class="margin-right-div" src="assets/img/create-group-icon.svg"> -->
+            Create group with {{profileInfo.full_name.split(' ')[0]}}
+          </span>
+        </div>
+      </div>
+      <div *ngIf="commonService.channelMedia | objectLength" class="p-3 group-text-header mb-0 border-bottom-gray">
+        <p class="cursor-hand mb-2 font-common">SHARED MEDIA
+          <!-- <i class="float-right group-media-icon fa fa-angle-right"></i> -->
+        </p>
+        <div class="d-flex mt-1">
+          <div *ngFor="let media of commonService.channelMedia | keyvalue | orderByKeyVal | slice:0:3" class="position-relative
+           d-flex align-items-center justify-content-center media-thumbnail-div cursor-hand"
+            (click)="onImageClick(media.value)">
+            <img src="assets/img/video-play.svg" class="position-absolute video-play-image rounded-img-fugu"
+              *ngIf="media.messageType == MessageTypeEnum.Video_Message">
+            <img [src]="setImageURL(media.value) | safeHtml: 'url'" class="media-thumbnail-image rounded-img-fugu"
+              [ngClass]="{'mr-2': (commonService.channelMedia | objectLength) < 3}">
+          </div>
+          <div class="rectangle-image cursor-hand d-flex align-items-center justify-content-center"
+            (click)="onAllMediaClick()">
+            <img class="rectangle-div" src="assets/img/arrow-inside.svg">
+          </div>
+        </div>
+      </div>
+      <div class="contact-information mt-3 mb-2 pl-2 pr-2 pb-3 border-bottom-gray" *ngIf="is_owner_admin
+      || profileForm.value.designation || profileForm.value.department || profileForm.value.manager">
+        <p class="contact-header mb-0 pl-2">Human Resources</p>
+        <div class="no-gutters">
+          <div class="col-12 hr-info pl-2 pb-0 contact-info" *ngIf="is_owner_admin || profileForm.value.designation">
+            Designation
+          </div>
+          <div class="col-12 d-flex align-items-center text-left pt-0 pl-2 font-common-fields">
+            <input type="text" class="text-left w-75 bg-transparent font-common-fields"
+              [ngClass]="{'form-read-only': !editContact}" [readonly]="!editContact" formControlName="designation">
+          </div>
+        </div>
+        <div class="no-gutters" *ngIf="is_owner_admin || profileForm.value.department">
+          <div class="col-12 hr-info pl-2 pb-0 contact-info">
+            Department
+          </div>
+          <div class="col-12 d-flex align-items-center text-left pt-0 pl-2 font-common-fields">
+            <input type="text" class="text-left w-75 bg-transparent font-common-fields"
+              [ngClass]="{'form-read-only': !editContact}" [readonly]="!editContact" formControlName="department">
+          </div>
+        </div>
+        <div class="no-gutters pb-2" *ngIf="is_owner_admin || (managerData && managerData.full_name)">
+          <div class="col-12 hr-info pl-2 pb-0 contact-info">
+            Manager
+          </div>
+          <div class="col-12 d-flex align-items-center text-left pt-0 pl-2 position-relative">
+            <div class="members-dropup position-absolute" #managerScrollContainer
+              *ngIf="managerDropupOpen && editContact" click-outside (clickOutside)="managerDropupClickOutside($event)">
+              <div class="member-card p-2 cursor-hand d-flex flex-column" *ngFor="let user of all_members_search_results;
+               let i = index" [ngClass]="{'active': active_index == i}" [id]="'manager-card' + i"
+                (click)="onManagerSelected(user)">
+                <span class="overflow-ellipsis">{{user.full_name}}</span>
+                <span class="overflow-ellipsis small text-muted">{{user.email || user.contact_number}}</span>
+              </div>
+            </div>
+            <input type="text" class="text-left w-75 manager-input font-common-fields bg-transparent"
+              (focus)="getAllMembers()" (keydown)="onManagerBoxKeyDownEvent($event)"
+              [ngClass]="{'form-read-only': !editContact}" [readonly]="!editContact" [formControl]="managerSearchCtrl">
+          </div>
+        </div>
+
+      </div>
+      <div>
+        <div class="d-flex justify-content-center mt-16"
+          *ngIf="roleStatus == RoleStatusEnum.isOwner || (roleStatus == RoleStatusEnum.isAdmin && profileInfo.role != RoleStatusEnum.isOwner)">
+          <span class="leave-group cursor-hand btn-block margin-left-div TitilliumWeb-bold" (click)="statusPopup = true"
+            *ngIf="userStatus == UserStatusEnum.activeState || userStatus == UserStatusEnum.invited">
+            Deactivate {{profileInfo.full_name}}
+          </span>
+          <span class="activate-member cursor-hand btn-block margin-left-div TitilliumWeb-bold" (click)="activateUser()"
+            *ngIf="userStatus == UserStatusEnum.deactiveState  && spaceData.config.enable_public_invite != 1">
+            Activate {{profileInfo.full_name}}
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="chat_type && ![2,7].includes(chat_type) && !showAllMedia && !showMorePanel"
+    class="d-flex h-100 flex-column">
+    <div class="profile-image-cont d-flex border-bottom-gray">
+      <div class="d-flex flex-column image-margin margin-left-div">
+        <input type="file" #fileInput id="channelImage" name="upload"
+          (change)="onImageFileSelect($event, UploadImageEnum.Group)" class="d-none-normal" accept="image/*" />
+        <div class="position-relative profile-image-container" (mouseenter)="showImageLayer = true"
+          (mouseleave)="showImageLayer = false">
+          <div *ngIf="channel_image_object.channel_image_url == 'https://fuguchat.s3.ap-south-1.amazonaws.com/default/WwX5qYGSEb_1518441286074.png' && channel_data.members_info.length;
+           else channelImage" class="d-flex channel-image-layer overflow-hidden rounded-img-fugu position-absolute">
+            <app-unnamed-image [members]="channel_data.members_info" [dimensions]="{height:40, width:40, fontsize:20}">
+            </app-unnamed-image>
+          </div>
+          <ng-template #channelImage>
+            <img id="profile-image" *ngIf="channel_image_object.channel_image_url"
+              [src]="channel_image_object.channel_image_url" class="profile-image position-absolute rounded-img-fugu">
+          </ng-template>
+          <div
+            class="image-layer cursor-hand pl-2 pr-2 position-absolute d-flex flex-column align-items-center justify-content-center rounded-img-fugu"
+            *ngIf="showImageLayer" (click)="view_photo_options = true">
+            <ng-container *ngIf="isEditAllowed()">
+              <i class="fa fa-camera pointer-none"></i>
+              <!-- <span class="profile-font">CHANGE PROFILE PHOTO</span> -->
+            </ng-container>
+          </div>
+          <div *ngIf="view_photo_options" class="photo-options-menu position-absolute" click-outside
+            (clickOutside)="profileOptionsClickOutside($event)">
+            <button
+              *ngIf="channel_image_object.channel_image_url != 'https://fuguchat.s3.ap-south-1.amazonaws.com/default/WwX5qYGSEb_1518441286074.png'"
+              (click)="view_photo_options = false;viewEnlargedImage()" class="btn-custom-nostyle outline-none
+             box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option">
+              View
+            </button>
+            <button *ngIf="isEditAllowed()" (click)="fileInput.click();view_photo_options = false" class="btn-custom-nostyle outline-none
+            box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option">
+              Upload
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="group-name position-relative d-flex flex-column w-100 image-margin margin-right-div justify-content-center">
+        <div [ngClass]="{'input-border': editGroupName}"
+          class="position-relative d-flex align-items-center justify-content-between">
+          <p class="mb-0 w-90 overflow-hidden text-ellipsis profile-name-info" *ngIf="!editGroupName">{{label_header}}
+          </p>
+          <input *ngIf="editGroupName" maxlength="50" type="text" id="groupNameInput"
+            class="w-75 hide_focus_border box-shadow-none outline-none"
+            [ngClass]="{'form-edit-only': editGroupName,'border-none':editGroupName}" [(ngModel)]="label_header"
+            appAutofocus placeholder="Enter group name">
+          <span *ngIf="editGroupName" class="length_group position-absolute">{{50 - label_header.length}}</span>
+          <!-- <img src="assets/img/pencil.svg" *ngIf="!editGroupName && is_group_joined && ![5,6].includes(chat_type) && isEditAllowed()" class="position-absolute right-position-icon"
+               (click)="editGroupNameClicked()"> -->
+          <button *ngIf="editGroupName" class="btn btn-none ml-2 pr-0 hide-button-border pb-0"
+            (click)="groupNameEdit()">
+            <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15">
+              <path fill="var(--app-color)" d="M8 17.1l-5.2-5.2-1.7 1.7 6.9 7L22.9 5.7 21.2 4 8 17.1z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="d-flex align-self-start" [ngClass]="{'pt-2':editGroupName}">
+          <i *ngIf="chat_type == 3" class="fa fa-lock pr-2"></i>
+          <!-- <span class="fs-15">Private</span> -->
+          <span class="fs-15" *ngIf="channel_data.channel_info">Created By {{channel_data.channel_info.owner_name}}</span>
+        </div>
+        <svg
+          *ngIf="!editGroupName && is_group_joined && ![5,6].includes(chat_type) && isEditAllowed() "
+          class="position-absolute right-position-icon" (click)="editGroupNameClicked()"
+          xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0h24v24H0z" />
+            <path fill="var(--chat-header-text)"
+              d="M18.923 3.006a3.05 3.05 0 0 0-2.175.895h-.006L5.173 15.668l-2.08 6.244 6.239-2.085.132-.126L21.099 8.252a3.087 3.087 0 0 0 0-4.35 3.076 3.076 0 0 0-2.176-.896zm0 1.532c.39 0 .781.145 1.088.451a1.527 1.527 0 0 1 0 2.176L18.797 8.36a3.874 3.874 0 0 0-.866-1.286 3.861 3.861 0 0 0-1.292-.866l1.202-1.226c.3-.294.691-.45 1.082-.445zm-3.3 2.97c.283.023.698.131 1.215.648.523.523.63.938.66 1.22.019.217-.011.247-.023.283l-7.951 7.818a3.933 3.933 0 0 0-.83-1.178 3.866 3.866 0 0 0-1.177-.823l7.824-7.945c.036-.018.066-.042.283-.024zM6.46 16.75c.24.018.625.114 1.154.643.523.523.619.907.637 1.142 0 .03-.006.012 0 .036l-1.466.487a4.326 4.326 0 0 0-.841-.835l.492-1.473c.018.006 0 0 .024 0z" />
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div id="accordian">
+      <div class="border-bottom-gray">
+        <div class="margin-left-div margin-right-div">
+          <div
+            class=" h-60 d-flex justify-content-start align-items-center group-font-color cursor-hand border-profile-down"
+            (click)="manageNotifications()" *ngIf="is_group_joined && layoutService.mutedStatusObject[activeChannelId]">
+            <div class="margin-right-div add-member-icon d-flex justify-content-center align-items-center">
+              <!-- <i class="fas fa-bell" *ngIf="layoutService.mutedStatusObject[activeChannelId] == 'UNMUTED'"></i>
+              <i class="fas fa-bell-slash" *ngIf="layoutService.mutedStatusObject[activeChannelId] != 'UNMUTED'"></i> -->
+              <!-- <svg width="24" height="24">
+                <use  viewBox="0 0 24 24" href="assets/img/bell-profile.svg#bellIcon" [attr.fill]="'var(--chat-header-text)'"></use>
+              </svg> -->
+              <svg xmlns="http://www.w3.org/2000/svg" id="bell" width="24" height="24" viewBox="0 0 24 24">
+                <g fill="none" fill-rule="evenodd" stroke="var(--chat-header-text)" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="1.5">
+                  <path
+                    d="M16.2 9.48a4.48 4.48 0 1 0-8.96 0C7.24 14.707 5 16.2 5 16.2h13.44s-2.24-1.493-2.24-6.72M13.012 19.187a1.493 1.493 0 0 1-2.584 0" />
+                </g>
+              </svg>
+            </div>
+            <div class="d-flex flex-column justify-content-start">
+              <span class="text-options">Manage Notifications</span>
+
+              <ng-container [ngSwitch]="layoutService.mutedStatusObject[activeChannelId]">
+                <ng-container *ngSwitchCase="groupNotificationTypeEnum.UNMUTED">
+                  <span class="mng-noti">All messages</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="groupNotificationTypeEnum.MUTED">
+                  <span class="mng-noti">Only mentions</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="groupNotificationTypeEnum.DIRECT_MENTIONS">
+                  <span class="mng-noti">Only direct mentions</span>
+                </ng-container>
+              </ng-container>
+            </div>
+
+          </div>
+          <div
+            class=" h-60 d-flex justify-content-start align-items-center group-font-color cursor-hand border-profile-down"
+            (click)="manageSendMessage()"
+            *ngIf="is_group_joined && [3,4,5,6].includes(chat_type) && adminIdData.includes(commonService.userDetails.user_id)">
+            <div class="margin-right-div add-member-icon d-flex justify-content-center align-items-center">
+              <!-- <i class="fas fa-envelope"></i> -->
+              <!-- <img src="assets/img/message-profile.svg" class=""> -->
+              <svg id="messIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="var(--chat-header-text)" fill-rule="evenodd"
+                  d="M18.538 3c1.03 0 1.881.825 1.957 1.86l.005.15v10.72c0 1.053-.805 1.926-1.816 2.004l-.146.005H12.2L7.423 21v-3.26H5.462c-1.03 0-1.881-.826-1.957-1.861l-.005-.15V5.01c0-1.053.805-1.926 1.816-2.003L5.462 3h13.076zm0 1.34H5.462a.65.65 0 0 0-.647.57l-.007.1v10.72c0 .342.236.615.555.662l.099.007H8.73v2.1l3.07-2.1h6.737a.65.65 0 0 0 .647-.57l.007-.1V5.01a.654.654 0 0 0-.654-.67zM8 9c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1zm4 0c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1zm4 0c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1z" />
+              </svg>
+
+            </div>
+            <span class="text-options">Send Messages</span>
+          </div>
+          <!--LOCAL TEST-->
+          <!--          <ng-container *ngIf="!commonService.isWhitelabelled && spaceData?.config?.is_tasks_enabled == 'true'">-->
+          <ng-container *ngIf="(!commonService?.isWhitelabelled)  && spaceData?.config?.is_tasks_enabled == 'true'">
+
+            <div
+              class=" h-60 d-flex justify-content-start align-items-center group-font-color cursor-hand border-profile-down"
+              (click)="showAssignTaskPopup = true"
+              *ngIf="is_group_joined && [3,4,5,6].includes(chat_type) && adminIdData.includes(commonService.userDetails.user_id)">
+              <div class="margin-right-div add-member-icon d-flex justify-content-center align-items-center">
+                <!-- <i class="fas fa-envelope"></i> -->
+                <!-- <img src="assets/img/message-profile.svg" class=""> -->
+                <!--              <svg id="messIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
+                <!--                <path fill="var(&#45;&#45;chat-header-text)" fill-rule="evenodd"-->
+                <!--                      d="M18.538 3c1.03 0 1.881.825 1.957 1.86l.005.15v10.72c0 1.053-.805 1.926-1.816 2.004l-.146.005H12.2L7.423 21v-3.26H5.462c-1.03 0-1.881-.826-1.957-1.861l-.005-.15V5.01c0-1.053.805-1.926 1.816-2.003L5.462 3h13.076zm0 1.34H5.462a.65.65 0 0 0-.647.57l-.007.1v10.72c0 .342.236.615.555.662l.099.007H8.73v2.1l3.07-2.1h6.737a.65.65 0 0 0 .647-.57l.007-.1V5.01a.654.654 0 0 0-.654-.67zM8 9c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1zm4 0c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1zm4 0c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1z"/>-->
+                <!--              </svg>-->
+                <img src="/assets/img/task.svg" style="width: 20px;margin-left: 4px;">
+
+              </div>
+              <span class="text-options"> Assign Task</span>
+            </div>
+            <div
+              class=" h-60 d-flex justify-content-start align-items-center group-font-color cursor-hand border-profile-down"
+              (click)="viewTasks()">
+              <div class="margin-right-div add-member-icon d-flex justify-content-center align-items-center">
+                <i class="fa fa-tasks" aria-hidden="true" style="margin-left: 6px"></i>
+                <!--            <svg  id="messIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">-->
+                <!--              <path fill="var(&#45;&#45;chat-header-text)" fill-rule="evenodd" d="M18.538 3c1.03 0 1.881.825 1.957 1.86l.005.15v10.72c0 1.053-.805 1.926-1.816 2.004l-.146.005H12.2L7.423 21v-3.26H5.462c-1.03 0-1.881-.826-1.957-1.861l-.005-.15V5.01c0-1.053.805-1.926 1.816-2.003L5.462 3h13.076zm0 1.34H5.462a.65.65 0 0 0-.647.57l-.007.1v10.72c0 .342.236.615.555.662l.099.007H8.73v2.1l3.07-2.1h6.737a.65.65 0 0 0 .647-.57l.007-.1V5.01a.654.654 0 0 0-.654-.67zM8 9c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1zm4 0c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1zm4 0c.555 0 1 .445 1 1 0 .555-.445 1-1 1-.555 0-1-.445-1-1 0-.555.445-1 1-1z"/>-->
+                <!--          </svg>-->
+
+              </div>
+
+              <span class="text-options"> View Tasks</span>
+            </div>
+          </ng-container>
+
+          <div class="h-60 d-flex flex-column align-items-center justify-content-center" *ngIf="is_group_joined && ![ChatTypeEnum.GENERAL, ChatTypeEnum.DEFAULT_CHANNELS].includes(chat_type) &&
+          currentGroupRole == RoleStatusEnum.isAdmin">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <span>
+                <!-- <img src="assets/img/private-profile.svg" class="margin-right-div"> -->
+                <svg class="margin-right-div" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24">
+                  <path fill="var(--chat-header-text)" fill-rule="evenodd"
+                    d="M12.308 3a5.55 5.55 0 0 0-5.539 5.538v1.385h-.692A2.084 2.084 0 0 0 4 12v6.923C4 20.064 4.936 21 6.077 21h12.461a2.084 2.084 0 0 0 2.077-2.077V12a2.084 2.084 0 0 0-2.077-2.077h-.692V8.538A5.55 5.55 0 0 0 12.308 3zm0 1.385a4.141 4.141 0 0 1 4.154 4.153v1.385H8.154V8.538a4.141 4.141 0 0 1 4.154-4.153zm-6.231 6.923h12.461c.39 0 .693.303.693.692v6.923c0 .39-.303.692-.693.692H6.077a.683.683 0 0 1-.692-.692V12c0-.39.302-.692.692-.692zm6.23 1.384c-1.52 0-2.769 1.25-2.769 2.77s1.25 2.769 2.77 2.769 2.769-1.25 2.769-2.77-1.25-2.769-2.77-2.769zm0 1.385c.022 0 .039.01.055.01a1.039 1.039 0 0 0 1.32 1.32c0 .017.01.033.01.055 0 .773-.61 1.384-1.384 1.384a1.374 1.374 0 0 1-1.385-1.384c0-.774.611-1.385 1.385-1.385z" />
+                </svg>
+
+                <span class="text-options">Private Group</span>
+              </span>
+              <label class="position-relative container-checkbox d-flex align-items-center mt-2">
+                <input type="checkbox" class="checkbox " [checked]="chat_type == ChatTypeEnum.PRIVATE"
+                  (change)="togglePublicToPrivate($event) ;editGroupName ? closeEditGroupName(): ''">
+                <span class="checkmark position-relative"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- <div class=" h-60 d-flex justify-content-start align-items-center pl-1 pr-3 pt-1 pb-1 group-font-color cursor-hand border-profile-down"
+               (click)="openSearchModal() ; editGroupName ? closeEditGroupName(): ''" *ngIf="is_group_joined && ![ChatTypeEnum.GENERAL, ChatTypeEnum.DEFAULT_CHANNELS, ChatTypeEnum.RESTRICTED].includes(chat_type)">
+            <div class="member-image  add-member-icon d-flex justify-content-center align-items-center">
+              <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
+                <path fill="#000" d="M14.7 12c2 0 3.6-1.6 3.6-3.6s-1.6-3.6-3.6-3.6-3.6 1.6-3.6 3.6 1.6 3.6 3.6 3.6zm-8.1-1.8V7.5H4.8v2.7H2.1V12h2.7v2.7h1.8V12h2.7v-1.8H6.6zm8.1 3.6c-2.4 0-7.2 1.2-7.2 3.6v1.8H22v-1.8c-.1-2.4-4.9-3.6-7.3-3.6z"></path>
+              </svg>
+            </div>
+            <span>Add Members</span>
+          </div> -->
+
+        </div>
+      </div>
+      <div *ngIf="commonService.channelMedia | objectLength" class="border-bottom-gray">
+        <div class="margin-right-div margin-left-div group-text-header mb-0">
+          <p class="cursor-hand mb-2 display-flex justify-content-between" (click)="onAllMediaClick()"> SHARED MEDIA
+            <!-- <i class="float-right group-media-icon fa fa-angle-right"></i> -->
+            <!-- <img src="assets/img/angle-right.svg" class=""> -->
+          </p>
+          <div class="d-flex mb-1">
+            <div *ngFor="let media of commonService.channelMedia | keyvalue | orderByKeyVal | slice:0:3" class="position-relative
+             d-flex align-items-center justify-content-center media-thumbnail-div cursor-hand"
+              (click)="onImageClick(media.value)">
+              <img src="assets/img/video-play.svg" class="position-absolute video-play-image"
+                *ngIf="media.messageType == MessageTypeEnum.Video_Message">
+              <img [src]="setImageURL(media.value) | safeHtml: 'url'" class="media-thumbnail-image"
+                [ngClass]="{'mr-2': commonService.channelMedia.length < 3}">
+            </div>
+            <div class="rectangle-image cursor-hand d-flex align-items-center justify-content-center"
+              (click)="onAllMediaClick()">
+              <img class="rectangle-div" src="assets/img/arrow-inside.svg">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-row h-60  align-items-center ">
+        <span class="w-100 h-60 d-flex position-relative align-items-center justify-content-between group-font-color
+           cursor-hand mb-0 margin-left-div margin-right-div" (click)="editGroupName ? closeEditGroupName(): ''">
+          <div class="">
+            <span class="font-common mr-2">
+              <!-- <img class="hw-18 mr-1" src="assets/img/browse-groups.svg"> -->
+              {{user_count}} MEMBERS
+            </span>
+            <!-- <span class="" [ngClass]="{'rotate-icon' : show_members}">
+               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12" viewBox="0 0 16 11">
+                 <defs>
+                   <path id="a" d="M.01 0h15.978v20H.01z" />
+                 </defs>
+                 <g fill="none" fill-rule="evenodd" transform="translate(0 -4)">
+                   <mask id="b" fill="#fff">
+                     <use xlink:href="#a" />
+                   </mask>
+                   <path fill="#333333" stroke="#333333" d="M15.815 5.23a.547.547 0 0 0-.799 0l-7.02 7.359L.965 5.23a.547.547 0 0 0-.799 0 .61.61 0 0 0 0 .835l7.418 7.761a.54.54 0 0 0 .4.173.562.562 0 0 0 .399-.173L15.8 6.066a.598.598 0 0 0 .015-.835z"
+                         mask="url(#b)" />
+                 </g>
+               </svg>
+             </span> -->
+          </div>
+          <div class=" h-60 d-flex justify-content-start align-items-center group-font-color cursor-hand"
+            (click)="openSearchModal() ; editGroupName ? closeEditGroupName(): ''"
+            *ngIf="is_group_joined && ![ChatTypeEnum.GENERAL, ChatTypeEnum.DEFAULT_CHANNELS, ChatTypeEnum.RESTRICTED].includes(chat_type)">
+            <div class="member-image  add-member-icon d-flex justify-content-center align-items-center">
+              <!-- <img src="assets/img/add-member.svg" class=""> -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <g fill="none" fill-rule="evenodd" stroke="var(--app-color)" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="1.5" transform="translate(4 5)">
+                  <path d="M10.91 13.09v-1.454A2.91 2.91 0 0 0 8 8.727H2.91A2.91 2.91 0 0 0 0 11.637v1.454" />
+                  <circle cx="5.455" cy="2.909" r="2.909" />
+                  <path d="M13.818 3.636V8M16 5.818h-4.364" />
+                </g>
+              </svg>
+
+
+            </div>
+            <div class="add-mem-text">Add members</div>
+          </div>
+        </span>
+      </div>
+      <div class="members pl-3 pr-3 pb-3 pt-1 overflow-hidden flex-grow w-100 border-bottom-gray" id="groupMembers"
+        #membersAccordionContainer>
+        <div id="member-container" class="vs-scroll-container" #memberContainerScroll>
+          <div class="d-flex align-items-center pt-2 pb-2 border-bottom" *ngFor="let member of membersInfo | slice:0:4"
+            (mouseenter)="member.option_visible = true" (mouseleave)="member.option_visible = false">
+            <img *ngIf="member.user_image" [src]="member.user_image"
+              (click)="openProfileNamePopover($event,member.user_id)" class="member-image rounded-img-fugu cursor-hand"
+              [ngClass]="{'deactive-member': !member.status}">
+            <div *ngIf="!member.user_image"
+              class="rounded-img-fugu member-image member-text cursor-hand d-flex justify-content-center align-items-center"
+              [ngClass]="{'deactive-member': !member.status}" (click)="openProfileNamePopover($event,member.user_id)"
+              [ngStyle]="{'background-color': member.user_id | randomColor}">
+              {{member.full_name.substring(0, 1)}}
+            </div>
+            <div class="d-flex w-100 overflow-hidden">
+              <p class="mb-1 flex-grow pt-1 cursor-hand member-name-text"
+                (click)="openProfileNamePopover($event,member.user_id)" [ngClass]="{'text-muted': !member.status}"
+                [ngStyle]="{'width': member.role == RoleStatusEnum.isAdmin ? '60%' : '100%'}">
+                {{commonService.userDetails.user_id != member.user_id ? member.full_name : 'You'}}</p>
+              <div class="d-flex align-items-center">
+                <span class="admin-text mr-1" *ngIf="member.role == RoleStatusEnum.isAdmin">
+                  Admin
+                </span>
+                <!-- member.option_visible && currentGroupRole == RoleStatusEnum.isAdmin && commonService.userDetails.user_id !== member.user_id -->
+                <img draggable="false" src="/assets/img/down-arrow-black.svg"
+                  [ngClass]="{'show-menu' : member.option_visible && commonService.userDetails.user_id != member.user_id && currentGroupRole == RoleStatusEnum.isAdmin}"
+                  class="img-fluid cursor-hand msg-menu" (click)="openMemberOptionMenu($event, member)">
+              </div>
+            </div>
+            <!-- <button class="btn btn-remove cursor-hand outline-none" [hidden]="commonService.userDetails.user_id === member.user_id || [5,6].includes(chat_type) || !is_group_joined"
+                        data-toggle="modal" data-target="#removeModal" (click)="tempUserIdToRemove = member.user_id">Remove
+                      </button> -->
+          </div>
+          <!-- <span class="buttonload d-flex justify-content-center w-100" *ngIf="showLoaderPagination">
+            <i class="fas fa-circle-notch fa-spin"></i>
+          </span> -->
+          <div [hidden]="!members_menu_open" class="position-fixed members-options-mask w-100 h-100"
+            (click)="members_menu_open = false">
+            <div class="member-options-menu position-fixed" id="member-menu">
+              <button
+                class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+                *ngIf="temp_selected_member && currentGroupRole == RoleStatusEnum.isAdmin && temp_selected_member.role != RoleStatusEnum.isAdmin"
+                (click)="makeAdmin(temp_selected_member)">
+                Make group admin
+              </button>
+              <button
+                class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+                *ngIf="temp_selected_member && currentGroupRole == RoleStatusEnum.isAdmin && temp_selected_member.role == RoleStatusEnum.isAdmin"
+                (click)="dismissAsAdmin(temp_selected_member)">
+                Dismiss as admin
+              </button>
+              <button
+                class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+                (click)="tempUserIdToRemove = temp_selected_member.user_id; removeGroupMember = true"
+                *ngIf="temp_selected_member && isMemberAddRemoveAllowed() && commonService.userDetails.user_id !== temp_selected_member.user_id && ![5,6].includes(chat_type) && is_group_joined">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="membersInfo.length > 4" class="more-text cursor-hand" (click)="showMorePanelProfile()">Show more
+        </div>
+      </div>
+      <div class="pl-3 pr-3 pt-1 pb-1 h-60 border-profile-down border-profile-up d-flex align-items-center"
+        *ngIf="is_group_joined && ![5,6,8].includes(chat_type)">
+        <p class="leave-group pr-2 mr-2 cursor-hand mb-0" (click)="editGroupName ? closeEditGroupName(): ''"
+          (click)="leaveGroupPopup = true">
+          <span class="float-left d-flex align-items-center TitilliumWeb-bold">
+            <!-- <i class="pr-2 fas fa-sign-out-alt fa-leave-font-size"></i>  -->
+            Leave Group
+          </span>
+        </p>
+      </div>
+      <div class="pl-3 pr-3 pt-1 pb-1 h-60 border-profile-down border-profile-up d-flex align-items-center"
+        *ngIf="is_group_joined && [3,4].includes(chat_type) && adminIdData.includes(commonService.userDetails.user_id)">
+        <p class="leave-group pr-2 mr-2 cursor-hand mb-0" (click)="editGroupName ? closeEditGroupName(): ''"
+          (click)="deleteGroupPopup = true">
+          <span class="float-left d-flex align-items-center TitilliumWeb-bold">
+            <!-- <i class="pr-2 fas fa-trash-alt fa-del-font-size"></i> -->
+            Delete Group
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showAllMedia" class="h-100 overflow-hidden d-flex flex-column" [@mediaAnim]>
+    <div class="media-all-header border-bottom-gray d-flex align-items-center justify-content-between p-2">
+      <!-- <img src="/assets/img/back.png" class="cursor-hand back-icon" (click)="showAllMedia = false;"> -->
+      <svg class="cursor-hand back-icon" (click)="showAllMedia = false;" xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" width="24" height="24">
+        <path fill="var(--chat-header-text)" d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20v-2z"></path>
+      </svg>
+
+      <p class="margin-auto mb-0 theme-font-color">Media</p>
+    </div>
+    <div id="media-container" class="d-flex flex-wrap p-2 overflow-auto" #mediaContainerScroll>
+      <div *ngFor="let media of commonService.channelMedia | keyvalue | orderByKeyVal" class="position-relative
+          d-flex align-items-center justify-content-center media-thumbnail-div cursor-hand mt-1 mr-1"
+        (click)="onImageClick(media.value)">
+        <img src="assets/img/video-play.svg" class="position-absolute video-play-image"
+          *ngIf="media.messageType == MessageTypeEnum.Video_Message">
+        <img [src]="setImageURL(media.value) | safeHtml: 'url'" class="media-thumbnail-image"
+          [ngClass]="{'mr-2': (commonService.channelMedia | objectLength) < 3}">
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showMorePanel" class="h-100 overflow-hidden d-flex flex-column" [@mediaAnim]>
+    <div class="media-all-header border-bottom-gray d-flex align-items-center justify-content-between p-2">
+      <!-- <img src="/assets/img/back.png" class="cursor-hand back-icon" (click)="showMorePanel = false;"> -->
+      <svg class="cursor-hand back-icon" (click)="showMorePanel = false;" xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" width="24" height="24">
+        <path fill="var(--chat-header-text)" d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20v-2z"></path>
+      </svg>
+      <p class="margin-auto mb-0 theme-font-color">Members</p>
+    </div>
+    <!-- <div id="media-container" class="d-flex flex-wrap p-2 overflow-auto" #mediaContainerScroll
+    [ngClass]="{'justify-content-between': ((commonService.channelMedia | objectLength) % 3 == 0)}"> -->
+    <div class="h-100 overflow-auto margin-left-div margin-right-div" id="member-container" #memberContainerScroll>
+      <div class="d-flex align-items-center pt-2 pb-2" *ngFor="let member of membersInfo"
+        (mouseenter)="member.option_visible = true" (mouseleave)="member.option_visible = false">
+        <img *ngIf="member.user_image" [src]="member.user_image" (click)="openProfileNamePopover($event,member.user_id)"
+          class="member-image rounded-img-fugu cursor-hand" [ngClass]="{'deactive-member': !member.status}">
+        <div *ngIf="!member.user_image"
+          class="rounded-img-fugu member-image member-text cursor-hand d-flex justify-content-center align-items-center"
+          [ngClass]="{'deactive-member': !member.status}" (click)="openProfileNamePopover($event,member.user_id)"
+          [ngStyle]="{'background-color': member.user_id | randomColor}">
+          {{member.full_name.substring(0, 1)}}
+        </div>
+        <div class="d-flex w-100 overflow-hidden">
+          <p class="mb-1 flex-grow pt-1 cursor-hand member-name-text"
+            (click)="openProfileNamePopover($event,member.user_id)" [ngClass]="{'text-muted': !member.status}"
+            [ngStyle]="{'width': member.role == RoleStatusEnum.isAdmin ? '60%' : '100%'}">
+            {{commonService.userDetails.user_id != member.user_id ? member.full_name : 'You'}}</p>
+          <div class="d-flex align-items-center">
+            <span class="admin-text mr-1" *ngIf="member.role == RoleStatusEnum.isAdmin">
+              Admin
+            </span>
+            <!-- member.option_visible && currentGroupRole == RoleStatusEnum.isAdmin && commonService.userDetails.user_id !== member.user_id -->
+            <img draggable="false" src="/assets/img/down-arrow-black.svg"
+              [ngClass]="{'show-menu' : member.option_visible && commonService.userDetails.user_id != member.user_id && currentGroupRole == RoleStatusEnum.isAdmin}"
+              class="img-fluid cursor-hand msg-menu" (click)="openMemberOptionMenuOverall($event, member)">
+          </div>
+        </div>
+        <!-- <button class="btn btn-remove cursor-hand outline-none" [hidden]="commonService.userDetails.user_id === member.user_id || [5,6].includes(chat_type) || !is_group_joined"
+                    data-toggle="modal" data-target="#removeModal" (click)="tempUserIdToRemove = member.user_id">Remove
+                  </button> -->
+      </div>
+      <span class="buttonload d-flex justify-content-center w-100" *ngIf="showLoaderPagination">
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </span>
+      <div [hidden]="!members_menu_open_overall" class="position-fixed members-options-mask w-100 h-100"
+        (click)="members_menu_open_overall = false">
+        <div class="member-options-menu position-fixed" id="member-menu-overall">
+          <button
+            class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+            *ngIf="temp_selected_member && currentGroupRole == RoleStatusEnum.isAdmin && temp_selected_member.role != RoleStatusEnum.isAdmin"
+            (click)="makeAdmin(temp_selected_member)">
+            Make group admin
+          </button>
+          <button
+            class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+            *ngIf="temp_selected_member && currentGroupRole == RoleStatusEnum.isAdmin && temp_selected_member.role == RoleStatusEnum.isAdmin"
+            (click)="dismissAsAdmin(temp_selected_member)">
+            Dismiss as admin
+          </button>
+          <button
+            class="btn-custom-nostyle outline-none box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option"
+            (click)="tempUserIdToRemove = temp_selected_member.user_id; removeGroupMember = true"
+            *ngIf="temp_selected_member && isMemberAddRemoveAllowed() && commonService.userDetails.user_id !== temp_selected_member.user_id && ![5,6].includes(chat_type) && is_group_joined">
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-gallery-carousel (closeCarousel)="showImageCarousel = false" [parentData]="dataForCarousel"
+  *ngIf="showImageCarousel">
+</app-gallery-carousel>
+<app-profile-popup [id]="'profile-popover-group'" [user_id]="mentionUserId" [hidden]="!showProfilePopover"
+  (closePopup)="showProfilePopover = false" click-outside (clickOutside)="popoverClickOutside($event)">
+</app-profile-popup>
+<app-message-modal *ngIf="showAddMembersPopup" [padding]="'0'" [width]="'33%'" [@messageModalAnimation]
+  (closeMessageModal)="showAddMembersPopup = false">
+  <app-add-members [addedMembers]="membersInfo" (closeAddMembers)="closeAddMemberPopup()"
+    (sendMembersData)="addChatMember($event)">
+  </app-add-members>
+</app-message-modal>
+<!-- Value is a part of the syntax hence it is mandatory-->
+<div *ngIf="view_profile_enlarged" [@parentAnimate]>
+  <div (click)="view_profile_enlarged = false"
+    class="enlarged-background back-image d-flex justify-content-center align-items-center">
+    <img
+      [@imageZoom]="{value: undefined, params: { imageStartHeight: '100px', imageStartWidth: '100px', animationHeightX: animationHeightX, animationHeightY: animationHeightY}}"
+      class="animate-container-position image-size-animate user-select-none"
+      [src]="chat_type == ChatTypeEnum.ONE_TO_ONE ? profileInfo?.user_image : channel_image_object.channel_image_url">
+  </div>
+</div>
+
+<app-message-modal *ngIf="removeGroupMember" [width]="'30%'" [@messageModalAnimation]
+  (closeMessageModal)="removeGroupMember = false">
+  <p class="message-modal-description">Are you sure you want to
+    remove {{temp_selected_member ? temp_selected_member.full_name : 'this member'}} ?</p>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+      (click)="removeGroupMember = false">No
+    </button>
+    <button class="message-modal-button outline-none" (click)="removeChatMember()">Yes</button>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="leaveGroupPopup" [width]="'30%'" [@messageModalAnimation]
+  (closeMessageModal)="leaveGroupPopup = false">
+  <p class="message-modal-description">Are you sure you want to leave this group?</p>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+      (click)="leaveGroupPopup = false">No
+    </button>
+    <button class="message-modal-button outline-none" (click)="leaveGroup()">Yes</button>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="statusPopup" [width]="'30%'" [@messageModalAnimation]
+  (closeMessageModal)="statusPopup = false">
+  <p class="message-modal-description">Are you sure you want to deactivate this user?</p>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+      (click)="statusPopup = false">No
+    </button>
+    <button class="message-modal-button outline-none" (click)="deactivateUser()">Yes</button>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="deleteGroupPopup" [width]="'30%'" [@messageModalAnimation]
+  (closeMessageModal)="deleteGroupPopup = false">
+  <p class="message-modal-description">Are you sure you want to delete this group?</p>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+      (click)="deleteGroupPopup = false">No
+    </button>
+    <button class="message-modal-button outline-none" (click)="deleteGroup()">Yes</button>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="showManageNotiPopup" [width]="'35%'" [@messageModalAnimation]
+  (closeMessageModal)="showManageNotiPopup = false">
+  <p class="message-modal-heading">Group Notification Settings</p>
+  <div class="d-flex flex-column">
+    <div class="radio-margin">
+      <div class="radio">
+        <input id="UNMUTED" name="radio" type="radio" [(ngModel)]="groupNotificationValue" value="UNMUTED">
+        <label for="UNMUTED" class="radio-label ml-2 mb-0">Notify me for all messages (default)</label>
+      </div>
+      <div class="info">
+        <span class="noti-info">(All new messages will notify you)</span>
+      </div>
+    </div>
+
+    <div class="radio-margin">
+      <div class="radio">
+        <input id="MUTED" name="radio" type="radio" [(ngModel)]="groupNotificationValue" value="MUTED">
+        <label for="MUTED" class="radio-label ml-2 mb-0">Notify me for mentions only</label>
+      </div>
+      <div class="info">
+        <span class="noti-info">({{'@Everyone, @' + user_details.full_name + ' will notify you'}})</span>
+      </div>
+    </div>
+
+    <div class="radio-margin">
+      <div class="radio">
+        <input id="DIRECT_MENTIONS" name="radio" type="radio" [(ngModel)]="groupNotificationValue"
+          value="DIRECT_MENTIONS">
+        <label for="DIRECT_MENTIONS" class="radio-label ml-2 mb-0">Notify me for direct mentions only</label>
+      </div>
+      <div class="info">
+        <span class="noti-info">(@{{user_details.full_name}} will notify you & nothing else)</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none message-modal-button-red btn-red outline-none mr-2"
+      (click)="cancelNotiPopup()">Cancel
+    </button>
+    <button class="message-modal-button outline-none" (click)="manageNotificationInfo()">Save</button>
+  </div>
+</app-message-modal>
+
+<app-message-modal *ngIf="showSendMessageSettingPopup" [width]="'30%'" [@messageModalAnimation]
+  (closeMessageModal)="showSendMessageSettingPopup = false">
+  <p class="message-modal-heading mb-0">Send Message Settings</p>
+  <p class="theme-font-light">Choose who can send messages to this group</p>
+  <div class="d-flex flex-column">
+    <div class="pb-2">
+      <div class="radio">
+        <input id="ALL" name="radio" type="radio" [(ngModel)]="sendMessageSetting" value="0">
+        <label for="ALL" class="radio-label ml-2 mb-0 theme-font-color">All Participants</label>
+      </div>
+    </div>
+
+    <div class="">
+      <div class="radio">
+        <input id="ADMIN" name="radio" type="radio" [(ngModel)]="sendMessageSetting" value="1">
+        <label for="ADMIN" class="radio-label ml-2 mb-0 theme-font-color">Only Admins</label>
+      </div>
+    </div>
+
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none message-modal-button-red btn-red outline-none mr-2"
+      (click)="cancelSendMessagePopup()">Cancel
+    </button>
+    <button class="message-modal-button outline-none" (click)="manageSendMessageInfo()">Save</button>
+  </div>
+</app-message-modal>
+<app-tasks-popup *ngIf="showAssignTaskPopup" (closePopup)="showAssignTaskPopup = false" [taskDataEdit]='taskDataEdit'
+  [membersInfo]="membersInfo" [user_count]="user_count"></app-tasks-popup>
+
+<!-- <app-message-modal *ngIf="showViewTaskPopup" [width]="'60%'" [width]="'40%'"  [@messageModalAnimation] (closeMessageModal)="showViewTaskPopup = false">
+  <p class="message-modal-heading mb-0">View task</p>
+  <p class="theme-font-light">Assign tasks here</p>
+  <div>
+     <div *ngFor="let task of taskData" class="task-card cursor-hand mb-2" (click)="showEditTask(task)">
+       <div class="d-flex flex-row">
+         <span class="TitilliumWeb-bold">{{task.title}} - </span>
+         <span class="ml-2">{{task.description}}</span>
+       </div>
+       <span class="theme-font-light ">From {{task.start_datetime | date:"MMMM d 'at' h:mm a"}}</span>
+       <span class="theme-font-light "> to {{task.end_datetime | date:"MMMM d 'at' h:mm a"}}</span>
+     </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none message-modal-button-red btn-red outline-none mr-2" (click)="showViewTaskPopup = false">Close</button>
+  </div>
+</app-message-modal> -->
+
+<app-tasks-calendar *ngIf="showViewTaskPopup" (closePopup)='showViewTaskPopup = false' [channelId]="activeChannelId">
+</app-tasks-calendar>
+
+
+<app-image-cropper *ngIf="showCroppingPopup" [cropObj]="cropObj" (sendCroppedImage)="saveCroppedImage($event)"
+  (closeCropPopup)="closeCropPopupFunc()"></app-image-cropper>

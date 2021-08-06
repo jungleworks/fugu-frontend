@@ -1,0 +1,160 @@
+<app-message-modal *ngIf="openJoinPopup" [width]="'37%'" [padding]="'0'" (closeMessageModal)="closePopup($event)">
+  <!--<div class="position-fixed invite-popup d-flex flex-column justify-content-center h-100 w-100 p-5" keyboard-events-->
+  <!--     [isEnabled]="true" (esc)="closeSchJoinPopup.emit($event)">-->
+
+  <div style="background: white;">
+    <div class="join-header d-flex align-items-center justify-content-between top-text">
+      <span class="ml-4">Join Meeting</span>
+      <svg (click)="closePopup($event)" class="cursor-hand mr-4" xmlns="http://www.w3.org/2000/svg" width="24"
+           height="24" viewBox="0 0 24 24">
+        <g fill="none" fill-rule="evenodd">
+          <path d="M0 0h24v24H0z"/>
+          <g stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </g>
+        </g>
+      </svg>
+      <!-- <img class="cursor-hand mr-24" src="assets/img/cross-icon-black.svg" (click)="closeAddMembers.emit()">  -->
+    </div>
+
+    <div class="modal-body join-modal">
+      <h5 class="dates">
+        {{allData?.start_datetime | date:'hh:mm a'}} - {{allData?.end_datetime | date:'hh:mm a'}}
+      </h5>
+
+      <div class="images">
+        <ng-container *ngFor="let data of allData?.attendees">
+          <img [src]="data?.user_thumbnail_image || '/assets/img/placeholder.png'">
+<!--          <span class="chip-text d-flex align-items-center pl-2" *ngIf="!data?.user_thumbnail_image">-->
+<!--                      {{data.full_name.split(' ')[0]}}-->
+<!--                    </span>-->
+        </ng-container>
+      </div>
+      <div class="names">
+        <ng-container *ngFor="let data of allData?.attendees;let i = index;let last=last">
+          <ng-container *ngIf="i <= 2">
+            {{data.full_name}}
+            <ng-container *ngIf="!last && i <= 2">,</ng-container>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="allData?.attendees?.length > 2">
+          and {{allData?.attendees?.length - 3}} more
+          will join the meeting
+        </ng-container>
+      </div>
+
+    </div>
+
+    <div class="p-3 position-relative">
+      <div class="d-flex justify-content-around mt-4 mb-4">
+        <div (click)="isMicOn = !isMicOn" class="cursor-hand">
+          <svg
+            *ngIf="isMicOn"
+            xmlns="http://www.w3.org/2000/svg"
+            width="54"
+            height="54"
+            viewBox="0 0 54 54"
+          >
+            <defs>
+              <linearGradient
+                id="prefix__a"
+                x1="97.143%"
+                x2="1.881%"
+                y1="50%"
+                y2="50%"
+              >
+                <stop offset="0%" stop-color="#13C6FE"/>
+                <stop offset="100%" stop-color="#5EB3FF"/>
+              </linearGradient>
+            </defs>
+            <g fill="none" fill-rule="evenodd">
+              <circle
+                cx="27"
+                cy="27"
+                r="26.307"
+                stroke="url(#prefix__a)"
+                stroke-width="1.386"
+              />
+              <path
+                fill="#4FACFE"
+                fill-rule="nonzero"
+                d="M35.058 21.735c.378 0 .687.308.69.69v5.115c0 3.888-3.306 7.113-7.604 7.683.003.036.021.066.021.1v2.816h2.758c.76 0 1.38.617 1.38 1.38 0 .762-.617 1.38-1.38 1.38h-8.272c-.76 0-1.379-.618-1.379-1.38 0-.763.617-1.38 1.379-1.38h2.757v-2.816c0-.036.018-.065.021-.1-4.298-.57-7.603-3.795-7.603-7.683v-5.116c0-.38.31-.689.69-.689.38 0 .689.308.689.69v5.115c0 3.532 3.401 6.405 7.582 6.405 4.18 0 7.582-2.875 7.582-6.405v-5.116c0-.38.307-.689.689-.689zm-8.273-9.85c3.42 0 6.203 2.782 6.203 6.204v8.272c0 3.42-2.782 6.203-6.203 6.203-3.422 0-6.204-2.783-6.204-6.203v-8.272c0-3.422 2.783-6.205 6.204-6.205zm0 1.379c-2.66 0-4.825 2.165-4.825 4.826v8.272c0 2.659 2.165 4.824 4.825 4.824 2.659 0 4.825-2.164 4.825-4.824V18.09c0-2.66-2.165-4.826-4.825-4.826z"
+              />
+            </g>
+          </svg>
+          <svg
+            *ngIf="!isMicOn"
+            xmlns="http://www.w3.org/2000/svg"
+            width="54"
+            height="54"
+            viewBox="0 0 54 54"
+          >
+            <g fill="none" fill-rule="evenodd">
+              <circle cx="27" cy="27" r="27" fill="#F15E5E"/>
+              <path
+                fill="#FFF"
+                fill-rule="nonzero"
+                d="M18.515 21.735c.349 0 .638.259.683.596l.007.093v5.116c0 3.532 3.401 6.405 7.582 6.405.337 0 .67-.019.996-.055l.745 1.275c-.127.022-.255.041-.384.058l.012.05.01.05v2.816h2.1l.339.578c.374.64.946 1.093 1.594 1.325-.189.463-.623.8-1.143.85l-.133.006h-8.272c-.76 0-1.379-.617-1.379-1.38 0-.717.547-1.306 1.246-1.373l.133-.006h2.757v-2.816c0-.036.018-.065.021-.1-4.209-.558-7.465-3.661-7.599-7.44l-.004-.243v-5.116c0-.38.31-.689.69-.689zm1.659-8.945l13.958 23.877c.27.463.145 1.047-.273 1.361l-.106.07c-.503.29-1.146.12-1.439-.38L18.356 13.84c-.27-.462-.145-1.047.273-1.36l.106-.071c.503-.29 1.146-.12 1.439.381zm.407 8.78l1.378 2.358v2.434c0 2.454 1.845 4.487 4.22 4.786l.827 1.412c-.074.003-.147.004-.221.004-3.346 0-6.08-2.66-6.2-5.976l-.004-.227v-4.79zm14.477.165c.344 0 .63.255.681.587l.008.102v5.116c0 1.79-.7 3.44-1.876 4.755l-.736-1.258c.736-.949 1.18-2.071 1.23-3.277l.004-.22v-5.116c0-.38.307-.689.689-.689zm-8.273-9.85c3.344 0 6.08 2.66 6.2 5.976l.003.228v8.272c0 1.108-.292 2.149-.803 3.05l-.848-1.45c.154-.437.247-.902.268-1.385l.005-.214V18.09c0-2.66-2.165-4.826-4.825-4.826-1.268 0-2.423.491-3.285 1.294l-.709-1.214c1.08-.91 2.474-1.46 3.994-1.46z"
+              />
+            </g>
+          </svg>
+          <span class="ml-3">Mic {{ isMicOn ? "On" : "Off" }}</span>
+        </div>
+        <div (click)="isVideoOn = !isVideoOn" class="cursor-hand">
+          <svg
+            *ngIf="isVideoOn"
+            xmlns="http://www.w3.org/2000/svg"
+            width="54"
+            height="54"
+            viewBox="0 0 54 54"
+          >
+            <defs>
+              <linearGradient
+                id="prefix__a"
+                x1="97.143%"
+                x2="1.881%"
+                y1="50%"
+                y2="50%"
+              >
+                <stop offset="0%" stop-color="#13C6FE"/>
+                <stop offset="100%" stop-color="#5EB3FF"/>
+              </linearGradient>
+            </defs>
+            <g fill="none" fill-rule="evenodd" stroke-width="1.386">
+              <circle cx="27" cy="27" r="26.307" stroke="url(#prefix__a)"/>
+              <path
+                stroke="#4FACFE"
+                d="M30.7 16.836c1.094 0 1.981.887 1.981 1.98v15.846c0 1.094-.887 1.98-1.98 1.98H15.845c-1.093 0-1.98-.886-1.98-1.98V18.816c0-1.093.887-1.98 1.98-1.98h14.856zm9.655 5.375c.163.294.249.625.249.962v7.132c0 1.094-.887 1.981-1.98 1.981-.337 0-.668-.086-.963-.25l-2.97-1.65c-.63-.35-1.02-1.012-1.02-1.731v-3.831c0-.72.39-1.383 1.02-1.732l2.97-1.65c.957-.532 2.162-.187 2.694.77z"
+              />
+            </g>
+          </svg>
+          <svg
+            *ngIf="!isVideoOn"
+            xmlns="http://www.w3.org/2000/svg"
+            width="54"
+            height="54"
+            viewBox="0 0 54 54"
+          >
+            <g fill="none" fill-rule="evenodd">
+              <circle cx="27" cy="27" r="27" fill="#F15E5E"/>
+              <path
+                fill="#FFF"
+                fill-rule="nonzero"
+                d="M20.174 13.78l13.958 23.878c.27.462.145 1.046-.273 1.36l-.106.07c-.503.291-1.146.12-1.439-.38L18.356 14.83c-.27-.462-.145-1.046.273-1.36l.106-.07c.503-.291 1.146-.12 1.439.38zm-3.346 2.362l.81 1.386-1.793.001c-.666 0-1.214.507-1.28 1.156l-.007.131v15.846c0 .666.507 1.215 1.156 1.28l.131.007h12.563l.81 1.386H15.845c-1.42 0-2.581-1.106-2.668-2.504l-.005-.17V18.817c0-1.42 1.106-2.581 2.504-2.668l.17-.005h.982zm13.873 0c1.42 0 2.58 1.107 2.668 2.505l.005.17v4.606c.203-.33.477-.616.81-.834l.17-.103 2.97-1.65c1.292-.718 2.92-.253 3.637 1.038.189.34.3.718.33 1.105l.006.194v7.132c0 1.477-1.197 2.674-2.674 2.674-.39 0-.773-.085-1.125-.248l-.173-.088-2.971-1.65c-.41-.228-.743-.553-.98-.938v2.381l-1.386-2.37v-11.25c0-.666-.507-1.214-1.156-1.28l-.131-.007h-6.043l-.81-1.387H30.7zm7.415 5.847l-.118.059-2.971 1.65c-.368.204-.61.574-.655.987l-.007.139v3.83c0 .422.205.813.544 1.052l.118.074 2.971 1.65c.191.107.406.163.625.163.667 0 1.215-.507 1.281-1.156l.007-.132v-7.132c0-.219-.056-.434-.162-.625-.324-.583-1.033-.816-1.633-.559z"
+              />
+            </g>
+          </svg>
+          <span class="ml-3">Video {{ isVideoOn ? "On" : "Off" }}</span>
+        </div>
+      </div>
+      <div class="mt-4 d-flex justify-content-end">
+        <button class="btn btn-next btn-40 d-flex align-items-center pl-4 pr-4 pt-1"
+                (click)="joinMeeting()">
+          Join Meeting
+        </button>
+      </div>
+    </div>
+  </div>
+  <!--</div>-->
+</app-message-modal>

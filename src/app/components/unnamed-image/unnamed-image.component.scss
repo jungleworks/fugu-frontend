@@ -1,0 +1,45 @@
+.image-show-child{
+  height: 100%;
+  width: 100%;
+}
+.w-60{
+  width: 60%;
+}
+.image-child{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  vertical-align: initial !important;
+}
+.img-first-child{
+  border-right: 2px solid #fff;
+}
+
+.circle-image-parent{
+  border-radius: 4%;
+  overflow: hidden;
+  position:relative;
+}
+
+.img-second-child{
+  height: 50%;
+  width: 40%;
+}
+.img-third-child{
+  border-top: 2px solid #fff;
+  height: 50%;
+  width: 40%;
+  position:absolute;
+  bottom:0;
+  left: 60%;
+}
+.noImg-first-child{
+  padding-left: 8px;
+}
+
+.w-40{
+  width: 40%;
+}
+.h-100{
+  width: 50%;
+}

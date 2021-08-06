@@ -1,0 +1,69 @@
+
+.apps-popup {
+}
+.apps-popup__main-heading {
+  font-family: TitilliumWeb-SemiBold;
+  font-size: 32px;
+}
+.fugu-apps__heading {
+  font-size: .8rem;
+  line-height: 1.2rem;
+  color: #717274;
+  padding-bottom: .5rem;
+}
+.fugu-apps__logo {
+  width: 60px;
+  height: 60px;
+}
+.fugu-apps:hover {
+  cursor: pointer;
+  &:hover {
+    background-color: #FFF;
+  }
+}
+.fugu-apps__button {
+  height: 35px;
+  border: 1px solid #2C2D4F;
+  background-color: transparent;
+  color: #2c2d30;
+  font-weight: 500;
+  font-size: 15px;
+}
+.font-26{
+  font-size: 26px;
+}
+.app-card{
+  width: calc(100% / 4);
+  margin: 8px;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,.3);
+  border-radius: 4px;
+  padding: 40px 20px;
+  -webkit-transition: -webkit-box-shadow .4s;
+  -o-transition: box-shadow .4s;
+  transition: box-shadow .4s;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  &:hover{
+    box-shadow: 0 0 6px 0 rgba(0,0,0,.5);
+  }
+  .app-card__logo{
+    height: 54px;
+    width: 54px;
+    object-fit: contain;
+  }
+  .app-card__name{
+    font-size: 20px;
+    font-weight: 600;
+    color: #4a4a4a;
+  }
+  .app-card__tagline{
+
+  }
+}
+.apps-cover{
+  background: url('../../../assets/img/apps-background.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 200px;
+}

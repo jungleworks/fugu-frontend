@@ -1,0 +1,178 @@
+@import '~assets/css/variables';
+
+:host{
+  --app-mention-bottom: 45px;
+}
+.content-parent {
+   background-color: $chat-bg-color;
+}
+
+.thread-bg {
+  background-color: $thread-bg-color;
+  .thread-chat-bg {
+    background-color: $thread-content!important;
+  }
+}
+.cancel-meet{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+#meetLinkAttached{
+  color:var(--font-message-receiver);
+}
+.meet-meta-data {
+  color:var(--font-message-receiver);
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  flex: 1;
+}
+.meet-meta {
+  border-radius: 6px;
+  background-image:var(--chat-bubble-receiver);
+  display: flex;
+  flex-direction: row;
+  width: 89%;
+  margin-left: 30px;
+  padding-top: 5px;
+}
+.messageInputContainer{
+  min-height: 45px;
+  order: 2;
+  max-height: 140px;
+  height: auto;
+  z-index: 2;
+  position: relative;
+  background-color: $content-editable !important;
+  width: 95%;
+  border-radius: 28px;
+  border: 1px solid $border-content;
+  // border-top: 1px solid #eee;
+  box-shadow: 0 0 6px 0 rgba(150, 165, 190, 0.24);
+  margin-bottom: 20px;
+}
+.plus-icon {
+   left: 14px;
+    top: 0px;
+    color: #4facfe;
+}
+.plus_dropup{
+  position: relative;
+    .dropup_content{
+      position: absolute;
+      display: flex;
+      background-color:  $chat-bar-header!important;
+      min-width: 130px;
+      box-shadow: $box-shadow;
+      bottom: 35px;
+      left: 8px;
+      z-index: 5;
+      button{
+        background-color:  $chat-bar-header;
+        color: $light-font!important;
+        &:hover{
+          background-color: $app-color-highlight!important;
+        }
+      }
+    &:after{
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #9a9a9a;
+      opacity: 0.3;
+    }
+  }
+}
+.btn-attachment{
+  border: 0;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  padding-left: 4px;
+}
+.btn-attachment input[type="file"]{
+  display: none;
+  pointer-events: none;
+}
+.action-buttons{
+  height: 100%;
+  display: flex;
+}
+.emoji-btn{
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+app-tag-users{
+  z-index: 1;
+  bottom: var(--app-mention-bottom);
+}
+.content-editable-style:empty:before {
+  content: attr(data-placeholder);
+  font-family: TitilliumWeb;
+  font-size: 16px;
+  color: #88838c;
+  cursor: text;
+}
+
+.content-editable-style{
+  background-color: $content-editable !important;;
+  // border-color: #fff;
+  border-radius: 21px;
+  // border-style: solid;
+  // border-width: 1px;
+  padding: 8px 11px;
+  max-height: 140px;
+  height: auto;
+  font-size: 16px;
+  overflow-y: auto;
+  border: none!important;
+  // box-shadow: 0 0 100px 0 rgba(150, 165, 190, 0.24);
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: none;
+  color: $input-content;
+}
+::ng-deep .tagged-agent{
+  text-decoration: none !important;
+  outline: none !important;
+  color: $link-color-receiver;
+  &:hover {
+    color: $link-color-receiver;
+  }
+}
+::ng-deep .emoji-picker{
+  ::ng-deep .emoji-container{
+    bottom: 35px;
+    right: 20px;
+  }
+}
+.action-buttons{
+  height: 100%;
+  display: flex;
+}
+.green-tick-icon {
+  width: 20px;
+}
+.close-icon {
+  width: 13px;
+}
+.messageInputContainer.image-preview-styling{
+  background-color: $chat-bar-header !important;
+  // border-top: none;
+  box-shadow: none;
+  .content-editable-style{
+    background-color:transparent;
+    border-color: transparent;
+    border-radius: 0;
+    border-bottom: solid 2px var(--app-color);
+    box-shadow: none;
+    outline: none;
+  }
+}

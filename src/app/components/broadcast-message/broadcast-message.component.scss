@@ -1,0 +1,198 @@
+.text-area:empty:before {
+  content: attr(data-broadcast-placeholder);
+  font-family: TitilliumWeb;
+  font-size: 16px;
+  color: #88838c;
+  cursor: text;
+}
+
+.text-area {
+  line-height: 24px;
+  font-size: 16px;
+  outline: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  border: 1px solid rgb(225, 225, 225);
+  height: 250px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.radio-label {
+  color: var(--chat-header-text);
+}
+
+.w-40 {
+  width: 40%
+}
+
+.members-box {
+  max-height: 188px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  .participants-box__member {
+    border: 1px solid #ccc;
+    border-top: 0px;
+  }
+  .participants-box__profile-img {
+    height: 40px;
+    width: 40px;
+    object-fit: cover
+  }
+  .no-thumbnail-img{
+    min-height: 40px;
+    max-height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    font-size: 25px;
+    color: white;
+  }
+}
+
+.selected-members-container{
+  max-height: 75px;
+  overflow: auto;
+}
+
+.chip-email{
+  background-color: #e8e8e8;
+  color: white;
+  border-radius: 16px;
+  img{
+    height: 26px;
+    width: 26px;
+    object-fit: cover;
+  }
+  .chip-text{
+    font-size: 16px;
+    color: #303030;
+  }
+  .chip-cross{
+    &:hover{
+      background-color: #FFFFFF;
+    }
+  }
+}
+
+.attachment-container {
+  background-color: #f5f5f5;
+  border: 1px solid transparent;
+  font-weight: bold;
+  margin: 0 0 9px;
+  overflow-y: hidden;
+  padding: 4px 4px 4px 8px;
+}
+
+.message-text-area {
+  min-height: 180px;
+}
+.message-text-heading {
+  color: var(--chat-header-text);
+  margin-top: 2em;
+  text-align: center;
+  font-size: 18px;
+}
+
+.disable-class:disabled{
+  background-color: grey!important;
+  cursor: not-allowed;
+}
+
+.tooltip-broadcast {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-broadcast .tooltiptext-broadcast {
+  visibility: hidden;
+  width: 220px;
+  background-color: #555555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px 3px;;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip-broadcast:hover .tooltiptext-broadcast {
+  visibility: visible;
+}
+
+.emoji-btn {
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+.emoji-picker {
+  bottom: 97px;
+  right: 238px;
+}
+
+.bot-image{
+  height: 67px;
+  width: 67px;
+}
+
+.button-send-message {
+  display: inline-block;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  font-size: 1.2em;
+  text-decoration: none;
+  background-color: var(--app-color);
+  border: 0 none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 1em;
+  width: 100%
+}
+
+.header-broadcast {
+  background-color: var(--app-color);
+  color: #fff;
+  padding: 1em 4rem;
+    color: white;
+    font-size: 0.9em;
+    padding-right: 10px;
+}
+
+
+.message-modal__content {
+  padding: 0px;
+}
+.message-modal-heading {
+  color: #fff!important;
+}
+.margin-close-icon {
+  margin-top: -60px;
+  font-size: 20px;
+}
+
+div[contenteditable="true"]:focus {
+  border: 1px solid var(--app-color);
+}
+
+.hw-24 {
+  height: 24px;
+  width: 18px;
+}
+
+.members-container-width {
+  width: 445px;
+}
+
+.radio-options {
+  font-size: 15px;
+}
+
+.leave-text {
+  font-size: 18px;
+}
+
+.note-file-attachment {
+  font-size: 10px;
+}

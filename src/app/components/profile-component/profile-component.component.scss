@@ -1,0 +1,665 @@
+@import '~assets/css/variables';
+
+.right-profile{
+  font-family: TitilliumWeb;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: $chat-bar-header;
+  border-left: solid 1px $border-bottom-header;
+  transition: all 1s ease-in-out;
+}
+.task-desc {
+  min-height: 100px;
+  max-height: 100px;
+}
+.cal {
+  // top: 57px;
+  //   background: #fff;
+  //   border: 1px solid #efefef;
+    // z-index: 1;
+}
+::ng-deep  .spaceSessionCal mat-calendar-header {
+  display: none;
+}
+::ng-deep  .spaceSessionCal {
+  height: auto!important;
+}
+.hidden-input {
+  width: 0;
+  z-index: -9;
+}
+.group-info{
+  font-family: TitilliumWeb;
+  height: 50px;
+  padding: 30px;
+  border-bottom: solid 1px #e4e4ed;
+  font-size: 20px;
+}
+.group-name{
+  font-size: 20px;
+  height: 40px;
+  overflow: hidden;
+}
+#groupMembers{
+  overflow: hidden;
+  transition: max-height 0.6s ease-out;
+}
+.profile{
+  // background-color: white;
+}
+.profile-image{
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+}
+.contact-information{
+  // background-color: white;
+}
+.contact-header{
+  font-family: TitilliumWeb-SemiBold;
+  font-size: 13px;
+  color: $bot-bubble-text;
+}
+.contact-info{
+  color: $light-font;;
+  // padding: 8px;
+  font-size: 12px;
+  font-weight: lighter;
+  span{
+    overflow: hidden;
+    width: 70%;
+    word-break: break-all;
+    color: #333333;
+  }
+}
+.hr-info{
+  // color: darkgray;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: lighter;
+  span{
+    overflow: hidden;
+    width: 60%;
+    word-break: break-all;
+    color: #333333;
+  }
+}
+.member-image{
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+}
+.member-text{
+  font-size: 20px;
+  color: white;
+  font-family: TitilliumWeb;
+  min-width: 40px;
+  width: 40px;
+}
+.btn-remove{
+  background-color: $red-icon-color;
+  color: white;
+  height: 20px;
+  padding: 1px 6px 2px 6px;
+  font-size: 11px;
+}
+// .add-member-icon{
+//   color: var(--app-color);
+//   font-size: 26px;
+// }
+.autocomplete-members{
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.chip-email{
+  background-color: #e8e8e8;
+  color: white;
+  border-radius: 16px;
+  font-family: TitilliumWeb;
+  img{
+    height: 26px;
+    width: 26px;
+    object-fit: cover;
+  }
+  .chip-text{
+    font-size: 16px;
+    color: #303030;
+  }
+  .chip-cross{
+    &:hover{
+      background-color: #FFFFFF;
+    }
+  }
+}
+.body-search-modal {
+  height: 300px;
+  overflow: hidden;
+}
+.profile-image-container {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  margin-right: 12px;
+}
+.text-options {
+  color: $chat-header-text;
+    font-size: 15px;
+}
+    .image-margin {
+      margin-top: 17px;
+      margin-bottom: 17px;
+    }
+    .margin-right-div {
+      margin-right: $margin-sidebar;
+    }
+    .margin-left-div {
+      margin-left: $margin-sidebar;
+    }
+.profile-name-info {
+  font-size: 15px;
+  color: $chat-header-text;
+  white-space: nowrap;
+}
+.border-bottom-gray {
+  border-bottom: 8px solid $chat-bg-color;
+}
+@keyframes grow-bottom2 {
+  from {
+    transform: scaleY(0) scaleX(0);
+  }
+  to {
+    transform: scaleY(1) scaleX(1);
+  }
+}
+.deactive-member {
+  opacity: 0.3;
+}
+.image-layer{
+  background-color: #7F807F;
+  color: white;
+  height: 100%;
+  transition: all 1s ease-in-out;
+  opacity: 0.7;
+  font-size: 15px;
+  text-align: center;
+  font-family: TitilliumWeb;
+  width: 100%;
+}
+.deactivate-layover-search {
+  background-color: #7F807F;
+  width: 40px;
+  height: 40px;
+  left: 17px;
+  opacity: 0.7;
+  z-index: 11;
+}
+.form-read-only{
+  border: none;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  outline: none;
+}
+.text-ellipsis{
+  text-overflow: ellipsis;
+}
+.leave-group{
+  font-size: 15px;
+  color: $red-font;
+}
+.activate-member{
+  font-size: 15px;
+  color: $unread-message-bar;
+}
+.channel-image{
+  min-height: 50px;
+  max-height: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  object-fit: cover;
+}
+.remove-popup-text{
+  font-size: 1rem;
+  font-family: TitilliumWeb;
+}
+*::-webkit-scrollbar{
+  width: 6px !important;
+  height: 6px !important;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: rgba(0,0,0,0.2);
+}
+*::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.08);
+}
+.font-small{
+  font-size: 12px;
+}
+.border-profile-down{
+  border-bottom: solid 1px $border-bottom-header;
+}
+.border-profile-up{
+  border-top: solid 1px $border-bottom-header;
+}
+.group-text-header{
+  font-size: 13px;
+  color: $bot-bubble-text;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-family: TitilliumWeb-SemiBold;
+}
+
+.width-fix-slider{
+  width: 445px;
+}
+.media-thumbnail {
+  height: 60px;
+  width: calc(100%/3.3);
+  object-fit: cover;
+}
+.media-thumbnail-div{
+  height: 60px;
+  width: 60px;
+  margin-right: 6px;
+}
+.media-thumbnail-image{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.media-all-header{
+  min-height: 72px;
+  p{
+    font-size: 20px;
+  }
+}
+.back-icon {
+  width: 20px;
+}
+.show-members-icon{
+  margin-left: auto;
+  -webkit-transition: -webkit-transform .25s ease-in-out;
+  -ms-transition: -ms-transform .25s ease-in-out;
+  transition: transform .25s ease-in-out;
+}
+.rotate-icon{
+  transform:rotate(180deg);
+  -ms-transform:rotate(180deg);
+  -webkit-transform:rotate(180deg);
+}
+#searchModal{
+  .modal-content{
+    background-color: #f9f9f9;
+  }
+}
+.message-btn {
+  background-color: #fff;
+  border: 1px solid #e4e4ed;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--app-color);
+}
+.channel-image-layer{
+  .bl{
+    border-left: solid 2px #fff;
+  }
+  .bt{
+    border-top: solid 2px #fff;
+  }
+}
+.left-photo-margin{
+  padding-left: 25px;
+}
+.font-26{
+  font-size: 26px;
+}
+.video-play-image{
+  width: 30px !important;
+  height: 30px !important;
+}
+.h-60{
+  height: 60px;
+}
+.input-border{
+  border-bottom: solid 2px var(--app-color);
+}
+
+.hide_focus_border{
+  color: $chat-header-text;
+  background: transparent;
+  font-size: 15px;
+  &:focus {
+    border: none;
+  }
+}
+.right-position-icon{
+  right: 0px;
+}
+.length_group{
+  font-size: 15px;
+  color: #BBBBBB;
+  right: 30px;
+}
+.fs-15{
+  font-size: 11px;
+  color: $light-font;
+}
+.fa-lock {
+  font-size:14px;
+  color: $light-font;
+}
+.fa-pencil {
+  color: #91999C;
+}
+::-webkit-input-placeholder {
+  font-size: 18px;
+  color: #BBBBBB;
+}
+::-moz-placeholder {
+  font-size: 18px;
+  color: #BBBBBB;
+}
+:-ms-input-placeholder {
+  font-size: 18px;
+  color: #BBBBBB;
+}
+::placeholder {
+  font-size: 18px;
+  color: #BBBBBB;
+}
+.group-media-icon{
+  font-size: 24px;
+}
+.fa-leave-font-size{
+  font-size: 23px;
+}
+.fa-del-font-size {
+  font-size: 20px;
+}
+/* The container */
+.container-checkbox {
+  display: block;
+  position: relative;
+  // padding-left: 35px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  border: 1px solid red;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  top: 0;
+  left: 0;
+  height: 15px;
+  width: 15px;
+  border: 2px solid #6b6969;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container-checkbox input:checked ~ .checkmark {
+  background-color: var(--app-color);
+  border: 3px solid var(--app-color);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container-checkbox .checkmark:after {
+  left: 2px;
+  top: -1px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.hide-button-border{
+  border: none;
+  outline:none;
+}
+.w-90{
+  width: 90%;
+}
+.image-child {
+  height: 640px;
+  width: 640px;
+  object-fit: contain;
+}
+.photo-options-menu {
+  min-width: 113px;
+  background-color: white;
+  z-index: 2600;
+  border-radius: 3px;
+  font-size: 14px;
+  transform: scaleY(0) scaleX(0);
+  transform-origin: top left;
+  animation: grow-bottom2 cubic-bezier(0.785, 0.135, 0.15, 0.86) 0.3s forwards;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  button{
+    &:hover{
+      background-color: #f4f5f5;
+    }
+  }
+  left: 40%;
+  top: 60%;
+}
+.members-dropup{
+  max-height: 300px;
+  background: white;
+  overflow: auto;
+  bottom: 34px;
+  width: 75%;
+  overflow-x: hidden;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  .active{
+    background-color: #f4f5f5;
+  }
+  .member-card{
+    height: 59px;
+    &:hover{
+      background-color: #f4f5f5;
+    }
+  }
+}
+.members-options-mask{
+  top: 0px;
+  left: 0px;
+  z-index: 2500;
+}
+.member-options-menu {
+  max-width: 170px;
+  min-width: 100px;
+  background-color: $chat-bar-header;
+  z-index: 2600;
+  border-radius: 3px;
+  transform: scaleY(0) scaleX(0);
+  transform-origin: top right;
+  animation: grow-bottom cubic-bezier(0.785, 0.135, 0.15, 0.86) 0.3s forwards;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  button{
+    color: $chat-header-text;
+    text-align: left;
+    &:hover{
+      background-color: $app-color-highlight;;
+    }
+  }
+}
+.admin-text {
+  color: $unread-message-bar;
+  font-size: 11px;
+  border: 1px solid;
+  padding: 1px;
+  display: flex;
+  justify-content: center;
+  width: 49px;
+  height: 20px;
+  border-radius: 11.5px;
+}
+.msg-menu{
+  width: 0;
+  overflow: hidden;
+  transition: width 0.1s ease-in-out;
+}
+.member-name-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-height: 28px;
+  overflow: hidden;
+  margin-left: 12px;
+  margin-right: 12px;
+  font-size: 15px;
+  color: $chat-header-text;
+}
+.show-menu{
+  width: 16px;
+}
+@keyframes grow-bottom {
+  from {
+    transform: scaleY(0) scaleX(0);
+  }
+  to {
+    transform: scaleY(1) scaleX(1);
+  }
+}
+.animate-container-position {
+  width: 384px;
+  height: 384px;
+  z-index: 11;
+  object-fit: cover;
+}
+
+.back-image {
+  transform-origin: left top;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  position: fixed;
+  z-index: 200000;
+  background: $popup-opacity;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+.guest-label {
+  color: #90A0A8;
+  font-size: 15px;
+  margin-top: -8px;
+}
+.vs-scroll-container {
+  height: 218px;
+}
+.vs-scroll-container::-webkit-scrollbar {
+  width: 0 !important
+}
+.buttonload {
+  border: none; /* Remove borders */
+  color: var(--app-color); /* White text */
+  padding: 12px 24px; /* Some padding */
+  font-size: 16px; /* Set a font-size */
+}
+.more-text {
+  color: var(--app-color);
+  font-size: 13px; /* Set a font-size */
+  margin-top: 26px;
+}
+.info {
+  position: relative;
+}
+.profile-font {
+  font-size: 5px;
+}
+.noti-info {
+  font-size: 13px;
+  color: $light-font;
+  margin-left: 22px;
+  position: absolute;
+  top: -2px;
+
+}
+.radio-margin {
+  margin-bottom: 28px;
+}
+.field-margin-bottom {
+  margin-bottom: 12px;
+}
+.field-margin-top {
+  margin-top: 12px;
+}
+.mng-noti {
+  font-size: 11px;
+  color: $light-font;
+}
+
+.radio-label {
+  color: $chat-header-text
+}
+
+.profile-image-cont {
+  // min-height: $header-height;
+  height: $header-height-sides;
+}
+
+.font-common {
+  font-size: 13px;
+  color: $bot-bubble-text
+}
+.font-common-fields {
+  font-size: 15px;
+  color: $chat-header-text;
+}
+
+.add-mem-text {
+  font-size: 13px;
+  color: $app-color;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+.mb-16 {
+  margin-bottom: 16px;
+}
+.rectangle-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 2px;
+  background-color: #D0F3FF
+}
+
+.rectangle-div {
+   margin-left: -10px;
+}
+
+.task-card {
+  border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 16px 34px 7px rgba(121, 121, 121, 0.1);
+    padding: 10px;
+    &:hover {
+      opacity: 0.5;
+    }
+}

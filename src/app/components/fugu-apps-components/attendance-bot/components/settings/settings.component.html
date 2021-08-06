@@ -1,0 +1,199 @@
+<div class="d-flex flex-column h-100 w-100">
+  <div class="p-3 bg-white border-bottom">
+    <p class="mb-0 h2">Settings Panel</p>
+    <p class="text-muted mb-0">Welcome to your AttendanceBot Dashboard. Here you can view everything that needs you attention.</p>
+  </div>
+  <div class="d-flex w-100 p-3 flex-column flex-grow basic-settings-container">
+    <div>
+      <form [formGroup]="sessionDatesForm">
+        <p class="font-20 mt-4 ml-2 TitilliumWeb-bold">Set your space working session</p>
+        <div class="block-border d-flex flex-column">
+          <div class="d-flex p-2">
+            <div class="col-md-6 d-flex flex-column">
+              <label class="control-label">Session Start Date</label>
+              <div class="position-relative d-flex">
+                <input readonly (click)="spaceSessionStartPicker.open()" class="form-control bg-white" formControlName="session_start"
+                       placeholder="Choose a date">
+                <input class="position-absolute hidden-input form-control" [matDatepicker]="spaceSessionStartPicker" (dateChange)="onSessionDateChange($event, 'start')">
+                <mat-datepicker [panelClass]="'spaceSessionCal'" #spaceSessionStartPicker startView="year"></mat-datepicker>
+              </div>
+            </div>
+            <div class="col-md-6 d-flex flex-column">
+              <label class="control-label">Session End Date</label>
+              <div class="position-relative d-flex">
+                <input readonly (click)="spaceSessionEndPicker.open()" class="form-control bg-white" formControlName="session_end"
+                       placeholder="Choose a date">
+                <input class="position-absolute hidden-input form-control" [matDatepicker]="spaceSessionEndPicker" (dateChange)="onSessionDateChange($event, 'end')">
+                <mat-datepicker [panelClass]="'spaceSessionCal'" #spaceSessionEndPicker startView="year"></mat-datepicker>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" (click)="updateSessionDates()">Update</button>
+        </div>
+      </form>
+    </div>
+    <div>
+      <p class="font-20 mt-4 ml-2 TitilliumWeb-bold">Roles</p>
+      <div class="block-border d-flex flex-column">
+        <div class="weekday-box d-flex flex-wrap align-items-center ml-2 pl-3 pr-3 pt-2 pb-2">
+          <div class="d-flex w-100 justify-content-between">
+            <div class="w-45">
+              <label>Admins</label>
+              <app-chips-input [chip_type]="chipsTypeEnum.ATTENDANCE_BOT"  *ngIf="all_users_data" [selected_data]="roles_data.admin_roles" [placeholder_text]="'Type Admin Name'"
+                               (selected_results)="adminSelectedResults($event)" [attendance_members]="all_users_data"></app-chips-input>
+            </div>
+            <div class="w-45">
+              <label>HR</label>
+              <app-chips-input [chip_type]="chipsTypeEnum.ATTENDANCE_BOT"  *ngIf="all_users_data" [selected_data]="roles_data.hr_roles" [placeholder_text]="'Type HR Name'"
+                               (selected_results)="HRSelectedResults($event)" [attendance_members]="all_users_data"></app-chips-input>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" (click)="updateRoles()">Update</button>
+      </div>
+    </div>
+    <div class="weekday-box">
+      <p class="font-20 mt-4 ml-2 TitilliumWeb-bold">Working Week</p>
+      <div class="block-border d-flex flex-column">
+        <div class="d-flex flex-wrap align-items-center ml-2 pl-3 pr-3 pt-2">
+          <label class="d-flex mb-0 p-1 mr-2" *ngFor="let day of weekdays;let i = index" (change)="onWeekdayChange(day)">
+          <span class="p-1 pl-2 cursor-hand overflow-hidden d-flex align-items-center">
+            <input type="checkbox" name="checkbox" [checked]="day.selected" class="checkbox-input">
+            <div class="ml-2">{{day.name}}</div>
+          </span>
+          </label>
+        </div>
+        <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" (click)="updateWorkingWeek()">Update</button>
+      </div>
+    </div>
+    <div>
+      <p class="font-20 mt-4 ml-2 TitilliumWeb-bold">Time Tracking Settings</p>
+      <form [formGroup]="basicSettingsForm">
+        <div class="block-border d-flex flex-column">
+          <div class="d-flex p-2 flex-wrap">
+            <div class="mt-2 col-12 col-md-6 d-flex flex-column">
+              <label class="control-label">Start time of a work day</label>
+              <input readonly (click)="openTimePicker('startTime')" class="form-control bg-white time-picker-input" formControlName="work_start_time"
+                     placeholder="Enter time">
+              <app-time-picker *ngIf="showTimePicker.startTime" [formControlInput]="basicSettingsForm.get('work_start_time')" [hour]="basicSettingsForm.value.work_start_time.split(':')[0]"
+                               (timeChange)="startTimeChange($event, 'startTime')" [min]="basicSettingsForm.value.work_start_time.split(':')[1]" click-outside
+                               (clickOutside)="onTimePickerClickOutside($event, 'startTime')"></app-time-picker>
+            </div>
+            <div class="mt-2 col-12 col-md-6 d-flex flex-column">
+              <label class="control-label" for="work_hours">Number of work hours in a day</label>
+              <input type="number" step="0.01" min="0" max="24" class="form-control" id="work_hours" name="work_hours" formControlName="work_hours">
+            </div>
+            <div class="mt-4 col-12 col-md-6 d-flex flex-column">
+              <label class="control-label" for="lunch_duration">Lunch Duration (Minutes)</label>
+              <input type="number" min="0" class="form-control" id="lunch_duration" name="lunch_duration" formControlName="lunch_duration">
+            </div>
+            <div class="mt-4 col-12 col-md-6 d-flex flex-column">
+              <label class="control-label">Punch In reminder time (Minutes before)</label>
+              <input type="number" min="0" class="form-control" placeholder="Enter number of minutes" id="punch_in_reminder_time" name="punch_in_reminder_time"
+                     formControlName="punch_in_reminder_time">
+            </div>
+            <div class="mt-4 col-12 col-md-6 d-flex flex-column">
+              <label class="control-label">Punch Out reminder time (Minutes before)</label>
+              <input type="number" min="0" class="form-control" placeholder="Enter number of minutes" id="punch_out_reminder_time" name="punch_out_reminder_time"
+                     formControlName="punch_out_reminder_time">
+            </div>
+            <div class="mt-4 col-12 col-md-6 d-flex flex-column">
+              <label class="control-label">Auto Punch Out Time (Minutes)</label>
+              <input type="number" min="0" class="form-control" placeholder="Enter number of minutes" id="auto_punch_out" name="auto_punch_out" formControlName="auto_punch_out">
+            </div>
+          </div>
+          <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" (click)="updateShiftHours()">Update</button>
+        </div>
+      </form>
+    </div>
+    <!-- attendance report -->
+    <div>
+        <form [formGroup]="reportDatesForm">
+          <p class="font-20 mt-4 ml-2 TitilliumWeb-bold">Attendance Report</p>
+          <div class="block-border d-flex flex-column">
+            <div class="d-flex p-2">
+              <div class="col-md-6 d-flex flex-column">
+                <label class="control-label">From </label>
+                <div class="position-relative d-flex">
+                    <input readonly (click)="reportStartPicker.open()" class="form-control bg-white" formControlName="report_start"
+                         placeholder="Choose a date">
+                  <input class="position-absolute hidden-input form-control" matInput [max] = "currentDate" [matDatepicker]="reportStartPicker" (dateChange)="onReportDateChange($event, 'start')">
+                  <mat-datepicker  #reportStartPicker></mat-datepicker>
+                </div>
+              </div>
+              <div class="col-md-6 d-flex flex-column">
+                <label class="control-label">Till</label>
+                <div class="position-relative d-flex">
+                  <input readonly (click)="reportEndPicker.open()" class="form-control bg-white" formControlName="report_end"
+                         placeholder="Choose a date">
+                  <input class="position-absolute hidden-input form-control" matInput [max] = "currentDate"  [matDatepicker]="reportEndPicker" (dateChange)="onReportDateChange($event, 'end')">
+                  <mat-datepicker  #reportEndPicker ></mat-datepicker>
+                </div>
+              </div>
+            </div>
+            <div class="ml-4 mt-2 d-flex align-items-center">
+              <input type="checkbox" class="" formControlName="is_deactivated">
+              <span class="ml-2">Include deactivated users</span>
+            </div>
+            <button class="btn btn-success mt-1 mb-1 mr-4 align-self-end" type="button" (click)="fetchAttendanceReport()">Send to Bot</button>
+          </div>
+        </form>
+      </div>
+    <div>
+      <p class="font-20 mt-4 ml-2 TitilliumWeb-bold">Punch Permissions</p>
+      <div class="block-border d-flex flex-column">
+        <div class="weekday-box d-flex flex-wrap align-items-center ml-2 pl-3 pr-3 pt-2 pb-2">
+          <div class="permission-boxes d-flex w-100">
+            <div class="d-flex flex-column w-50 p-2">
+              <label>Punch in permission</label>
+              <select class="form-control" [(ngModel)]="permissions_data.punch_in">
+                <option value="CAMERA">CAMERA</option>
+                <option value="LOCATION">LOCATION</option>
+                <option value="BOTH">BOTH</option>
+                <option value="NONE">NONE</option>
+              </select>
+            </div>
+            <div class="d-flex flex-column w-50 p-2">
+              <label>Punch out permission</label>
+              <select class="form-control" [(ngModel)]="permissions_data.punch_out">
+                <option value="CAMERA">CAMERA</option>
+                <option value="LOCATION">LOCATION</option>
+                <option value="BOTH">BOTH</option>
+                <option value="NONE">NONE</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-non-imp-flex w-100 flex-column position-relative" [hidden]="!['BOTH', 'LOCATION'].includes(permissions_data.punch_in) &&
+            !['BOTH', 'LOCATION'].includes(permissions_data.punch_out)">
+            <div id="map"></div>
+            <div class="search-places-container position-absolute box-shadow">
+              <input class="input-search w-100 outline-none" type="text" placeholder="Search for a place" appAutofocus [formControl]="placeAutoCompleteCtrl">
+              <div class="prediction-dropdown overflow-hidden box-shadow" *ngIf="predictionsPlaces.length">
+                <div class="places-div">
+                  <span *ngFor="let place of predictionsPlaces" class="cursor-hand d-flex place-name-container">
+                    <span class="name-predictions p-2" (click)="openSelectedPlace(place)" [title]="place.description">{{place.description}}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center ml-4 mr-4 p-2">
+          <button *ngIf="polygon_overlay && (['BOTH', 'LOCATION'].includes(permissions_data.punch_in) ||
+          ['BOTH', 'LOCATION'].includes(permissions_data.punch_out))" class="btn btn-secondary mr-2" type="button" (click)="clearPolygon()">Clear</button>
+          <button class="btn btn-success" type="button" (click)="updatePermissionPopup = true">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-message-modal *ngIf="updatePermissionPopup" [width]="'35%'" [@messageModalAnimation]>
+  <span class="d-flex align-items-center">
+    <input type="checkbox" class="mr-2" [(ngModel)]="permissions_data.keep_user_data"> Keep data of users whose
+    permission is already changed.
+  </span>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none" (click)="updatePermissions()" type="button">Update</button>
+  </div>
+</app-message-modal>

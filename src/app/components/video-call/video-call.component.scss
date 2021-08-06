@@ -1,0 +1,156 @@
+@import '~assets/css/variables';
+
+.video-parent{
+  background: $video-parent;
+  transition: all 0.3s ease-in-out;
+}
+.feature-buttons{
+  right: 2vw;
+  top: 20px;
+  svg circle{
+    fill: #666;
+    fill-opacity: 0.6;
+  }
+  z-index: 1;
+  .screen-share-tooltip{
+    width: 250px;
+    background-color: white;
+    color: #333333;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    right: 120%;
+    &:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent white;
+    }
+  }
+}
+.conference-button {
+  right: 2vw;
+  top: 90px;
+}
+.actions-buttons{
+  left: 0;
+  bottom: 10px;
+  z-index: 2;
+}
+
+#hangup{
+  transition: all .3s;
+  circle{
+    fill: #f03d25;
+    fill-opacity: 1;
+  }
+}
+
+#local_video ,#local_audio_video {
+  transform: scale(-1, 1);
+}
+
+#received_video,#received_audio_video{
+  object-fit: contain;
+}
+
+.large-video {
+  height: 100%;
+  width: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+}
+.small-video {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  max-height: 23%;
+  max-width: 23%;
+  object-fit: cover;
+  z-index: 1;
+}
+.opposite-user-image{
+  object-fit: cover;
+  height: 200px;
+  width: 200px;
+  animation: pulse 2s linear infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255,255,255, 0.8), 0 0 0 0 rgba(255,255,255, 0.8);
+  }
+  40% {
+    box-shadow: 0 0 0 50px rgba(255,255,255, 0),0 0 0 0 rgba(255,255,255, 0.8);
+  }
+  80% {
+    box-shadow: 0 0 0 50px rgba(255,255,255, 0),0 0 0 30px rgba(255,255,255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255,255,255, 0),0 0 0 30px rgba(255,255,255, 0);
+  }
+}
+.animation-none{
+  animation: none;
+}
+
+.star-icon {
+  font-size: 40px;
+}
+.star-icon-active {
+  color: #ffac33;
+}
+.textarea-size {
+  resize: none;
+  min-height: 100px;
+}
+.text-overlay{
+  background: rgba(0,0,0, 0.5);
+  color: lightgrey;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  font-size: 24px;
+  white-space: pre;
+  text-align: center;
+}
+.blur-effect{
+  filter: blur(6px);
+  -webkit-filter: blur(6px);
+}
+.action-btn-black{
+  position: relative;
+  background: rgba(100, 100, 100, .75);
+  border: 1px solid transparent;
+  color: #fff;
+  transition: all .3s;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  margin-right: 10px;
+  &.active {
+    background: #fff;
+  }
+}
+.non-invert-video {	
+  transform: scale(1, 1)!important;	
+  }
+
+.text-ss-popup {
+  color: #0000008a;
+  .ss-system-pref {
+    color: #00796b;
+    font-size: 16px;
+    font-family: TitilliumWeb-SemiBold;
+  }
+}

@@ -1,0 +1,55 @@
+<div class="h-100 w-100 call-parent" *ngIf="showCallingScreen">
+
+    <div [ngClass]="{'blur-effect': reconnection_overlay}" class="h-100 w-100 d-flex flex-column align-items-center justify-content-center" *ngIf="!is_call_connected && this.channel_details['is_video_caller']">
+        <img [src]="channel_details['channel_image'] || 'assets/img/placeholder.png'" class="opposite-user-image rounded-circle" [ngClass]="{'animation-none': is_call_connected}">
+        <p class="color-white mt-5 font-20 font-weight-light">{{channel_details['user_name']}}</p>
+        <p class="color-white">{{calling_text}}</p>
+    </div>
+
+    <!-- adding allow attribute to give microphone and camera access to iframe origin -->
+    <div *ngIf="is_call_connected" class="position-relative h-100 w-100">
+      <iframe id="frameEl" class="installation-iframe h-100 w-100"  allow="microphone; camera" [src]="callingUrl | safeHtml: 'resourceUrl'"></iframe>
+    </div>
+
+    <div *ngIf="!is_call_connected" class="position-absolute actions-buttons d-flex w-100 justify-content-center align-items-center" id="actionButtons">
+      <button class="old-calling-call mr-3" *ngIf="showOldtext" (click)="openOldCalling()">Call Anyway</button>
+      <button class="old-calling-hangup" *ngIf="showOldtext"  (click)="hangUpCall(false, hangupErrorEnum.CALL_HANGUP)" >Hangup</button>
+        <span *ngIf="!showOldtext" appTooltip [tooltipTitle]="'Hangup'" class="position-relative" (click)="hangUpCall(false, hangupErrorEnum.CALL_HANGUP)" (touch)="hangUpCall(false ,hangupErrorEnum.CALL_HANGUP)">
+          <svg id="hangup" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="-10 -10 68 68" class="cursor-hand">
+            <circle cx="24" cy="24" r="34">
+            </circle>
+            <path transform="scale(0.7), translate(11,10)" d="M24 18c-3.21 0-6.3.5-9.2 1.44v6.21c0 .79-.46 1.47-1.12 1.8-1.95.98-3.74 2.23-5.33 3.7-.36.35-.85.57-1.4.57-.55 0-1.05-.22-1.41-.59L.59 26.18c-.37-.37-.59-.87-.59-1.42 0-.55.22-1.05.59-1.42C6.68 17.55 14.93 14 24 14s17.32 3.55 23.41 9.34c.37.36.59.87.59 1.42 0 .55-.22 1.05-.59 1.41l-4.95 4.95c-.36.36-.86.59-1.41.59-.54 0-1.04-.22-1.4-.57-1.59-1.47-3.38-2.72-5.33-3.7-.66-.33-1.12-1.01-1.12-1.8v-6.21C30.3 18.5 27.21 18 24 18z" fill="white"></path>
+          </svg>
+        </span>
+      </div>
+</div>
+
+<app-message-modal *ngIf="showFeedbackPopup" [@messageModalAnimation] (closeMessageModal)="showFeedbackPopup = false">
+  <p class="message-modal-heading">Please rate the quality of your {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} call</p>
+  <span class="d-flex justify-content-center">{{feedback_object.selectedStar?.label}}</span>
+  <div class="message-modal-description d-flex flex-column">
+    <div class="d-flex justify-content-between">
+      <div class="stars cursor-hand" *ngFor="let star of feedback_object.starsArray; let i = index" (click)="feedback_object.selectedStar = star">
+        <span><i class="fa fa-star star-icon"
+            [ngClass]="{'star-icon-active': feedback_object.selectedStar?.value >= i+1}"></i></span>
+      </div>
+    </div>
+    <div class="mt-4">
+      <span>Tell us more about it</span>
+    </div>
+    <div class="mt-2">
+      <textarea type="text" appAutofocus class="textarea-size form-control box-shadow-none" [(ngModel)]="feedback_object.feedbackText">
+      </textarea>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button mr-3 message-modal-button-red btn-red outline-none" type="button" (click)="closeFeedbackWindow()">Skip</button>
+    <button class="message-modal-button outline-none" type="button" (click)="submitFeedback()">Submit</button>
+  </div>
+</app-message-modal>
+
+<!-- <app-message-modal *ngIf="showVersionPopup" [width]="'26%'" [@messageModalAnimation]
+(closeMessageModal)="showVersionPopup = false">
+  <span class="message-modal-heading">{{channel_details['user_name']}} doesn't have the latest version of app installed. Please tell them to update the app.</span>
+  <button class="message-modal-button outline-none" type="button" (click)="showVersionPopup = false" >Okay</button>
+</app-message-modal> -->

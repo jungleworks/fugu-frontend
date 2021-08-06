@@ -1,0 +1,72 @@
+@import '~assets/css/variables';
+
+.font-time {
+    font-size: 13px;
+    color: $light-font;
+  }
+
+  .notification-count{
+    background-color: $red-icon-color;
+    color: white;
+    right: -6px;
+    padding-right: 1px;
+    top: -2px;
+    width: 19px;
+    height: 19px;
+    animation: bounce 1.7s linear infinite;
+  }
+  .text-noti {
+    color: $chat-header-text;
+  }
+  .notifications-menu{
+    // height: 60vh;
+    // top: 45px;
+    background-color: $chat-bar-header;
+    border-right: 1px solid $border-bottom-header;
+    // box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+    // border-radius: 4px;
+    // width: 400px;
+    &:after{
+      content: '';
+      position: absolute;
+      // right: 3px;
+      top: -10px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid $border-bottom-header;
+      clear: both;
+    }
+  }
+  .notification-body{
+    // height: calc(60vh - 33px);
+    overflow: auto;
+  }
+  .notification-card{
+  }
+  .notification-image{
+    margin-right: 12px;
+  }
+  .notification-title{
+    line-height: 18px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* autoprefixer: ignore next */
+    -webkit-box-orient: vertical;
+    color: $chat-header-text;
+  
+  }
+  .notification-message{
+    width: calc(100% - 60px);
+  }
+  .notification-space-name{
+    top: -20px;
+  }
+  .hw-40 {
+    width: 40px;
+    height: 40px;
+    border-radius: $rounded-image;
+  }

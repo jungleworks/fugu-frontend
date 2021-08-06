@@ -1,0 +1,341 @@
+<div class="stand-up w-100 h-100 d-flex flex-column overflow-hidden">
+  <div>
+    <div class="d-flex">
+      <p class="section__main-heading mb-0 p-3 ml-3" *ngIf="!editScrumName">{{scrum_name}}</p>
+      <input *ngIf="editScrumName" maxlength="30" type="text" id="groupNameInput"
+        class="section__main-heading input-edit mb-0 p-3 ml-3 border-none outline-none" [(ngModel)]="scrum_name"
+        appAutofocus placeholder="Enter group name">
+      <img src="assets/img/pencil.svg" *ngIf="!editScrumName && (scrum_user_Id == userData.user_id || !isEdit)" class="pencil-icon"
+        (click)="editScrumName = true">
+      <button *ngIf="editScrumName" click-outside (clickOutside)="onEditClickOutside($event)"
+        class="btn btn-none ml-2 pr-0 border-none outline-none pb-0 mb-2" (click)="editScrumName = false">
+        <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+          <path fill="var(--app-color)" d="M8 17.1l-5.2-5.2-1.7 1.7 6.9 7L22.9 5.7 21.2 4 8 17.1z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="d-flex top-nav pb-0 pt-1 pl-4">
+      <div class="top-nav__option" *ngFor="let tab of navOption"
+        [ngClass]="{'top-nav__option--active': standUpActiveStep == tab.value}" (click)="standUpActiveStep = tab.value">
+        {{tab.name}}</div>
+    </div>
+  </div>
+  <form [formGroup]="standupForm" class="h-100 d-flex flex-column">
+    <div class="h-100 position-relative overflow-auto" [ngClass]="{'h-74': standUpActiveStep == 2 && selectedChips.respondents.length}">
+      <div *ngIf="standUpActiveStep == 1"
+        class="scheduling-bot flex-grow h-100 w-100 d-flex flex-column justify-content-center">
+        <div class="d-flex">
+          <div class="d-flex flex-column position-relative timezone-box mr-4">
+            <div class="ml-3 mb-3">
+              <span class="font-20">Start Day</span>
+              <span><i class="far fa-question-circle question-mark ml-1"
+                  matTooltip="Choose a day when the report will begin to run" [matTooltipPosition]="'right'"></i></span>
+            </div>
+            <div class="position-relative d-flex">
+              <input readonly class="w-100 form-control outline-none" formControlName="session_start" matInput
+                [matDatepicker]="startDayPicker" placeholder="Choose a date">
+              <mat-datepicker-toggle matSuffix [for]="startDayPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startDayPicker></mat-datepicker>
+            </div>
+          </div>
+          <div class="d-flex flex-column position-relative timezone-box">
+            <div class="ml-3 mb-3">
+              <span class="font-20">Timezone</span>
+              <span><i class="far fa-question-circle question-mark ml-1"
+                  matTooltip="Select a timezone" [matTooltipPosition]="'right'"></i></span>
+            </div>
+            <div (click)="showTimezoneBox = true" class="cursor-hand d-flex align-items-center timezone-input pl-2 pr-2"
+              click-outside (clickOutside)="onTimezoneClickOutside($event)">
+              <input type="text" readonly class="form-control-plaintext outline-none cursor-hand"
+                [(ngModel)]="selectedTimeZone.text" [ngModelOptions]="{standalone: true}">
+              <span class="fa fa-caret-down d-flex" aria-hidden="true"></span>
+            </div>
+            <div [hidden]="!showTimezoneBox" class="time-box-selection p-2 cursor-hand">
+              <input type="text" class="form-control mb-1" placeholder="Search your timezone"
+                [formControl]="searchTimezone">
+              <div class="time-zone-scroll">
+                <div *ngFor="let item of timezoneDisplayed;let i = index" class="recurring-box-selection__option p-2"
+                  (click)="chooseTimezone(item)"
+                  [ngClass]="{'recurring-box-selection__option--selected': item.value == selectedTimeZone.value}">
+                  {{item.text}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center">
+          <p class="font-20 mt-4 ml-3 mr-2">Schedule</p>
+          <i class="fas fa-calendar-alt calendar-icon mt-2"></i>
+        </div>
+        <div class="schedule-box d-flex justify-content-around">
+          <div class="time-box pl-3 pr-3 pt-2 pb-2">
+            <div class="d-flex align-items-center">
+              <div class="d-flex flex-column hour-box text-center">
+                <span class="fa fa-angle-up cursor-hand" (click)="changeTime('hour',1)"></span>
+                <input class="form-control" formControlName="schedule_hour" type="number" max="23" min="0"
+                  (keydown)="onTimeKeyPress($event,'hour')">
+                <span class="fa fa-angle-down cursor-hand" (click)="changeTime('hour',-1)"></span>
+              </div>
+              <div class="mr-2 ml-2"><span>:</span></div>
+              <div class="d-flex flex-column hour-box text-center">
+                <span class="fa fa-angle-up cursor-hand" (click)="changeTime('min',1)"></span>
+                <input class="form-control" formControlName="schedule_min" type="number" max="59" min="0"
+                  (keydown)="onTimeKeyPress($event,'min')">
+                <span class="fa fa-angle-down cursor-hand" (click)="changeTime('min',-1)"></span>
+              </div>
+            </div>
+          </div>
+          <div class="weekday-box d-flex align-items-center pl-3 pr-3 pt-2 pb-2">
+            <label class="d-flex mb-0 p-1 mr-2" *ngFor="let day of weekdays;let i = index"
+              (change)="onWeekdayChange(day)">
+              <span class="p-1 pl-2 cursor-hand overflow-hidden d-flex align-items-center">
+                <input type="checkbox" name="checkbox-weekdays" [checked]="day.selected" class="checkbox-input">
+                <div class="ml-2">{{day.name}}</div>
+              </span>
+            </label>
+          </div>
+          <div class="recurring-box d-flex align-items-center pl-3 pr-3 pt-2 pb-2 position-relative">
+            <div (click)="showRecurringBox = true" class="cursor-hand d-flex align-items-center" click-outside
+              (clickOutside)="onRecurringClickOutside($event)">
+              <input type="text" readonly class="form-control-plaintext outline-none cursor-hand"
+                [(ngModel)]="selectedRecurringTime.name" [ngModelOptions]="{standalone: true}">
+              <span class="fa fa-caret-down d-flex" aria-hidden="true"></span>
+            </div>
+            <div [hidden]="!showRecurringBox" class="recurring-box-selection p-2 cursor-hand">
+              <div *ngFor="let item of recurringTime;let i = index" class="recurring-box-selection__option p-2"
+                (click)="chooseRecurringTime(i)"
+                [ngClass]="{'recurring-box-selection__option--selected': item.value == selectedRecurringTime.value}">
+                {{item.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="standUpActiveStep == 2" class="scheduling-bot h-100 w-100 overflow-auto position-relative">
+        <div class="disable-layover w-100 position-absolute" *ngIf="scrum_user_Id != userData.user_id && isEdit"></div>
+        <div class="mt-4">
+          <div class="d-flex justify-content-between align-items-center">
+          <p class="font-20 mb-2 ml-3">Choose Respondents</p>
+            <div class="d-flex">
+              <a class="standup-links mr-2" (click)="getChannelMembers()">Add channel members</a>
+              <a class="standup-links" *ngIf="selectedChips.respondents.length" (click)="removeAllTeamMembers()">
+                Clear</a>
+            </div>
+          </div>
+          <app-chips-input [chip_type]="chipsTypeEnum.MEMBERS" [selected_data]="selectedChips.respondents"
+            [placeholder_text]="'Type member Name'" [scrumUsersNotAvailable]="scrumUsersNotAvailable"
+            (selected_results)="respondentSelectedResults($event)" (selected_chip)="respondentSelectedChip($event)">
+          </app-chips-input>
+        </div>
+        <div *ngIf="selectedChips.respondents.length">
+          <div class="d-flex flex-column mt-4">
+            <p>
+              <span class="font-20 mt-4 ml-3">Welcome Message</span>
+              <span><i class="far fa-question-circle question-mark ml-1"
+                  matTooltip="Enter a message that will precede the questions. Explain the purpose of the report here."
+                  [matTooltipPosition]="'right'"></i></span>
+            </p>
+            <textarea formControlName="welcome_message" class="text-area box-shadow"></textarea>
+          </div>
+          <div class="d-flex flex-column mt-2">
+            <p class="font-20 mt-1 ml-3">Questions</p>
+            <div class="standup-question" formArrayName="questions"
+              *ngFor="let item of standupForm.get('questions').controls; let i = index;">
+              <div class="d-flex position-relative mb-3" [formGroupName]="i">
+                <div class="question-options-parent position-absolute h-100" style="left: -20px;padding-right: 20px">
+                  <div class="d-flex flex-column justify-content-between  h-100 question-options">
+                    <span class="fa fa-angle-up d-flex cursor-hand font-20" (click)="moveQues(i, -1)"
+                      aria-hidden="true"></span>
+                    <img class="hw-11 cursor-hand" (click)="removeQuestion(i, item.controls.id.value)"
+                      src="assets/img/close.svg">
+                    <span class="fa fa-angle-down d-flex cursor-hand font-20" (click)="moveQues(i, 1)"
+                      aria-hidden="true"></span>
+                  </div>
+                </div>
+                <textarea formControlName="question" class="text-area box-shadow w-100"></textarea>
+              </div>
+            </div>
+            <div>
+              <button class="btn btn-common" (click)="addQuestion()">Add Questions</button>
+            </div>
+          </div>
+          <div class="d-flex mt-3">
+            <div class="d-flex flex-column">
+              <div class="ml-3">
+                <span class="mb-2">Waiting Time</span>
+                <span><i class="far fa-question-circle question-mark ml-1"
+                    matTooltip="Set up the duration for how long ScrumBot will wait for answers from the respondents"
+                    [matTooltipPosition]="'right'"></i></span>
+              </div>
+              <div class="recurring-box d-flex align-items-center pr-3 pt-2 pb-2 position-relative">
+                <div (click)="showWaitingTime = true" class="cursor-hand d-flex align-items-center dropdown-scrum-bot"
+                  click-outside (clickOutside)="onWaitingClickOutside($event)">
+                  <input type="text" readonly class="form-control-plaintext outline-none cursor-hand"
+                    [(ngModel)]="selectedWaitingTime.name" [ngModelOptions]="{standalone: true}">
+                  <span class="fa fa-caret-down d-flex" aria-hidden="true"></span>
+                </div>
+                <div [hidden]="!showWaitingTime" class="waiting-time-selection p-2 cursor-hand">
+                  <div *ngFor="let item of waitingTime;let i = index" class="recurring-box-selection__option p-2"
+                    (click)="chooseWaitingTime(i)"
+                    [ngClass]="{'recurring-box-selection__option--selected': item.value == selectedWaitingTime.value}">
+                    {{item.name}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-column flex-grow">
+              <div class="ml-3">
+                <span class="mb-2 ml-3"><span><input type="checkbox" class="mr-2" [(ngModel)]="end_time_reminder"
+                      [ngModelOptions]="{standalone: true}"></span>End Time Reminder</span>
+                <span><i class="far fa-question-circle question-mark ml-1"
+                    matTooltip="Ping those who haven't responded to the bot" [matTooltipPosition]="'right'"></i></span>
+              </div>
+              <div class="d-flex">
+                <div class="recurring-box d-flex align-items-center pl-3 pt-2 pb-2 position-relative">
+                  <div (click)="end_time_reminder ? showEndTime = true : ''"
+                    class="cursor-hand d-flex align-items-center dropdown-scrum-bot" click-outside
+                    (clickOutside)="onEndClickOutside($event)">
+                    <input type="text" readonly class="form-control-plaintext outline-none cursor-hand disable-class"
+                      [(ngModel)]="selectedEndTime.name" [ngModelOptions]="{standalone: true}"
+                      [disabled]="!end_time_reminder">
+                    <span class="fa fa-caret-down d-flex" [ngClass]="{'caret-icon': !end_time_reminder}"
+                      aria-hidden="true"></span>
+                  </div>
+                  <div [hidden]="!showEndTime" class="end-time-selection p-2 cursor-hand">
+                    <div *ngFor="let item of endTime;let i = index" class="recurring-box-selection__option p-2"
+                      (click)="chooseEndTime(i)"
+                      [ngClass]="{'recurring-box-selection__option--selected': item.value == selectedEndTime.value}">
+                      {{item.name}}
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-2 pb-2 flex-grow">
+                  <input type="text" class="form-control-plaintext outline-none end-time-text h-100 disable-class"
+                    [(ngModel)]="endTimeText" [ngModelOptions]="{standalone: true}" [disabled]="!end_time_reminder">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="standUpActiveStep == 3" class="scheduling-bot h-100 w-100 overflow-auto">
+        <div class="d-flex">
+          <div class="d-flex flex-column mt-2 position-relative timezone-box mr-4 w-100">
+            <p class="font-20 mt-4 ml-3">Deliver results to</p>
+            <div>
+              <label class="ml-3">People</label>
+              <div class="">
+                <div class="d-flex flex-wrap">
+                  <div class="chip-email mb-2 mr-1 d-flex" *ngFor="let item of selectedPeople | keyvalue">
+                    <img *ngIf="selectedPeople[item.key].user_thumbnail_image"
+                      [src]="selectedPeople[item.key].user_thumbnail_image" class="rounded-img-fugu" alt="user-image">
+                    <div *ngIf="!selectedPeople[item.key].user_thumbnail_image" class="rounded-img-fugu d-flex
+                                        justify-content-center align-items-center hw-26"
+                      [ngStyle]="{'background-color': selectedPeople[item.key].user_id | randomColor}">
+                      {{selectedPeople[item.key].full_name.substring(0,1)}}
+                    </div>
+                    <span class="chip-text d-flex align-items-center pl-2">{{selectedPeople[item.key].full_name.split('
+                                              ')[0]}}
+                      <span (click)="removeSelectedPeople(item.key)"
+                        class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                          <path opacity=".6" fill="#263238"
+                            d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+                          </path>
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <app-chips-input [chip_type]="chipsTypeEnum.MEMBERS" [selected_data]="selectedChips.members"
+                [placeholder_text]="'Type member Name'" (selected_results)="membersSelectedResults($event)">
+              </app-chips-input>
+            </div>
+            <div class="mt-4">
+              <label class="ml-3">Channels</label>
+              <div class="">
+                <div class="d-flex flex-wrap">
+                  <div class="chip-email mb-2 mr-1 d-flex" *ngFor="let item of selectedChannels | keyvalue">
+                    <img *ngIf="selectedChannels[item.key].channel_thumbnail_url"
+                      [src]="selectedChannels[item.key].channel_thumbnail_url" class="rounded-img-fugu" alt="user-image">
+                    <div *ngIf="!selectedChannels[item.key].channel_thumbnail_url" class="rounded-img-fugu d-flex
+                                                    justify-content-center align-items-center hw-26"
+                      [ngStyle]="{'background-color': selectedChannels[item.key].channel_id | randomColor}">
+                      {{selectedChannels[item.key].label.substring(0,1)}}
+                    </div>
+                    <span class="chip-text d-flex align-items-center pl-2">{{selectedChannels[item.key].label.split('
+                                                          ')[0]}}
+                      <span (click)="removeSelectedChannels(item.key)"
+                        class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                          <path opacity=".6" fill="#263238"
+                            d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+                          </path>
+                        </svg>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <app-chips-input [chip_type]="chipsTypeEnum.CHANNELS" [selected_data]="selectedChips.channels"
+                [placeholder_text]="'Type a channel name here'" (selected_results)="channelsSelectedResults($event)">
+              </app-chips-input>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="disable-layover h-100 w-100 position-absolute" *ngIf="scrum_user_Id != userData.user_id && isEdit && (standUpActiveStep == 3 || standUpActiveStep == 1)"></div>
+    </div>
+    <div class="w-100 h-10 d-flex justify-content-between align-items-center m-2 footer-scrum">
+      <div class="footer-link d-flex align-items-center cursor-hand"
+        [ngClass]="{'visibilty-hidden': standUpActiveStep == 1}" (click)="goBack()">
+        <span class="fa fa-chevron-left d-flex mr-3" aria-hidden="true"></span>
+        <span class="cursor-hand">Back</span>
+      </div>
+      <button class="btn btn-common" (click)="sendScrumDetails()"
+        [ngClass]="{'cursor-not' : !standupForm.valid || selectedChips.respondents.length == 0 || (selectedChips.members.length == 0 && selectedChips.channels.length == 0) || isScrumRunning}"
+        [disabled]="!standupForm.valid || selectedChips.respondents.length == 0 || (selectedChips.members.length == 0 && selectedChips.channels.length == 0) || isScrumRunning">{{!isEdit ? 'Done
+        and run' : 'Save'}}</button>
+      <div class="footer-link d-flex align-items-center cursor-hand"
+        [ngClass]="{'visibilty-hidden': standUpActiveStep == 3}" (click)="goNext()">
+        <span class="cursor-hand" (click)="standUpActiveStep == 1 ? this.checkUserAvailability('next') : ''">Next</span>
+        <span class="fa fa-chevron-right d-flex ml-3" aria-hidden="true"></span>
+      </div>
+    </div>
+  </form>
+</div>
+<app-message-modal *ngIf="openAddAllChannelPopup" [width]="'70%'" [@messageModalAnimation]>
+  <div class="h-100 d-flex flex-column justify-content-between">
+    <div class="d-flex align-items-center justify-content-between">
+      <span class="select-channel-label">Select channel</span>
+      <div class="d-flex">
+        <span class="mr-2">Private channels</span>
+        <span>
+          <app-fugu-switch class="d-flex align-items-center" [defaultComponentClass]="'fugu-switch-default'"
+            [active]="channel_value" (switchToggleEvent)="showPrivateChannel()"></app-fugu-switch>
+        </span>
+      </div>
+      <span>
+        <input type="text" class="channel-search" placeholder="Filter by a channel name"
+          [formControl]="searchChannelsCtrl">
+      </span>
+    </div>
+  </div>
+  <div class="mt-4 channel-list-container">
+    <div class="channel-container cursor-hand" *ngFor="let channel of channelsToShow"
+      (click)="selectChannelMembers(channel)">
+      <span class="channel-list">
+        <img src="/assets/img/channel-list.svg" class="channel-list-img">
+      </span>
+      <span>{{channel.label}}</span>
+    </div>
+    <div class="cursor-hand" *ngIf="!channelsToShow.length">
+      <span>No {{channel_value ? 'private' : 'public' }} channels found.</span>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center align-items-center">
+    <button class="button-back outline-none" (click)="openAddAllChannelPopup = false" type="button">Back</button>
+  </div>
+</app-message-modal>

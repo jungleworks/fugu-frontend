@@ -1,0 +1,8 @@
+<header class="d-flex justify-content-between p-3">
+  <div class="d-flex">
+    <img *ngIf="!commonService.isWhitelabelled" class="h-45 cursor-hand outline-none" [routerLink]="['/' + this.spaceData.workspace]" src="assets/img/fugu-logo-full.svg" alt="Fugu">
+    <img class="h-45" *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations['logo']">
+    <div class="header-main-text">Bots</div>
+  </div>
+  <div class="d-flex align-items-center p-2 workspace-name">{{spaceData.workspace_name}}</div>
+</header>

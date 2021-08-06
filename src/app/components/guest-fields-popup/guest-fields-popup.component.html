@@ -1,0 +1,37 @@
+<app-message-modal [width]="'38%'" [@messageModalAnimation] (closeMessageModal)= 'closeGuestFieldsPopup.emit()'>
+  <div class="h-100 d-flex flex-column justify-content-between">
+    <div class="d-flex justify-content-between header-broadcast" [ngClass]="{'mb-4': !setGuestFields}">
+      <div>
+        <span class="message-modal-heading mr-3">{{!setGuestFields ? 'Edit' : 'Set'}} Guest Access</span>
+      </div>
+      <span (click)="closePopup()" class="margin-close-icon cursor-hand">
+        <img src="assets/img/cross-icon.svg" class="cursor-hand close-icon">
+      </span>
+    </div>
+    <div class="message-modal-description d-flex flex-column">
+      <h5 class="invite-desc d-flex" *ngIf="setGuestFields">Add guests to coversation you want them to be a part of</h5>
+      <div class="">
+        <label class="guest-label-heading">{{ setGuestFields ? 'Specify team members your guest can talk to' : 'Team members the guest can initiate conversations with:'}}</label>
+        <app-chips-input [chip_type]="chipsTypeEnum.GUEST_MEMBERS" [selected_data]="guest_data.members" [lock_id]="guest_settings_data?.lock_id ? guest_settings_data.lock_id : ''" [placeholder_text]="'Enter Name'"
+          (selected_results)="selectedResultsMembers($event)"></app-chips-input>
+          <span class="note" *ngIf="setGuestFields">Guests can initiate conversations with only people you specify</span>
+      </div>
+      <div class="mt-4 mb-4">
+        <label class="guest-label-heading">{{setGuestFields ? 'Specify channels your guests will be added to' : 'Channels the guest is a part of:'}}</label>
+        <app-chips-input [chip_type]="chipsTypeEnum.CHANNELS" [selected_data]="guest_data.channels" [placeholder_text]="'Enter Channel name'"
+          (selected_results)="selectedResultsChannels($event)"></app-chips-input>
+         <span class="note" *ngIf="setGuestFields">Guests can access all files and messages shared in these channels</span>
+      </div>
+      <a class="create-channel-link mt-3 cursor-hand" (click)="showNewChannelField()" *ngIf="setGuestFields && !showAddNewChannelField">Create a new channel</a>
+      <div class="mt-3 d-flex flex-column position-relative" *ngIf="setGuestFields && showAddNewChannelField">
+        <label class="guest-label-heading">Create a new channel for you and your guest</label>
+        <input class="input-new-channel outline-none" type="text" placeholder="Enter new channel name" [(ngModel)]="newChannelName">
+        <span class="note mt-1">You and your guest will automatically be added to this private channel</span>
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-primary mt-3 w-100 outline-none box-shadow-none" (click)="inviteGuestMembers()">DONE</button>
+    </div>
+  </div>
+</app-message-modal>
+<app-payment-popup *ngIf="showPaymentPopup" (closePaymentPopup)="showPaymentPopup = false"></app-payment-popup>

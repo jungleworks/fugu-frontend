@@ -1,0 +1,49 @@
+<div class="workspace-bar d-flex w-100 h-100" click-outside (clickOutside)="closeWorkspaceBar($event)" keyboard-events
+  [isEnabled]="true" (esc)="closeAndEmitWSBar()">
+  <div class="w-100 position-relative d-flex align-items-center p-search justify-content-between">
+    <div class="w-100 pr-12">
+      <span class="position-absolute pl-2 ml-2 mt-2"><i class="fas fa-search search-msg-icon"></i></span>
+      <input id="search-ws-container" (keydown)="onSearchBoxKeyDownEvent($event)" [formControl]="workspacesSearchCtrl"
+        class="form-control search-input-workspaces outline-none box-shadow-none border-none"
+        placeholder="Search workspaces..." type="text">
+    </div>
+      <div title="Add/Join New Workspace" *ngIf="spaceData?.config.create_workspace_permission.includes(role_status)" (click)="createNewWorkspace()"
+      class="cursor-hand domain-image image-workspace d-flex justify-content-center align-items-center p-1">
+      <span class="text-center ws-add">
+        {{'+'}}
+      </span>
+    </div>
+  </div>
+  <div #workspacesContainer click-outside (clickOutside)="closeNewTabMenu($event)"
+    class="overflow-auto list-container position-relative pl-1">
+    <div [id]="'workspace' + i" class="spaces cursor-hand d-flex flex-column position-relative
+     border-profile-down workspace-option" (contextmenu)="openInNewWindow($event, domain, i)"
+      (click)="onDomainChange($event ,domain)" [ngClass]="{'active': active_index == i}"
+      *ngFor="let domain of domainsData; let i = index">
+      <div class="d-flex p-16 align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <span [id]="domain.workspace"  class="domain-image d-flex justify-content-center align-items-center mr-3">
+            <img *ngIf="(domain.workspace_image && domain.workspace_image.workspace_image_url)"
+              [src]="domain.workspace_image.workspace_image_url" class="center-logo">
+            <span class="domain-image d-flex align-items-center justify-content-center" [ngStyle]="{'background-color': domain.workspace_id | randomColor}" 
+              *ngIf="!(domain.workspace_image && domain.workspace_image.workspace_image_url)">{{domain.workspace_name.substr(0,1).toUpperCase()}}
+            </span>
+          </span>
+          <span class="workspace-name">{{domain.workspace_name}}</span>
+        </div>
+        <span class="noti-dot"
+          *ngIf="(domain.unread_count > 0) && (spaceData.workspace_id != domain.workspace_id)"></span>
+      </div>
+      <div class="w-100 d-flex align-items-center justify-content-center">
+        <span class="spaces-border"></span>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="newTabMenu && spaceData.workspace_id != clickedDomain.workspace_id" id="options-menu"
+    class="photo-options-menu position-fixed">
+    <button (click)="newTabMenu = false;openLinkInNewTab($event , clickedDomain)" class="theme-font-color  btn-custom-nostyle outline-none
+                   box-shadow-none w-100 p-2 pl-3 pr-3 cursor-hand chat-menu-option">
+      Open in new tab
+    </button>
+  </div>
+</div>

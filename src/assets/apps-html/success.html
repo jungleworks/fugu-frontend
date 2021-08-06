@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    body {
+      text-align: center;
+      padding: 40px 0;
+      background: #ebf0f5;
+    }
+    h1 {
+      color: #88b04b;
+      font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+      font-weight: 900;
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #404f5e;
+      font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+      font-size: 20px;
+      margin: 0;
+    }
+    i {
+      color: #9abc66;
+      font-size: 100px;
+      line-height: 200px;
+      margin-left: -15px;
+    }
+    .card {
+      background: white;
+      padding: 60px;
+      border-radius: 4px;
+      box-shadow: 0 2px 3px #c8d0d8;
+      display: inline-block;
+      margin: 0 auto;
+    }
+  </style>
+  <body>
+    <div class="card">
+      <div
+        style="
+          border-radius: 200px;
+          height: 200px;
+          width: 200px;
+          background: #f8faf5;
+          margin: 0 auto;
+          justify-content: center;
+          display: flex;
+          align-items: center;
+        "
+      >
+        <svg
+          height="100"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          version="1.1"
+          id="Layer_1"
+          x="0px"
+          y="0px"
+          viewBox="0 0 511.999 511.999"
+          style="enable-background: new 0 0 511.999 511.999;"
+          xml:space="preserve"
+        >
+          <path
+            style="fill: #b7e183;"
+            d="M502.87,75.474c-12.201-12.204-31.952-12.205-44.154-0.001L163.89,370.299L53.284,259.693  c-12.201-12.204-31.952-12.205-44.154-0.001c-12.173,12.174-12.173,31.981,0,44.153L141.814,436.53  c12.199,12.198,31.953,12.2,44.153,0L502.87,119.626C515.042,107.453,515.042,87.645,502.87,75.474z"
+          />
+          <path
+            style="fill: #71de56;"
+            d="M502.87,75.474c-12.201-12.204-31.952-12.205-44.154-0.001L243.511,290.678v88.306L502.87,119.626  C515.042,107.453,515.042,87.645,502.87,75.474z"
+          />
+        </svg>
+      </div>
+      <h1>Success</h1>
+      <p>
+        We received your purchase request;<br />
+        Thank you!
+      </p>
+    </div>
+  </body>
+  <script>
+    let regex = /[?&#]([^=#]+)=([^&#]*)/g,
+      url = window.location.href,
+      params = {},
+      match;
+    while ((match = regex.exec(url))) {
+      params[match[1]] = match[2];
+    }
+    setTimeout(() => {
+      try {
+        const obj = {
+          success: true,
+          workspace: params.workspace
+        };
+        window.top.postMessage(obj, "*");
+      } catch (e) {}
+    }, 5000);
+  </script>
+</html>

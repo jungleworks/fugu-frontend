@@ -1,0 +1,33 @@
+<form [formGroup]="inviteForm">
+  <div formArrayName="properties" class="invite-fields-container">
+    <div *ngFor="let prop of inviteForm.get('properties').controls; let i = index;
+             let first = first; let last = last;" class="pb-1 mt-2 position-relative">
+      <p class="form-custom-label pl-3 pt-2 mb-0" *ngIf="first">
+        <b>{{signupText}}</b>
+      </p>
+      <app-intl-phone-input *ngIf="!phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]"
+        class="phone-dropdown-container position-absolute"
+        [(phoneObj)]="phonesCountryCodeArray[i].selected_country_code">
+      </app-intl-phone-input>
+      <input type="text" (keydown)="dropDownKeyEvent($event, i);last ? addFormField(i) : ''" [ngClass]="{'padding-phone-picker-input':
+                       !phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]}"
+        [maxLength]="!phonesCountryCodeArray[i].is_email ? 12 : 200"  [placeholder]="'Enter Your ' + signupText" 
+        *ngIf="first" appAutofocus class="form-control form-signup-custom pl-3" [formControlName]="i"
+        (focus)="active_input = i;filtered_contacts = []">
+      <input type="text" (keydown)="dropDownKeyEvent($event, i);last ? addFormField(i) : ''"
+        [maxLength]="!phonesCountryCodeArray[i].is_email ? 12 : 200" [ngClass]="{'padding-phone-picker-input':
+                       !phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]}"
+                       [placeholder]="'Enter Your ' + signupText"  *ngIf="!first" class="form-control form-signup-custom pl-3"
+        [formControlName]="i" (focus)="active_input = i;filtered_contacts = []">
+      <div class="search-dropdown position-absolute w-100 mt-1" *ngIf="filtered_contacts.length && active_input == i"
+        #autocompleteContainer click-outside (clickOutside)="autocompleteClickOutside($event)">
+        <div *ngFor="let contact of filtered_contacts;let j = index" class="dropdown-option p-2 cursor-hand d-flex
+                 flex-column justify-content-center" [id]="'autocomplete' + j"
+          [ngClass]="{'active': autocomplete_index == j}" (click)="setFormValues(contact,i)">
+          <p class="mb-0 text-muted small">{{contact.full_name}}</p>
+          <p class="mb-0">{{contact.email || contact.contact_number}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

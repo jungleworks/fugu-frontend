@@ -1,0 +1,26 @@
+.settings-pane {
+  border-right: 1px solid #d5d5d5;
+  flex: 20;
+}
+.template-pane{
+  flex: 80;
+}
+.settings-option {
+  color: #777;
+  cursor: pointer;
+  &:hover {
+    color: var(--app-color);
+  }
+}
+.settings-option--active {
+  color: var(--app-color);
+}
+.settings-option__title {
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-left: 12px;
+  color: #2c2333;
+}
+::ng-deep  app-attendance-bot{
+  width: 100%;
+}

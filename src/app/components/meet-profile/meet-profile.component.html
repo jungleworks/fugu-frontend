@@ -1,0 +1,49 @@
+<div class="menu d-flex flex-column h-100">
+   <div class="menu__header border-bottom-gray pl-3 pr-3 d-flex align-items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="16" viewBox="0 0 21 16">
+        <path fill="var(--app-color)" d="M12.081 0c1.278 0 2.262 1.098 2.339 2.433l.005.168v1.688l5.044-1.91c.693-.233 1.447.225 1.524.97l.007.126v9.05c0 .775-.718 1.286-1.442 1.12l-.12-.035-5.014-1.9v1.72c0 1.33-.939 2.475-2.186 2.564l-.157.006H2.344C1.066 16 .08 14.902.004 13.567L0 13.4V2.601C0 1.248.933.096 2.185.006L2.344 0h9.737z"/>
+    </svg>
+    <span class="ml-2 label-header">Introducing {{commonService.isWhitelabelled ?
+        commonApiService.whitelabelConfigurations['app_name'] : 'Fugu'}}  Meet</span>
+   </div>
+   <div class="pl-3 pr-3 pt-2 border-bottom-gray">
+       <img src="assets/img/meet-profile.jpg" />
+       <div>
+          <div class="mt-3">Space for all your conferences and meetings</div>
+          <div class="text-muted mt-3">
+            {{commonService.isWhitelabelled ?
+                commonApiService.whitelabelConfigurations['app_name'] : 'Fugu'}} Meet helps you connect with multiple members in a conference call.
+          </div>
+          <div class="d-flex flex-column mt-3 mb-3">
+              <span *ngFor="let text of meetPoints" class="d-flex align-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="11" viewBox="0 0 15 11">
+                      <defs>
+                          <linearGradient id="prefix__a" x1="97.143%" x2="1.881%" y1="50%" y2="50%">
+                              <stop offset="0%" stop-color="#13C6FE"/>
+                              <stop offset="100%" stop-color="#5EB3FF"/>
+                          </linearGradient>
+                      </defs>
+                      <path fill="var(--app-color)" fill-rule="evenodd" d="M12.775 10.294c.39-.391 1.023-.392 1.414-.002.36.36.39.927.085 1.32l-.083.094-8.472 8.496c-.367.369-.95.39-1.341.068l-.094-.087-4.011-4.248c-.38-.402-.361-1.035.04-1.414.371-.35.939-.361 1.322-.045l.092.086 3.304 3.498 7.744-7.766z" transform="translate(0 -10)"/>
+                  </svg>
+                  <span class="ml-2">{{text.text}}</span>
+              </span>
+          </div>
+       </div>
+    </div>
+    <!-- <div class="border-bottom-gray d-flex flex-column p-3" *ngIf="!userData.is_calendar_linked">
+               <img src="assets/img/g-cal.png" class="mt-2 mb-2 cal"/>
+               <span class="mt-3 font-semibold">Google Calendar</span>
+               <span>
+                   Connect your Google Calendar to view all your meetings in Fugu. Plus, add Fugu meetingsto your calendar and start them with one click!
+               </span>
+        <span (click)="getAuthorizedUrl()" class="mt-3 mb-3">
+            <button class="cal-button">Connect</button>
+        </span>
+    </div> -->
+    <div class="border-bottom-gray d-flex flex-column p-3" *ngIf="userData.is_calendar_linked">
+                     <img src="assets/img/g-cal.png" class="mt-2 mb-2 cal"/>
+       <span>Google Calendar is linked</span>
+          <span (click)="changeAuthorizedUrl()" class="mt-3 mb-3">
+            <button class="cal-button">Change account</button>
+        </span>
+    </div >

@@ -1,0 +1,38 @@
+<app-message-modal [width]="'60%'" [width]="'40%'" [@messageModalAnimation]
+                   (closeMessageModal)="closePopup.emit();showCal = false;calendarOptions={}">
+  <div class="row">
+    <div class="col-md-6">
+      <p class="message-modal-heading mb-0">All tasks</p>
+      <p class="theme-font-light">{{spaceData.workspace_name}}</p>
+    </div>
+    <div class="col-md-6">
+      <select class="form-control" [(ngModel)]="selectedFilter" (ngModelChange)="filterChange()">
+        <option *ngFor="let data of filters" [value]="data.value">
+          {{data?.name}}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!--  <span>All</span>-->
+  <!--  <span>Pending</span>-->
+  <!--  <span>Completed</span>-->
+
+<!--  id="calendar"-->
+  <ng-container >
+
+    <full-calendar  *ngIf="showCal" [options]="calendarOptions" #fullcalendar ></full-calendar>
+  </ng-container>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none message-modal-button-red btn-red outline-none mr-2"
+            (click)="closePopup.emit()">Close
+    </button>
+  </div>
+
+</app-message-modal>
+
+<app-tasks-popup *ngIf="showAssignTaskPopup" (closePopup)="taskChange();showAssignTaskPopup = false"
+                 [taskDataEdit]='taskDataEdit'></app-tasks-popup>
+
+<app-submit-task-popup *ngIf="showSubmitTask" (closePopup)="taskChange();showSubmitTask = false"
+                       [taskDataEdit]='taskDataEdit'></app-submit-task-popup>

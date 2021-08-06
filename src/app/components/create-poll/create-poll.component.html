@@ -1,0 +1,44 @@
+<div class="modal fade show" role="dialog" tabindex="-1" id="createPollPopup">
+  <div class="modal-dialog modal-dialog-centered" role="document" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <p class="mb-0">Create a Poll</p>
+        <img src="assets/img/close-white.svg" (click)="closeCreatePoll.emit(true)" class="cursor-hand">
+      </div>
+      <div class="modal-body d-flex flex-column justify-content-center">
+        <form [formGroup]="pollForm" role="form">
+          <textarea placeholder="Ask a question" id="question_box" autofocus class="form-control mb-3 box-shadow-none outline-none
+           input-border" formControlName="question" rows="3"></textarea>
+          <ng-container formArrayName="poll_options"
+               *ngFor="let option of pollForm.get('poll_options')['controls']; let i = index;">
+            <div [formGroupName]="i" class="mb-2 d-flex align-items-center">
+              <input class="form-control box-shadow-none outline-none input-border" type="text"
+                     [placeholder]="'Option ' + (i + 1)" formControlName="label">
+              <img *ngIf="i > 1" src="assets/img/cross-icon-search.svg" (click)="removeOption(i)" class="cursor-hand ml-1 hw-24">
+            </div>
+
+          </ng-container>
+          <div class="d-flex justify-content-between align-items-center mb-2 mt-1">
+            <div class="add-option-btn" (click)="addOption()">
+              <span class="app-color cursor-hand TitilliumWeb-bold" [hidden]="pollOptions && pollOptions.length > 9"><i class="fa fa-plus mr-1"></i>Add an option</span>
+              <span class="small text-muted" [hidden]="pollOptions && pollOptions.length < 10">Max 10 options are allowed.</span>
+            </div>
+            <label class="small text-muted mb-0"><input type="checkbox" class="mr-1" formControlName="multiple_select">Let people select multiple options</label>
+          </div>
+          <div class="p-2 days_hours_box d-flex justify-content-center align-items-center">
+            Poll expires in
+            <select class="ml-1 mr-1 select_box outline-none" formControlName="days" (change)="onDayChange()">
+              <option *ngFor="let day of daysOptions" [value]="day">{{day}}</option>
+            </select>
+            days
+            <select class="ml-1 mr-1 select_box outline-none" formControlName="hours">
+              <option *ngFor="let hour of hoursOptions" [value]="hour">{{hour}}</option>
+            </select>
+            hours.
+          </div>
+          <button class="btn create_poll_btn w-100 mt-2 outline-none box-shadow-none" [disabled]="!pollForm.valid" (click)="createPoll()">Create Poll</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

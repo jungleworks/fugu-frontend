@@ -1,0 +1,41 @@
+<div class="parent d-flex flex-column p-2 container">
+    <div class="d-flex justify-content-center mb-5 pb-2 pt-5">
+      <img *ngIf="!commonService.isWhitelabelled" src="/assets/img/fugu-logo-full.svg">
+      <img class="h-45" *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations['logo']">
+    </div>
+    <div class="card p-4 justify-content-center flex-grow mb-5">
+      <div class="card-content row no-gutters">
+        <div class="col-12 col-md-5 pl-3 pr-5 pt-5 pb-5 logo-border d-none d-sm-none d-md-flex justify-content-center">
+          <img src="/assets/img/join-via-domain.svg" class="img-fluid">
+        </div>
+        <div class="col-12 col-md-7 pl-3 pl-md-5 pb-5">
+          <div class="pl-2 pr-4 pt-3">
+            <p class="pt-4 mt-3 fugu-welcome-header mb-1">Sign up for Space Name</p>
+            <p class="create-workspace-text mb-1">Create an account</p>
+            <form class="mt-2" role="form" [formGroup]="spaceForm" (submit)="spaceSubmit()">
+                <div class="form-group mb-0">
+                  <label class="form-custom-label pl-3 pt-2 mb-0">
+                    Space Name
+                  </label>
+                  <div class="d-flex align-items-center">
+                    <input type="email"
+                           appAutofocus
+                           [ngClass]="{'error' : commonService.getErrorMessage(spaceForm.controls.space)}"
+                           placeholder="john.doe"
+                           class="form-control form-signup-custom pl-3"
+                           formControlName="space"
+                    ><b class="ml-2">@{{workspace}}</b>
+                  </div>
+                </div>
+                <div class="pl-3 validator-height">
+                  <app-validator [control]="spaceForm.controls.space"></app-validator>
+                </div>
+              <div class="form-custom-btn mt-2">
+                <button class="btn btn-next btn-40 pt-1 d-flex align-items-center pl-4 pr-4 cursor-hand" [disabled]="!spaceForm.valid">Create Account</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+/*for toggle switch in edit and add pop-up*/
+
+.fugu-switch-default.switch {
+  position: relative;
+  display: inline-block;
+  width: 37px;
+  height: 21px;
+  /* margin:20px; */
+  margin-bottom: 0;
+}
+
+.fugu-switch-default .switch input {display:none;}
+
+.fugu-switch-default .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e4e4ed;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.fugu-switch-default .slider:before {
+  position: absolute;
+  content: "";
+  height: 19px;
+  width: 19px;
+  left: 1px;
+  bottom: 1px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  /*box-shadow*/
+  /* -webkit-box-shadow: 0 0 0 2px transparent, 0 3px 3px rgba(0,0,0,.3);
+  -moz-box-shadow: 0 0 0 2px transparent,0 3px 3px rgba(0,0,0,.3);
+  box-shadow: 0 0 0 2px transparent, 0 3px 3px rgba(0,0,0,.3); */
+}
+
+.fugu-switch-default input:checked + .slider {
+  background-color: var(--app-color);
+}
+
+.fugu-switch-default input:focus + .slider {
+  box-shadow: 0 0 1px var(--app-color);
+}
+
+.fugu-switch-default input:checked + .slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
+}
+
+/* Rounded sliders */
+.fugu-switch-default .slider.round {
+  border-radius: 34px;
+}
+
+.fugu-switch-default .slider.round:before {
+  border-radius: 50%;
+}
+.fugu-switch-default input[type="checkbox"]{
+  display: none
+};
+
+/*     width: 34px;
+  height: 18px;
+      height: 17px;
+  width: 17px;
+} */
+.fugu-switch-default input:disabled + .slider {
+  background-color: var(--app-color);
+  cursor: not-allowed;
+  opacity: 0.3;
+ }

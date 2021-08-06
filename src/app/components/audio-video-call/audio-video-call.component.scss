@@ -1,0 +1,63 @@
+@import '~assets/css/variables';
+
+.call-parent {
+    background-color: $calling-bg;
+    .opposite-user-image{
+        object-fit: cover;
+        height: 200px;
+        width: 200px;
+        animation: pulse 2s linear infinite;
+    }
+    .actions-buttons{
+        left: 0;
+        bottom: 10px;
+        z-index: 2;
+      }
+      #hangup{
+        transition: all .3s;
+        circle{
+          fill: #f03d25;
+          fill-opacity: 1;
+        }
+      } 
+  }
+ .star-icon-active {
+  color: #ffac33;
+ }
+
+ .star-icon {
+  font-size: 40px;
+}
+
+.old-calling-call {
+  display: inline-block;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  font-size: 1.2em;
+  text-decoration: none;
+  background-color: $app-color;
+  border: 0 none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 1em;
+  width: 154px;
+}
+.old-calling-hangup {
+  display: inline-block;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  font-size: 1.2em;
+  text-decoration: none;
+  background-color: #E03A4D;
+  border: 0 none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 1em;
+  width: 154px;
+}
+
+.installation-iframe {
+  border: none;
+}

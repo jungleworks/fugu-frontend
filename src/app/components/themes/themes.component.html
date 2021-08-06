@@ -1,0 +1,242 @@
+<div class="overlay"></div>
+<div class="h-100 w-100  themes">
+  <div
+    class="d-flex align-items-center justify-content-between header-themes p-3"
+  >
+    <div class="header-title">
+      <span class="mr-3">Select your theme</span>
+    </div>
+    <span (click)="closeThemePopup()" class="margin-close-icon cursor-hand">
+      <svg
+        _ngcontent-woi-c8=""
+        class="ng-tns-c8-7"
+        height="22"
+        width="22"
+        id="Layer_1"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          _ngcontent-woi-c8=""
+          class="ng-tns-c8-7"
+          d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z"
+          fill="#263238"
+          opacity=".45"
+        ></path>
+      </svg>
+    </span>
+  </div>
+  <div class="theme-container p-2 d-flex">
+    <div class="preview d-flex">
+      <div class="preview__sidebar h-100">
+        <div class="header d-flex align-items-center justify-content-between">
+          <span class="header__name pl-2">workspace</span>
+          <span class="mr-1 position-relative">
+            <svg
+              _ngcontent-pte-c112=""
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+       
+            >
+              <g
+                _ngcontent-pte-c112=""
+                fill="none"
+                fill-rule="evenodd"
+              >
+                <rect
+                  _ngcontent-pte-c112=""
+                  width="24"
+                  height="24"
+                  rx="2"
+                ></rect>
+                <path
+                  _ngcontent-pte-c112=""
+                  fill="#2F2F2F"
+                  d="M11.993 3c-.703 0-1.286.583-1.286 1.286v1.466c-2.212.578-3.86 2.577-3.86 4.962v5.123s-.021.357-.192.688c-.17.337-.377.618-1.096.618v1.286h12.869v-1.286c-.764 0-.96-.281-1.121-.603-.161-.326-.166-.678-.166-.678v-5.148c0-2.385-1.649-4.384-3.86-4.962V4.286c0-.703-.584-1.286-1.288-1.286zm0 15.429c-.708 0-1.286.577-1.286 1.285S11.285 21 11.993 21c.71 0 1.287-.578 1.287-1.286 0-.708-.578-1.285-1.287-1.285zm0-11.572a3.847 3.847 0 0 1 3.86 3.857v5.138s-.014.613.303 1.25c.005.016.015.026.02.04H7.78a.11.11 0 0 1 .02-.024c.322-.633.332-1.24.332-1.24v-5.164c0-2.14 1.719-3.857 3.86-3.857zM4.267 8.133a.656.656 0 0 0-.583.412 9 9 0 0 0 .015 6.92.644.644 0 0 0 1.187-.502c-.8-1.888-.79-4.033-.01-5.936a.638.638 0 0 0-.06-.608.643.643 0 0 0-.549-.286zm15.447 0a.645.645 0 0 0-.588.894c.78 1.903.79 4.048-.01 5.936a.643.643 0 1 0 1.187.502c.935-2.214.92-4.71.015-6.92a.647.647 0 0 0-.604-.412z"
+                  class="fill-svg-bell"
+                ></path>
+              </g>
+            </svg>
+            <span class="bell-icon d-flex align-items-center justify-content-center">4</span>
+          </span>
+        </div>
+        <div
+          class="position-relative cursor-hand pl-2 pt-2 pb-2 pr-0 mb-2 d-flex align-items-center height-sidebar justify-content-center"
+        >
+          <img
+            class="channel-image rounded-img-fugu"
+            src="https://fchat.s3.ap-south-1.amazonaws.com/test/default/IIR4mRbaGL.1585660564610.jpg"
+          />
+
+          <div
+            class="d-flex flex-column w-100 overflow-hidden justify-content-center margin-sidebar"
+          >
+            <div class="d-flex align-items-center">
+              <div class="flex-grow d-flex conv-label-parent">
+                <p _ngcontent-phj-c108="" class="mb-0 conv-label">
+                  Rachel
+                </p>
+              </div>
+              <span
+                class="float-right d-flex justify-content-center align-items-center conv-time "
+              >
+                Yesterday
+              </span>
+            </div>
+            <div
+              class="d-flex justify-content-between align-items-center ht-24"
+            >
+              <p class="conv-message mb-0">
+                Hello
+              </p>
+
+              <div
+                class="d-flex justify-content-end flex-grow action-options-sidebar position-relative h-100"
+              >
+                <span class="cursor-hand hover-parent"
+                  ><img
+                    draggable="false"
+                    src="/assets/img/hove-arrow.svg"
+                    class="img-fluid cursor-hand msg-menu msg-menu-1"
+                /></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bubble">
+        <div class="bubble__header">
+          <span class="bubble__header__text">Theme core</span>
+        </div>
+        <div class="message-content position-relative">
+          <p class="message-read m-0 other">
+            Hello, How are you today? Weather is so nice today. <span class="link">@joey</span>
+          </p>
+          <div>
+            <span class="time-message">3:42 PM </span>
+            <span class="ml-1 margin-tick-icon tick-message"> </span>
+          </div>
+        </div>
+        <div class="message-content self position-relative float-right">
+          <p class="message-read m-0">
+            Hello, How are you today? Weather is so nice today.
+          </p>
+          <div>
+            <span class="time-message-self">5:12 PM </span>
+            <span class="ml-1 margin-tick-icon tick-message">
+              <ng-container>
+                <img src="../../../assets/img/message-read-tick.svg" />
+              </ng-container>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-theme-body">
+      <span class="mb-2 TitilliumWeb-bold">Choose Theme</span>
+
+      <div class="theme-cont">
+        <div *ngFor="let item of commonService.themesArr" class="mr-20 mb-4">
+                         
+          <div class="d-flex flex-column">
+            <div class="d-flex flex-column">
+              <div class="d-flex align-items-center">
+                <input
+                  (change)="commonService.updateTheme(item.class)"
+                  id="{{ item.name }}"
+                  [value]="item"
+                  type="radio"
+                  name="color"
+                  [(ngModel)]="themeColor"
+                  class="mr-2"
+                />
+                <span>{{ item.name }}</span>
+              </div>
+            </div>
+            <span class="ml-3 position-relative">
+              <!-- <div class="d-flex align-items-center justify-content-center mt-1 position-absolute">
+
+                <span *ngIf="item.theme_id == 6" class="theme-new d-flex align-items-center justify-content-center">New</span>
+              </div> -->
+              <div
+                class="img-theme"
+                [ngStyle]="{ 'background-color': item.color }"
+              ></div>
+            </span>
+     
+          </div>
+        </div>
+      </div>
+      <!-- <span class="mb-2 TitilliumWeb-bold">Bubble Colour</!-->
+      <!-- <div class="d-flex"> -->
+      <!-- <div *ngFor="let item of commonService.bubbleArr" class="ml-2 mr-2 mb-4">
+          <div class="d-flex align-items-center flex-column">
+
+            <div
+              class="bubble-theme position-relative"
+              [ngStyle]="{ 'background-color': item.color }"
+            >
+  
+              <input
+              (change)="updateBubble(item)"
+              [id]="item.name"
+              [value]="item"
+              type="radio"
+              name="bubble-color"
+              [(ngModel)]="bubbleColor"
+              class="mr-2 input-pos "
+            />
+            </div>
+            <span>{{item.name}}</span>
+          </!-->
+      <!-- <span class="ml-3">
+                    <div class="img-theme" [ngStyle]="{'background-color': item.color}">
+
+                    </div>
+                </span> -->
+      <!-- </div> -->
+      <!-- </div> -->
+      <div></div>
+      <div class="d-flex justify-content-end">
+        <button class="btn-theme p-1 outline-none" (click)="saveTheme()">
+          Save theme
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="d-flex justify-content-center h-100">
+        <div class="d-flex flex-column mt-3">
+            <div class="d-flex flex-column">
+                <span class="pt-4">
+                    Customize the look of all your workspaces.
+                    Only you will see this. 
+                </span>
+            </div>
+            <div class="container-theme-body">
+                <div class="theme-cont">
+                    <div *ngFor="let item of commonService.themesArr" class="mr-20 mb-4">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex flex-column">
+                                 <div class="d-flex align-items-center">
+                                     <input  (change)="commonService.updateTheme(item.class)"  id="enum_answer_{{item.name}}" [value]='item' type="radio" 
+                                     name="color" [(ngModel)]="themeColor" class="mr-2">
+                                    <span>{{item.name}}</span>
+                                 </div>
+                            </div>
+                            <span class="ml-3">
+                                <div class="img-theme" [ngStyle]="{'background-color': item.color}">
+    
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button class="btn-theme p-1 outline-none" (click)="saveTheme()">Save theme</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+</div>

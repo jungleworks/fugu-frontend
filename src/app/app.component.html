@@ -1,0 +1,29 @@
+<router-outlet></router-outlet>
+<div id="sound" class="d-none-normal"></div>
+<app-popup></app-popup>
+<app-expired-billing *ngIf="commonService.showExpiredPopup" (closeModal)="commonService.showExpiredPopup = false"> </app-expired-billing>
+<div *ngIf="commonService.isInvalidWorkspace" class="h-100 d-flex flex-column justify-content-center align-items-center">
+  <img class="not-exist-image" src="/assets/img/login-error.png">
+  <p class="message-modal-description"><b>Oops!</b> You tried to visit an invalid workspace</p>
+  <p class="message-modal-description"><a [href]="commonService.urlToRedirect" class="btn btn-redirect pl-3 pr-3">Choose your space</a></p>
+</div>
+<!-- <app-shift-to-new-workspace *ngIf="commonService.showMoveNewPopup"></app-shift-to-new-workspace> -->
+
+
+<!-- Change pointing of test -->
+<div *ngIf="!environmentVar['production' || 'beta'] && !commonService.isWhitelabelled" class="w-100 test-env d-flex justify-content-center cursor-hand">
+    <span (click)="showChangeUrlPopup = true" class="cancel-color">Change url</span>
+</div>
+
+<app-message-modal *ngIf="showChangeUrlPopup && !environmentVar['production' || 'beta']" [width]="'30%'"
+(closeMessageModal)="showChangeUrlPopup = false">
+<span>Url Pointing</span>
+<input type="text" class="form-control box-shawdow-none mb-2" [(ngModel)]="pointingUrlTest">
+<span>Socket Pointing</span>
+<input type="text" class="form-control box-shawdow-none" [(ngModel)]="socketPointingUrlTest">
+<div class="d-flex justify-content-end">
+  <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3" type="button"
+    (click)="showChangeUrlPopup = false">No</button>
+  <button class="message-modal-button outline-none" type="button" (click)="savePointingUrlTest()">Yes</button>
+</div>
+</app-message-modal>

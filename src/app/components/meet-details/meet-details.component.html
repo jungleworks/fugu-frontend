@@ -1,0 +1,35 @@
+<app-message-modal [width]="'34%'" [padding]="'0'" (closeMessageModal)="closePopup($event)">
+
+    <div class="join-header d-flex align-items-center justify-content-between top-text">
+      <span style="margin-left: 16px;">{{allData?.title}}
+      </span>
+
+      <div>
+        <svg (click)="closePopup($event)" class="cursor-hand mr-4" xmlns="http://www.w3.org/2000/svg" width="24"
+             height="24" viewBox="0 0 24 24">
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0h24v24H0z"/>
+            <g stroke="var(--chat-header-text)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="modal-body join-modal">
+      <p class="dates">
+        {{allData?.start_datetime |date:'dd-MM-yyyy'}}
+        ({{allData?.start_datetime | date:'hh:mm a'}} - {{allData?.end_datetime | date:'hh:mm a'}})
+      </p>
+
+      <div class="names" style="margin-bottom: 10px;">
+        Share the meeting link with your mates.
+      </div>
+
+      <a class="share-link" (click)="onCopiedClick($event)" *ngIf="showShareBtn">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+        <span style="margin-left: 10px;">Share Link</span>
+      </a>
+  </div>
+</app-message-modal>

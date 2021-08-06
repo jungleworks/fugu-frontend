@@ -1,0 +1,14 @@
+<app-message-modal id="expiredBillingModal" [width]="'30%'" [@messageModalAnimation]>
+  <div *ngIf="spaceData.role == RoleStatusEnum.isOwner">
+    <p class="message-modal-heading">{{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} Trial Expired</p>
+    <p class="message-modal-description">Your {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} trial has expired. Renew your plan now.</p>
+    <div class="d-flex justify-content-end">
+      <button class="message-modal-button outline-none" [routerLink]="['../../billing']" type="button"
+       (click)="closeModal.emit(true)" >Upgrade Plan</button>
+    </div>
+  </div>
+  <div *ngIf="spaceData.role != RoleStatusEnum.isOwner">
+    <p class="message-modal-heading">{{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} Trial Expired</p>
+    <p class="message-modal-description">Your {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} trial has expired. Contact your workspace owner.</p>
+  </div>
+</app-message-modal>

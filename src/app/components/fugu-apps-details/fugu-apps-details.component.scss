@@ -1,0 +1,23 @@
+section {
+  background-color: #f6f6f6;
+}
+.app-details__header {
+  font-size: 28px;
+  line-height: 1.2143;
+  font-weight: 900;
+}
+.app-details__info-heading {
+  color: #2c2d30;
+  border-bottom: 0.5px solid #e8e8e8;
+  padding-bottom: 5px;
+  font-weight: 500;
+  font-size: 20px;
+}
+.app-details__category {
+  display: flex;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  padding: 3px 5px;
+  border-radius: 6px;
+  font-size: 14px;
+}

@@ -1,0 +1,144 @@
+<div class="position-fixed invite-popup d-flex flex-column justify-content-center h-100 w-100 p-5" keyboard-events [isEnabled]="true" (esc)="closeInvitesPopup.emit($event)">
+  <div class="container p-5">
+    <div class="float-right d-flex flex-column align-items-center justify-content-center close-icon
+     rounded-img-fugu p-2 pt-3 cursor-hand" (click)="closeInvitesPopup.emit($event)">
+      <img src="assets/img/close.svg" class="hw-18">
+      <p class="mb-0 text-muted font-12">esc</p>
+    </div>
+    <div class="d-flex align-items-center justify-content-center">
+      <div *ngIf="step == 1">
+        <p class="mt-1 fugu-welcome-header mb-0">Invite members to <b class="TitilliumWeb-bold app-color">{{spaceData.workspace_name}}</b></p>
+        <p class="create-workspace-text text-muted mb-4">Know a few friends who’d like to explore {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations['app_name'] : 'Fugu' }} with you? </p>
+        <form [formGroup]="inviteForm">
+          <div formArrayName="properties">
+            <div *ngFor="let prop of inviteForm.get('properties').controls; let i = index;
+             let first = first; let last = last;" class="pb-1 mt-2 position-relative">
+              <p class="form-custom-label pl-3 pt-2 mb-0" *ngIf="first">
+                <b>{{signupText}}</b>
+                <span class="float-right app-color pr-2 cursor-hand" (click)="step = 2">+ Add many at once</span>
+              </p>
+              <app-intl-phone-input *ngIf="!phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]" class="phone-dropdown-container position-absolute"
+                                    [(phoneObj)]="phonesCountryCodeArray[i].selected_country_code">
+              </app-intl-phone-input>
+              <input type="text" (keydown)="dropDownKeyEvent($event, i);last ? addFormField(i) : ''"
+                     [ngClass]="{'padding-phone-picker-input':
+                       !phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]}"
+                     [maxLength]="!phonesCountryCodeArray[i].is_email ? 12 : 200"
+                     [placeholder]="'Enter Your ' + signupText"  *ngIf="first" appAutofocus
+                     class="form-control form-signup-custom pl-3"
+                     [formControlName]="i" (focus)="active_input = i;filtered_contacts = []">
+              <input type="text" (keydown)="dropDownKeyEvent($event, i);last ? addFormField(i) : ''"
+                     [maxLength]="!phonesCountryCodeArray[i].is_email ? 12 : 200"
+                     [ngClass]="{'padding-phone-picker-input':
+                       !phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]}"
+                       [placeholder]="'Enter Your ' + signupText"  *ngIf="!first"
+                     class="form-control form-signup-custom pl-3"
+                     [formControlName]="i" (focus)="active_input = i;filtered_contacts = []">
+              <div class="search-dropdown position-absolute w-100 mt-1" *ngIf="filtered_contacts.length && active_input == i"
+                   #autocompleteContainer click-outside (clickOutside)="autocompleteClickOutside($event)">
+                <div *ngFor="let contact of filtered_contacts;let j = index" class="dropdown-option p-2 cursor-hand d-flex
+                 flex-column justify-content-center"
+                     [id]="'autocomplete' + j" [ngClass]="{'active': autocomplete_index == j}"
+                     (click)="setFormValues(contact,i)">
+                  <p class="mb-0 text-muted small">{{contact.full_name}}</p>
+                  <p class="mb-0">{{contact.email || contact.contact_number}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <p class="mb-0 text-muted small text-right">* This invitation will expire after 30 days.</p>
+        <ng-container *ngIf="contacts_available">
+          <div class="d-flex align-items-center m-3">
+            <hr class="w-100"/><p class="mb-0 p-2 text-muted">OR</p><hr class="w-100"/>
+          </div>
+          <div class="d-flex justify-content-center">
+              <!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+              <svg class="hw-22 mr-2" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Capa_1" x="0px" y="0px"
+                viewBox="0 0 483.3 483.3" style="enable-background:new 0 0 483.3 483.3;" xml:space="preserve" width="512px" height="512px">
+                  <path d="M424.3,57.75H59.1c-32.6,0-59.1,26.5-59.1,59.1v249.6c0,32.6,26.5,59.1,59.1,59.1h365.1c32.6,0,59.1-26.5,59.1-59.1    v-249.5C483.4,84.35,456.9,57.75,424.3,57.75z M456.4,366.45c0,17.7-14.4,32.1-32.1,32.1H59.1c-17.7,0-32.1-14.4-32.1-32.1v-249.5    c0-17.7,14.4-32.1,32.1-32.1h365.1c17.7,0,32.1,14.4,32.1,32.1v249.5H456.4z"
+                    fill="var(--app-color)" />
+                  <path d="M304.8,238.55l118.2-106c5.5-5,6-13.5,1-19.1c-5-5.5-13.5-6-19.1-1l-163,146.3l-31.8-28.4c-0.1-0.1-0.2-0.2-0.2-0.3    c-0.7-0.7-1.4-1.3-2.2-1.9L78.3,112.35c-5.6-5-14.1-4.5-19.1,1.1c-5,5.6-4.5,14.1,1.1,19.1l119.6,106.9L60.8,350.95    c-5.4,5.1-5.7,13.6-0.6,19.1c2.7,2.8,6.3,4.3,9.9,4.3c3.3,0,6.6-1.2,9.2-3.6l120.9-113.1l32.8,29.3c2.6,2.3,5.8,3.4,9,3.4    c3.2,0,6.5-1.2,9-3.5l33.7-30.2l120.2,114.2c2.6,2.5,6,3.7,9.3,3.7c3.6,0,7.1-1.4,9.8-4.2c5.1-5.4,4.9-14-0.5-19.1L304.8,238.55z"
+                    fill="var(--app-color)" />
+              </svg>
+
+            <!-- <img src="assets/img/envelope.svg" > -->
+            <p class="underline text-center cursor-hand" (click)="inviteContactsPopup = true">
+              Invite multiple at once</p>
+          </div>
+        </ng-container>
+        <div class="mt-3 mb-1 d-flex align-items-center justify-content-center">
+          <button class="btn btn-next btn-40 pl-3 pr-3" type="button" (click)="sendMultipleInvites()">Send Invitations</button>
+        </div>
+      </div>
+      <!--------------------------- STEP 2 ------------------------------------------>
+      <div *ngIf="step == 2">
+        <p class="pt-4 mt-1 fugu-welcome-header mb-0">Invite members to {{spaceData.workspace_name}}</p>
+        <p class="create-workspace-text mb-1">Enter multiple email address.</p>
+        <form class="mt-2" role="form" [formGroup]="multipleInviteForm" (submit)="sendMultipleInvites()">
+          <div class="form-group mb-0">
+            <p class="form-custom-label pl-3 pt-2 mb-0 w-300">
+              <b>Email Addresses (Phone numbers not allowed)</b>
+            </p>
+            <textarea type="text"
+                      appAutofocus
+                      placeholder="Enter email id here (Phone numbers not allowed)"
+                      class="form-control form-signup-custom multiple-email-box pl-3 w-300"
+                      formControlName="multiple_invite_email"></textarea>
+            <p class="form-custom-label pl-1 pt-2 mb-0 w-300">Please separate mulitple addresses with commas.</p>
+          </div>
+          <div class="mt-4 d-flex align-items-center">
+            <span class="btn btn-negative btn-40 pl-3 pr-3" (click)="step = 1;">Cancel</span>
+            <button class="btn btn-next btn-40 ml-3 pl-3 pr-3">Add Invites</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- gmail contacts modal !---->
+
+<app-message-modal *ngIf="inviteContactsPopup" [width]="'35%'" [padding]="'0'" [@messageModalAnimation]
+  (closeMessageModal)="inviteContactsPopup = false">
+  <p class="invite-header-text font-weight-light mb-0 d-flex justify-content-center p-3">Invite members</p>
+  <div class="d-flex flex-column p-0">
+    <div class="search-div p-3">
+      <input type="text" appAutofocus [formControl]="inviteSearchCtrl"
+        class="form-control form-input-custom invite-search"  [placeholder]="'Search ' + signupText" >
+    </div>
+    <div class="chips-container d-flex p-2 w-100 overflow-auto">
+      <div class="chip-email mr-1 d-flex" *ngFor="let item of checkedContactsArray;let i = index">
+        <span class="chip-text d-flex align-items-center pl-2">{{item.contact}}
+          <span (click)="checkUncheckBoxes(item);checkedContactsArray.splice(i,1)"
+            class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+              <path opacity=".6" fill="#263238"
+                d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+              </path>
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="email-box d-flex flex-column">
+      <!--checkbox to select all user selected emails-->
+      <label class="d-flex justify-content-between align-items-center p-2 checkbox-label modal-invite-option"
+        *ngFor="let obj of filtered_popup_contacts;let i = index" (change)="changeSelectedContacts(obj, i)">
+        <div class="p-1 pl-4 mb-1 font-nova overflow-hidden d-flex flex-column justify-content-center">
+          <p class="mb-0 text-muted small">{{obj.full_name}}</p>
+          <p class="mb-0">{{obj.email || obj.contact_number}}</p>
+        </div>
+        <input type="checkbox" name="checkbox" [checked]="obj.selected" class="checkbox-input">
+      </label>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end p-3">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+      (click)="inviteContactsPopup = false">Cancel</button>
+    <button class="message-modal-button outline-none" [disabled]="!checkedContactsArray.length"
+      (click)="sendCheckBoxInvite()">Send Invites ({{checkedContactsArray.length}})</button>
+  </div>
+</app-message-modal>
+
+<app-payment-popup *ngIf="showPaymentPopup" (closePaymentPopup)="showPaymentPopup = false"></app-payment-popup>

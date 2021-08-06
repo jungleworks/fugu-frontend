@@ -1,0 +1,162 @@
+<div class="d-flex h-100 w-100 overflow-auto flex-column basic-settings-container">
+  <div class="p-3 bg-white border-bottom">
+    <p class="mb-0 h2">Vacation types & Quotas</p>
+  </div>
+  <div class="d-flex flex-column bg-white flex-grow overflow-auto">
+    <div class="add-leave-form p-3 p-4">
+      <form [formGroup]="newLeaveTypeForm" class="w-100 row align-items-center">
+        <div class="col-4">
+          <input class="form-control" formControlName="title" placeholder="Enter Leave Title"
+                 [ngClass]="{'error': newLeaveTypeForm.controls.title.invalid && createLeaveButtonClicked}">
+        </div>
+        <div class="col-5">
+          <textarea class="form-control ml-2" formControlName="synonym"
+                    placeholder="Enter Synonym like WFH, LOP" id="synonym-textarea"
+                    [ngClass]="{'error': newLeaveTypeForm.controls.synonym.invalid && createLeaveButtonClicked}">
+        </textarea>
+        </div>
+        <div class="col-3 d-flex justify-content-center">
+          <button class="btn btn-common font-16" (click)="createNewLeave()">Create</button>
+        </div>
+      </form>
+    </div>
+    <table mat-table [dataSource]="leaveTypesData" class="w-100">
+      <ng-container matColumnDef="leave-type-status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">
+          <!-- <div> -->
+          <app-fugu-switch class="d-flex align-items-center" [defaultComponentClass]="'fugu-switch-default'" [active]="element.status"
+                           (switchToggleEvent)="editLeaveTypeStatus(element)"></app-fugu-switch>
+          <!-- </div> -->
+          <!-- <i (click)="onDeleteLeaveClick(element)" data-toggle="modal" data-target="#leaveDeleteModal" class="fa fa-trash-o cursor-hand"></i> -->
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Title</th>
+        <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+      </ng-container>
+      <ng-container matColumnDef="annual_count">
+        <th mat-header-cell *matHeaderCellDef>Annual Count</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="element.annual_count < 0">Unlimited</ng-container>
+          <ng-container *ngIf="element.annual_count >= 0">{{element.annual_count}}</ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="accrual_interval">
+        <th mat-header-cell *matHeaderCellDef>Accrual Interval</th>
+        <td mat-cell *matCellDef="let element"> {{element.accrual_interval}} </td>
+      </ng-container>
+      <ng-container matColumnDef="adjust">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let element">
+          <i (click)="onEditLeaveClick(element)" data-toggle="modal" data-target="#leaveEditModal" class="fas fa-pencil-alt cursor-hand"></i>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['leave-type-status','title', 'annual_count', 'accrual_interval', 'adjust']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['leave-type-status', 'title', 'annual_count', 'accrual_interval', 'adjust'];"></tr>
+    </table>
+  </div>
+</div>
+<div class="modal fade" id="leaveEditModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Leave</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex flex-column align-items-center justify-content-center">
+        <form class="w-100" [formGroup]="editLeaveForm" (submit)="editLeaveSubmit()">
+          <div class="col-md-10 row">
+            <label class="col-md-4 control-label" for="title">Title</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="title" name="title" formControlName="title">
+              <div class="pl-3 validator-height">
+                <app-validator [control]="editLeaveForm.controls.title"></app-validator>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-10 row mt-4">
+            <label class="col-md-4 control-label" for="synonym">Synonyms</label>
+            <div class="col-md-8">
+              <textarea class="form-control" id="synonym" name="synonym" formControlName="synonym"></textarea>
+            </div>
+          </div>
+          <div class="col-md-10 row mt-4">
+            <label class="d-flex mb-0 p-1 mr-2">
+              <span class="p-1 pl-2 cursor-hand overflow-hidden d-flex align-items-center">
+                <input type="checkbox" name="checkbox" class="checkbox-input" formControlName="is_unlimited">
+                <div class="ml-2">Unlimited Quota</div>
+              </span>
+            </label>
+          </div>
+          <div *ngIf="!editLeaveForm.value.is_unlimited" class="border-top mt-2">
+            <div class="col-md-10 row mt-4">
+              <label class="col-md-4 control-label" for="annual_count">Annual Leave Count</label>
+              <div class="col-md-8">
+                <input type="number" step="0.01" min="0" class="form-control" id="annual_count" name="annual_count" formControlName="annual_count">
+                <div class="validator-height">
+                  <app-validator [control]="editLeaveForm.controls.annual_count"></app-validator>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-10 row mt-4">
+              <label class="col-md-4 control-label" for="accrual_interval">Accrual Interval</label>
+              <div class="col-md-8">
+                <div (click)="showIntervalBox = true" class="cursor-hand d-flex align-items-center interval-input pl-2 pr-2"
+                     click-outside (clickOutside)="onIntervalClickOutside($event)">
+                  <input type="text" readonly class="form-control-plaintext outline-none cursor-hand" name="accrual_interval"
+                         [(ngModel)]="selectedAccrualInterval['name']" [ngModelOptions]="{standalone: true}">
+                  <span class="fa fa-caret-down d-flex" aria-hidden="true"></span>
+                </div>
+                <div [hidden]="!showIntervalBox" class="interval-box-selection p-2 cursor-hand">
+                  <div class="interval-scroll">
+                    <div *ngFor="let item of accrualIntervals;let i = index" class="interval-selection__option p-2" (click)="chooseInterval(item)"
+                         [ngClass]="{'interval-selection__option--selected': item.value == selectedAccrualInterval.value}">
+                      {{item.name}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-10 row mt-4">
+              <label class="col-md-4 control-label" for="annual_rollover">Max Annual Rollover</label>
+              <div class="col-md-8">
+                <input type="number" step="0.01" min="0" class="form-control" id="annual_rollover" name="annual_rollover" formControlName="annual_rollover">
+                <div class="validator-height">
+                  <app-validator [control]="editLeaveForm.controls.annual_rollover"></app-validator>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-10 row mt-4">
+              <label class="d-flex mb-0 p-1 mr-2">
+                  <span class="p-1 pl-2 cursor-hand overflow-hidden d-flex align-items-center">
+                    <input type="checkbox" name="checkbox" class="checkbox-input" formControlName="is_negative">
+                    <div class="ml-2">Allow Negative Balance</div>
+                  </span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-common" (click)="editLeaveSubmit()" [disabled]="!editLeaveForm.valid">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="leaveDeleteModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-body d-flex flex-column">
+        Are you sure to delete this leave ?
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-common">yes</button>
+      </div>
+    </div>
+  </div>
+</div>

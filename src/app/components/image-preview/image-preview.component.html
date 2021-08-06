@@ -1,0 +1,65 @@
+<div class="d-flex flex-column h-100 w-100 position-relative" keyboard-events [isEnabled]="!showTagList"
+  (esc)="closeImagePreviewPopup($event)" (leftArrow)="onPrev()" (rightArrow)="onNext()">
+  <div id="loader-div"
+    class="loader-preview d-flex justify-content-center align-items-center mt-2 position-absolute w-100 h-100"
+    *ngIf="show_loader">
+    <svg width="50px" height="50px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid">
+      <circle cx="50" cy="50" fill="none" stroke="var(--app-color)" stroke-width="6" r="35"
+        stroke-dasharray="164.93361431346415 56.97787143782138" transform="rotate(144 50 50)">
+        <animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50"
+          keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animateTransform>
+      </circle>
+    </svg>
+  </div>
+  <div class="body-section d-flex flex-column">
+    <header class="d-flex flex-row justify-content-between align-items-center">
+      <div class="d-flex flex-row justify-content-center align-items-center">
+        <div (click)="closeImagePreviewPopup($event)">
+          <img src="assets/img/close-white.svg" class="hw-30 close-icon rounded-circle p-4">
+        </div>
+        <div class="text p-2">Preview</div>
+      </div>
+      <div>
+        <div *ngIf="showCropIcon">
+          <img src="assets/img/crop-icon.svg" (click)="showCropper()"
+            class="h-20 cursor-hand mr-4 crop-icon" title="Crop image">
+            <span (click)="drawOnImg = true" class="mr-4 mt-1"><i class="fas fa-pencil-alt cursor-hand" title="Draw on image"></i></span>
+          <!-- <img src="assets/img/pencil.svg" class="right-position-icon mr-4" (click)="drawOnImg = true"> -->
+        </div>
+      </div>
+    </header>
+    <div class="img-container flex-grow position-relative d-flex align-items-center justify-content-center"
+      *ngIf="urls.length && display_object">
+      <img *ngIf="display_object.is_image" id="previewImage" [src]="display_object.src | safeHtml: 'url'"
+        class="p-2 position-absolute img-fluid img-size pointer-none">
+      <div *ngIf="!display_object.is_image" class="p-2 position-absolute d-flex flex-column align-items-center">
+        <img src="assets/img/document-placeholder.png" class="pointer-none">
+        <p class="mb-0 theme-font-color">{{display_object.file_name}}</p>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center input-container w-100">
+      <app-contenteditable-input *ngFor="let input of urls; let i = index" (imagePreviewEnter)="onSendClick()"
+        [hidden]="display_object != input || !input.is_image" class="w-100" [input_id]="'chat-input-image' + i"
+        [contentEditableData]="contentEditableData" [activeChannelId]="activeChannelId"></app-contenteditable-input>
+    </div>
+  </div>
+  <footer class="img-preview-footer footer-section position-relative">
+    <button class="btn-send d-flex align-items-center justify-content-center hw-50 rounded-circle mr-4" (click)="onSendClick()">
+      <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" width="28" height="24">
+        <path fill="#FFF" d="M5.101 21.757L27.8 12.028 5.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z">
+        </path>
+      </svg>
+    </button>
+    <div class="footer-image h-100 d-flex flex-row flex-wrap justify-content-center align-items-center p-2">
+      <img *ngFor="let thumbnail of urls;let i = index" (click)="display_object = thumbnail"
+        [ngClass]="{ 'selected-footer-image': display_object == thumbnail && urls.length != 1}"
+        [src]="(thumbnail.thumbnail_src  || 'assets/img/document-placeholder.png') | safeHtml: 'url'"
+        [id]="'thumbnail-' + i" class="img-fluid footer-image-size mr-2" draggable="false" alt="image-selected">
+    </div>
+  </footer>
+</div>
+
+<app-image-cropper *ngIf="showCrop" [cropObj]="cropObj" (sendCroppedImage)="saveCroppedImage($event)" (closeCropPopup)="closeCropPopupFunc()"></app-image-cropper>
+
+<app-canvas-draw *ngIf="drawOnImg" (sendEditImageUrl)="setEditedImage($event)" [canvasObj]="drawImgObj" (closeDrawPopup)="drawOnImg = false"></app-canvas-draw>

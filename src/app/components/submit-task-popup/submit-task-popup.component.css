@@ -1,0 +1,49 @@
+::ng-deep .message-modal {
+  z-index: 998 !important;
+}
+
+.task-desc {
+  min-height: 100px;
+  max-height: 100px;
+}
+
+::ng-deep .spaceSessionCal mat-calendar-header {
+  display: none;
+}
+
+::ng-deep .spaceSessionCal {
+  height: auto !important;
+}
+
+.hidden-input {
+  width: 0;
+  z-index: -9;
+}
+
+.no-border {
+  border: none;
+  color: #9a9fa4;
+  margin-left: -10px;
+  margin-top: -2px;
+}
+
+.my-delete-btn {
+  border-radius: 7px;
+  height: 40px;
+  padding: 1px 25px 0 25px;
+  background-color: #dc3545;
+  margin-top: 20px;
+  color: white;
+  border: none;
+  font-size: 15px;
+}
+
+.note-text {
+  color: #99a8ba;
+  border-top: 1px solid #bec9d5;
+  padding-top: 12px;
+}
+.br-7 {
+  border-radius: 7px !important;
+}
+

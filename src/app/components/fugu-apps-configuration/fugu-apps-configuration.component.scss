@@ -1,0 +1,40 @@
+.parent{
+  background-color: #f7f7f7;
+  min-height: 100%;
+  .config-card{
+    background-color: #FFFFFF;
+    border: solid 1px #e2e2e2;
+    border-radius: 5px;
+    .config-item{
+      border-top: solid 1px #e2e2e2;
+      .pencil-icon{
+        border: solid 1px #cbcbcb;
+        border-radius: 5px;
+      }
+      .three-dots{
+        padding: 10px 8px;
+        padding-bottom: 14px;
+        border: solid 1px #cbcbcb;
+        border-radius: 5px;
+        .dropdown-options{
+          z-index: 1;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          left: 0;
+          background-color: white;
+          button{
+            outline: none;
+            &:hover{
+              background-color: #f4f5f5;
+            }
+          }
+        }
+      }
+    }
+  }
+  .color-green{
+    color: forestgreen;
+  }
+  .color-red{
+    color: maroon;
+  }
+}

@@ -1,0 +1,243 @@
+@import '~assets/css/variables';
+
+.read-header {
+    min-height: $header-height-sides;
+    max-height: $header-height-sides;
+    background-color: $chat-bar-header;
+    border-bottom: 8px solid $chat-bg-color;
+  }
+
+  .bg-color {
+    background-color: $chat-bar-header;
+  }
+
+.read-by-text {
+  color: var(--app-color);
+  font-size: 16px;
+}
+::ng-deep .tagged-agent{
+  color: $link-color-receiver;
+}
+
+.message-content {
+  background-color: var(--sender-chat-bubble-color);
+  background-image: var(--sender-chat-bubble-color);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  color: #333333;
+  font-size: 16px;
+  padding: 8px;
+  font-family: TitilliumWeb;
+  float: right;
+  border-radius: 7px;
+  min-width: 45px;
+  max-width: 243px;
+  width: auto;
+  // padding: 5px 7px 5px 9px;
+  // max-width: 80%;
+  word-wrap: break-word;
+  text-align: left;
+  .message-read {
+    color: var(--text-receiver);
+  }
+  .message-read:after {
+    content: "";
+    display: inline-block;
+    margin-right: 63px !important;
+  }
+  .time-message {
+    font-family: TitilliumWeb;
+    font-size: 10px;
+    color: #979797;
+    position: absolute;
+    right: 25px;
+    bottom: 3px;
+  }
+  .tick-message {
+    font-family: TitilliumWeb;
+    font-size: 10px;
+    color: #979797;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+  }
+}
+
+.message-read-container {
+  padding: 20px 24px 20px 28px;
+  background-color: $chat-bg-color;
+  // background-image: url('../../../assets/img/chat-wallpaper.png');
+}
+
+.member-image{
+  // background-color: var(--app-color);
+  border-radius: 4px;
+  min-height: 40px;
+  min-width: 40px;
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+}
+
+.member-text{
+  font-size: 20px;
+  color: white;
+  font-family: TitilliumWeb;
+  min-width: 40px;
+  width: 40px;
+}
+.member-name-text {
+  color: $chat-header-text;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-height: 28px;
+  overflow: hidden;
+  font-size: 16px;
+  font-family: TitilliumWeb-SemiBold;
+}
+.time-container {
+  color: $light-font;
+  font-size: 15px;
+  line-height: 20px;
+  min-height: 20px;
+}
+.read-names-container {
+  border-top: 1px solid $border-bottom-header;
+}
+.read-parent-container:hover {
+  background-color: $app-color-highlight;
+}
+
+.image-messages-container{
+  max-width: 230px;
+}
+.image-messages {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  // min-width: 188px;
+  min-height: 138px;
+  max-width: 300px;
+  max-height: 230px;
+  margin: 0;
+  border: 0!important;
+  display: block;
+}
+
+.image-messages img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.media-padding {
+  padding: 0px!important;
+}
+
+.time-message-media {
+  color: #fff!important;
+}
+
+.image-footer{
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 30px;
+}
+.video-play-image{
+  width: 72px !important;
+  height: 72px !important;
+}
+.background-file-type-send {
+  background-color: #2cd2fb1c;
+}
+.attachment-img-div{
+  width: 50px;
+}
+.attachment-icon {
+  width: 44px;
+}
+.attachment-img-text{
+  color: #ffffff;
+  padding-top: 15px;
+  padding-left: 5px;
+  font-size: 10px;
+  width: 30px;
+  overflow: hidden;
+  white-space: nowrap;
+
+}
+.attachment-link-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.attachment-link{
+  color: #0088cc !important;
+  font-size: 14px;
+  word-break: break-word;
+}
+.attachment-icon-svg {
+  width: 34px;
+  height: 34px;
+}
+.poll_option{
+  border-radius: 4px;
+  border: solid 1px #b0afaf;
+  transition: all 0.3s linear;
+  background-color: #faf8f8;
+  .poll_input_text{
+    width: 90%;
+    z-index: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .poll_option_count{
+    width: 10%;
+    z-index: 1;
+    font-size: 16px;
+  }
+  .background_fill{
+    //background-color: #a2bfff;
+    background-image: linear-gradient(270deg,rgba(0,0,0,.06),hsla(0,0%,100%,.04));
+    //opacity: 0.3;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    height: 100%;
+    transition: width 0.3s linear;
+  }
+}
+.poll_input_popup{
+  width: 80%;
+  z-index: 1;
+}
+.poll_option_count_popup{
+  width: 20%;
+  z-index: 1;
+  font-size: 16px;
+}
+.current_user_color {
+  background-color: rgba(150, 216, 236, 0.6);
+  border: solid 1px rgba(34, 150, 255, 1);
+}
+.more_poll_options{
+  border-top: solid 1px #e0e0e9;
+}
+.poll_message {
+  padding: 1px;
+}
+.no-read-container {
+  font-size: 14px;
+  line-height: 20px;
+  color: #929fa6;
+}
+.margin-tick-icon {
+  margin-top: -4px;
+}
+.deleted-text-message{
+  font-style: italic;
+  color: rgba(0, 0, 0, .40) !important;
+}

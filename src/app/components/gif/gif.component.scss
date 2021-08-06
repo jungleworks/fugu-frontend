@@ -1,0 +1,66 @@
+// .stickers-mask {
+//     position: absolute;
+//     left: 0;
+//     top: 0;
+//     width: 100%;
+//     height: 100%;
+//     z-index: 2001;
+//   }
+  #stickers-popover-menu {
+    position: absolute;
+    width: 410px;
+    max-height: 300px;
+    min-height: 300px;
+    // overflow: hidden;
+    background-color: var(--chat-bar-header);;
+    border-radius: 4px;
+    box-shadow: var(--box-shadow);
+    left: 16px;
+    bottom: 53px;
+    z-index: 5;
+    &:after{
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #9a9a9a;
+      opacity: 0.3;
+    }
+  }
+  .sticker-header {
+    order: 0;
+  }
+  .stickers {
+    width: 200px;
+    height: 115px;
+    cursor: pointer;
+  }
+  .sticker-body{
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .sticker-body::-webkit-scrollbar{
+    width: 5px !important;
+    height: 7px !important;
+    order: 1;
+  }
+  .sticker-body::-webkit-scrollbar-thumb{
+    background-color: var(--scroll-color);
+    border-radius: 3px;
+  }
+  .sticker-body::-webkit-scrollbar-track{
+    background: #eeeeee;
+    padding: 1px;
+  }
+  .form-search-circular {
+    border-radius: 5px;
+    background-color: #f2f3f5;
+    border: none;
+    padding-right: 24px;
+    background-image:url('../../../assets/img/search-icon.svg');
+    background-repeat:no-repeat;
+    background-position:96%;
+  }

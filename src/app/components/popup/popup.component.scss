@@ -1,0 +1,15 @@
+.alert-container{
+  position: fixed;
+  bottom: 15px;
+  left: 20px;
+  max-width: 300px;
+  z-index: 10000000000;
+}
+.alert-box{
+  background-color: #202124;
+  border: none;
+  border-radius: 4px;
+  -webkit-font-smoothing: antialiased;
+  box-shadow: 0 4px 3px 0 rgba(60,64,67,0.302), 0 4px 8px 3px rgba(60,64,67,0.149);
+}
+

@@ -1,0 +1,30 @@
+.phone-dropdown-container{
+  padding-top: 11px;
+  padding-left: 25px;
+  left: 0;
+}
+.padding-phone-picker-input{
+  padding-left: 70px !important;
+}
+
+.search-dropdown{
+  max-height: 200px;
+  overflow: auto;
+  background-color: white;
+  z-index: 1;
+  box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+  .dropdown-option{
+    height: 64px;
+    &:hover{
+      background-color: #f4f5f5;
+    }
+  }
+  .active{
+    background-color: #f4f5f5;
+  }
+}
+
+.invite-fields-container {
+  max-height: 214px;
+  overflow: scroll;
+}

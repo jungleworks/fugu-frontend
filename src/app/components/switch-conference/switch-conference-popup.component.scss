@@ -1,0 +1,144 @@
+.message-modal{
+  background-color: rgba(255, 255, 255, 0.85);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2601;
+  overflow: auto;
+  .message-modal__content{
+    overflow: scroll;
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 17px 50px 0 rgba(0, 0, 0, 0.19), 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+    .invite-header{
+      background: var(--app-color);
+      color: white;
+    }
+    .search-input{
+      border: solid 1px #e4e4ed;
+      box-shadow: none;
+      outline: none;
+      border-radius: 2px;
+      &:focus{
+        border: solid 1px #bdbdc5;
+      }
+    }
+    .message-modal__body{
+      width: 500px;
+      ::ng-deep .message-modal-heading{
+        color: #4b4b4b;
+        font-family: TitilliumWeb-SemiBold;
+        font-size: 20px;
+      }
+      ::ng-deep .message-modal-description{
+        color: #5b646b;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      ::ng-deep .message-modal-button{
+        background-color: var(--app-color);
+        color: white;
+        cursor: pointer;
+        border: none;
+        margin-top: 20px;
+        padding: 10px 24px;
+        border-radius: 3px;
+        font-size: 14px;
+        transition: box-shadow .18s ease-out, background .18s ease-out, color .18s ease-out;
+        &:hover{
+          box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+      }
+      .chip-email{
+        background-color: #e8e8e8;
+        color: white;
+        border-radius: 16px;
+        img{
+          height: 26px;
+          width: 26px;
+          object-fit: cover;
+        }
+        .chip-text{
+          font-size: 16px;
+          color: #303030;
+        }
+        .chip-cross{
+          &:hover{
+            background-color: #FFFFFF;
+          }
+        }
+      }
+      .vs-scroll-container{
+        height: 300px;
+        .active{
+          background-color: var(--app-color-highlight);
+        }
+        .user-card{
+          cursor: pointer;
+          &:hover{
+            background-color: #f4f5f5;
+          }
+          .user-image{
+            height: 46px;
+            width: 46px;
+            min-height: 46px;
+            object-fit: cover;
+            min-width: 46px;
+          }
+          .user-email{
+            margin-top: -4px;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.members-container{
+  overflow: auto;
+  padding-bottom: 70px;
+  min-height: 300px;
+  max-height: 400px;
+}
+.member .active{
+  background-color: var(--app-color-highlight);
+  border-left: solid 3px var(--app-color);
+}
+.member-card{
+  height: 66px;
+  border-left: solid 3px transparent;
+  &:hover{
+    background-color: #f4f5f5;
+  }
+}
+.member-img{
+  max-height: 50px;
+  min-height: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  object-fit: cover;
+}
+.no-thumbnail-img{
+  min-height: 50px;
+  max-height: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  font-size: 30px;
+  color: white;
+}
+.selected-members-container{
+  max-height: 240px;
+  overflow: auto;
+}
+.forward-icon{
+  background-color: var(--app-color);
+  filter: drop-shadow(0 0 10px #333);
+}
+.action-button{
+  position: absolute;
+  bottom: 22px;
+  min-height: 70px;
+  max-height: 70px;
+  right: 30px;
+}

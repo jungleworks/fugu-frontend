@@ -1,0 +1,106 @@
+<app-message-modal [width]="'60%'" [width]="'40%'" [@messageModalAnimation] (closeMessageModal)="closePopup.emit()">
+  <p class="message-modal-heading mb-0" >{{editData ? 'Edit' : 'Create'}} a task</p>
+  <p class="theme-font-light">Assign tasks here</p>
+  <div class="d-flex flex-column">
+    <div class="mb-2">
+      <span>Task title</span>
+      <input [(ngModel)]="taskTitle" type="text" class="form-control"/>
+    </div>
+    <div class="mb-2">
+      <span>Description</span>
+      <textarea [(ngModel)]="taskDescription" class="form-control task-desc">
+      </textarea>
+    </div>
+    <form [formGroup]="taskDateForm">
+      <div class="d-flex flex-row justify-content-around">
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">Start date</span>
+          <div class="position-relative d-flex">
+            <input readonly (click)="startDate.open()" class="form-control bg-white cal" formControlName="task_start"
+                   placeholder="Choose a date">
+            <input class="position-absolute hidden-input form-control" matInput [matDatepicker]="startDate"
+                   (dateChange)="onReportDateChange($event, 'start')">
+            <mat-datepicker #startDate></mat-datepicker>
+          </div>
+        </div>
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">Start time</span>
+          <input [ngxTimepicker]="startTimePicker" class="form-control" formControlName="time_start">
+          <ngx-material-timepicker #startTimePicker [appendToInput]="true"
+                                   (timeSet)="onTimeChange($event, 'start')"></ngx-material-timepicker>
+        </div>
+      </div>
+      <div class="d-flex flex-row justify-content-around">
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">End date</span>
+          <div class="position-relative d-flex">
+            <input readonly (click)="endDate.open()" class="form-control bg-white cal" formControlName="task_end"
+                   placeholder="Choose a date">
+            <input class="position-absolute hidden-input form-control" matInput [matDatepicker]="endDate"
+                   (dateChange)="onReportDateChange($event, 'end')">
+            <mat-datepicker #endDate></mat-datepicker>
+          </div>
+        </div>
+        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">
+          <span class="font-light">End time</span>
+          <input [ngxTimepicker]="EndTimePicker" class="form-control" formControlName="time_end">
+          <ngx-material-timepicker #EndTimePicker [appendToInput]="true"
+                                   (timeSet)="onTimeChange($event, 'end')"></ngx-material-timepicker>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Set reminder before deadline</label>
+        <select class="form-control" formControlName="reminder">
+          <option *ngFor="let data of reminders" [value]="data.value">
+            {{data?.name}}
+          </option>
+        </select>
+      </div>
+
+
+      <!--      <div class="d-flex flex-row justify-content-around">-->
+      <!--        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">-->
+      <!--          <span class="font-light">Reminder date</span>-->
+      <!--          <div class="position-relative d-flex">-->
+      <!--            <input readonly (click)="remDate.open()" class="form-control bg-white cal" formControlName="task_rem"-->
+      <!--                   placeholder="Choose a date">-->
+      <!--            <input class="position-absolute hidden-input form-control" matInput [matDatepicker]="remDate"-->
+      <!--                   (dateChange)="onReportDateChange($event, 'rem')">-->
+      <!--            <mat-datepicker #remDate></mat-datepicker>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--        <div class="d-flex flex-column mb-2 w-100 mr-2 position-relative">-->
+      <!--          <span class="font-light">Reminder time</span>-->
+      <!--          <input [ngxTimepicker]="remTimePicker" class="form-control" formControlName="time_rem">-->
+      <!--          <ngx-material-timepicker #remTimePicker [appendToInput]="true"-->
+      <!--                                   (timeSet)="onTimeChange($event, 'rem')"></ngx-material-timepicker>-->
+      <!--        </div>-->
+      <!--      </div>-->
+    </form>
+
+    <ng-container *ngIf="!editData">
+      <div class="d-flex align-items-center mb-2">
+        <span>Select all Members</span>
+        <input type="checkbox" class="ml-3" [(ngModel)]="isSelectAll"/>
+      </div>
+      <div *ngIf="!isSelectAll">
+        <button (click)="showSelectMembersPopup = true" class="btn-next p-2">select members</button>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button outline-none message-modal-button-red btn-red outline-none mr-2"
+            (click)="closePopup.emit()">Cancel
+    </button>
+    <button class="message-modal-button outline-none" (click)="createTask()">Save</button>
+  </div>
+</app-message-modal>
+
+<app-conferencing-popup *ngIf="showSelectMembersPopup" [isTaskMembers]="showSelectMembersPopup" [@messageModalAnimation]
+                        [active_channel_id]="activeChannelId"
+                        [all_members_data]="membersInfo" [user_count]="user_count"
+                        (selectedMembers)="selectedMembers($event)"
+                        (closeConferencingModal)="showSelectMembersPopup = false"></app-conferencing-popup>

@@ -1,0 +1,12 @@
+<div id="stickers-popover-menu" class="d-flex flex-column stickers-mask" #gifElement>
+  <div class="col-12 d-flex justify-content-center sticker-header flex-column p-2">
+    <input appAutofocus class="form-input-custom-small sticker-search form-search-circular pl-2" placeholder="Search GIFs..."
+      [formControl]="searchCtrl">
+  </div>
+  <div id="sticker-scroll" class="sticker-body" #gifContainer>
+    <div class="d-flex flex-wrap">
+      <img *ngFor="let gif of GIFToDisplay" loading="lazy" [src]="gif.thumbnail_url" class="stickers mb-1" [ngClass]="{'mr-1': i % 2 == 0}"
+        (click)="sendGif(gif)" alt="giphy">
+    </div>
+  </div>
+</div>

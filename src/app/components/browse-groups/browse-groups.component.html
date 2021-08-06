@@ -1,0 +1,51 @@
+<div class="position-fixed groups-popup pt-5 w-100 h-100" keyboard-events [isEnabled]="true" (esc)="closeBrowseGroups.emit($event)">
+  <div class="container d-flex flex-column h-100">
+    <div>
+      <div class="float-right d-flex flex-column align-items-center justify-content-center close-icon
+     rounded-img-fugu p-2 pt-3 cursor-hand" (click)="closeBrowseGroups.emit($event)">
+        <img src="assets/img/close.svg" class="hw-18">
+        <p class="mb-0 text-muted font-12">esc</p>
+      </div>
+      <p class="display-4 text-center">Browse Groups</p>
+      <div class="row no-gutters justify-content-center">
+        <input class="form-control pl-2 col-6" type="text" autofocus placeholder="Search for groups" [formControl]="searchCtrl">
+      </div>
+      <div class="row no-gutters text-center justify-content-center mt-2">
+        <div class="col-3">
+          <button class="btn btn-block box-shadow-none cursor-hand outline-none" (click)="getAllChannels();activeChannel =0;search()" [ngClass]="{'active' : activeChannel === 0}">ALL</button>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-block box-shadow-none cursor-hand outline-none" (click)="getJoinedChannels();activeChannel =1;search()" [ngClass]="{'active' : activeChannel === 1}">JOINED</button>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center h-100 flex-grow pb-2">
+      <div class="col-6 pt-2 groups-container h-100">
+        <p *ngIf="groupsData && !groupsData.length" class="text-center">No results found.</p>
+        <div *ngFor="let group of groupsData" class="d-flex p-1 pb-2 align-items-center">
+          <div *ngIf="group.channel_image ==
+           'https://fuguchat.s3.ap-south-1.amazonaws.com/default/WwX5qYGSEb_1518441286074.png' && group.members_info.length;
+           else channelImage" class="d-flex channel-image-layer hw-50 overflow-hidden rounded-img-fugu">
+            <app-unnamed-image [members]="group.members_info" [dimensions]="{height:50, width:50}"></app-unnamed-image>
+          </div>
+          <ng-template #channelImage>
+            <img [src]="group.channel_image" class="mr-2 channel-image rounded-img-fugu" alt="channel-image">
+          </ng-template>
+          <p class="group-text mb-0 pl-2 flex-grow mt-1 cursor-hand" (click)="closeBrowseGroups.emit()"
+             [routerLink]="['../../'+group.channel_id]">{{group.label}}<span class="ml-1"><i class="fa fa-lock" *ngIf="group.chat_type === 3"></i></span></p>
+          <button class="btn leave-join-btn cursor-hand" *ngIf="![5,6].includes(group.chat_type)" (click)="group.is_joined ? leaveGroupModal(group) : joinGroup(group)">{{group.is_joined ? 'LEAVE' : 'JOIN'}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<app-message-modal *ngIf="leaveGroupPopup" [width]="'30%'" [@messageModalAnimation] (closeMessageModal)="leaveGroupPopup = false">
+  <p class="message-modal-description">Are you sure you want to leave this group?</p>
+  <div class="d-flex justify-content-end">
+    <button class="message-modal-button message-modal-button-red btn-red outline-none mr-3" type="button"
+      (click)="leaveGroupPopup = false">No</button>
+    <button class="message-modal-button outline-none" (click)="leaveGroup()" type="button">Yes</button>
+  </div>
+</app-message-modal>

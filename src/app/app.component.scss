@@ -1,0 +1,15 @@
+.not-exist-image {
+  object-fit: contain;
+  height: 300px;
+}
+.btn-redirect {
+  font-family: TitilliumWeb;
+  border-radius: 30px;
+  background-color: var(--app-color);
+  color: white !important;
+}
+.test-env {
+  position: absolute;
+  top: 0px;
+  z-index: 1111;
+}

@@ -1,0 +1,117 @@
+@import '~assets/css/variables';
+  .forward-header{
+    height: 60px;
+    background-color: $chat-bg-color;
+    color: $chat-header-text;
+    font-family: TitilliumWeb-SemiBold;
+    font-size: 16px;
+  }
+  .search-bar{
+  }
+  .member-card{
+    height: 66px;
+    border-left: solid 3px transparent;
+    &:hover{
+      background-color: $app-color-highlight;
+    }
+  }
+  .mr-24 {
+    margin-right: 24px;
+  }
+  .ml-24 {
+    margin-left: 24px;
+  }
+  .mr-12 {
+    margin-right: 12px;
+  }
+  .pt-10 {
+    padding-top: 10px;
+  }
+  .pb-10 {
+    padding-bottom: 10px;
+  }
+  .member-img{
+    max-height: 40px;
+    min-height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    object-fit: cover;
+  }
+.font-13 {
+  font-size: 13px;
+  // color: $light-font;
+}
+
+.search-form {
+  background: transparent;
+  color: $light-font;
+  border-bottom: 1px solid $border-color!important;
+  border-radius: 0px!important;
+}
+.hw-24 {
+  height: 24px;
+  width: 24px;
+  object-fit: cover;
+  margin-left: 2px;
+}
+.chip-container {
+  height: 40px;
+}
+  .chip-email{
+  background-color: $chip-bg;
+  color: white;
+  // border-radius: 16px;
+  font-family: TitilliumWeb;
+  img{
+    height: 24px;
+    width: 24px;
+    object-fit: cover;
+    margin-left: 2px;
+  }
+  .chip-text{
+    font-size: 16px;
+    color: #2f2f2f;
+  }
+  .chip-cross{
+    &:hover{
+      background-color: #FFFFFF;
+    }
+  }
+}
+.no-thumbnail-img{
+    min-height: 40px;
+    max-height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    font-size: 30px;
+    color: white;
+    font-size: 15px;
+    font-family: TitilliumWeb-SemiBold;
+  }
+  .action-button{
+    position: absolute;
+    bottom: 22px;
+    min-height: 70px;
+    max-height: 70px;
+    right: 30px;
+  }
+  .forward-icon{
+    background-color: var(--app-color);
+    filter: drop-shadow(0 0 10px #333);
+  }
+  .members-container{
+    overflow: auto;
+    padding-bottom: 70px;
+    min-height: 300px;
+    max-height: 400px;
+  }
+  .member .active{
+    background-color: var(--app-color-highlight);
+    border-left: solid 3px var(--app-color);
+  }
+
+
+  .selected-members-container {
+    max-height: 85px;
+    overflow: auto;
+  }

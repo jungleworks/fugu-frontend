@@ -1,0 +1,563 @@
+<!-- From main src -->
+<div class="main">
+<div class="parent d-flex flex-column p-2 container" >
+  <svg  *ngIf="!commonService.isWhitelabelled  && commonService.showAppDetails"  class="bg-signup" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="570" height="920" viewBox="0 0 570 920">
+    <defs>
+        <linearGradient id="prefix__b" x1="69.193%" x2="35.768%" y1="0%" y2="102.497%">
+            <stop offset="0%" stop-color="#13C6FE"/>
+            <stop offset="100%" stop-color="#5EB3FF"/>
+        </linearGradient>
+        <path id="prefix__a" d="M0 0L570 0 570 920 0 920z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="prefix__c" fill="#fff">
+            <use xlink:href="#prefix__a"/>
+        </mask>
+        <use fill="url(#prefix__b)" transform="matrix(-1 0 0 1 570 0)" xlink:href="#prefix__a"/>
+        <path fill="#FFF" d="M520.225 382.895c34.436-38.092 53.586-87.555 53.775-138.896C573.974 123.16 467.871 25 336.987 25 206.103 25 100 123.16 100 244c0 120.839 106.129 219 236.987 219 41.459.106 82.298-10.055 118.868-29.579 9.355 7.956 51.682 40.943 93.777 25.522-20.048-20.098-30.72-47.696-29.407-76.048zM221.487 254C184.75 254 155 225.132 155 189.487 155 153.842 184.75 125 221.487 125 258.224 125 288 153.868 288 189.513 288 225.158 258.224 254 221.487 254z" mask="url(#prefix__c)" opacity=".101" transform="rotate(20 337 244)"/>
+        <path fill="#FFF" fill-opacity=".1" d="M570 0v920H0c182.464-45.466 318.593-121.562 408.388-228.288C498.182 584.985 552.053 354.415 570 0z" mask="url(#prefix__c)" transform="matrix(-1 0 0 1 570 0)"/>
+    </g>
+</svg>
+  <div class="d-flex justify-content-center mb-3 pt-5">
+    <img *ngIf="!commonService.isWhitelabelled  && commonService.showAppDetails" src="/assets/img/fugu-logo-full.svg">
+    <img class="h-45" *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations.logo">
+  </div>
+  <div class="card p-4 justify-content-center flex-grow mb-5 mb-lg-4 border-none">
+    <!----------------------------STEP 1 ---------------------------------->
+    <div class="card-content row no-gutters" *ngIf="stepNumber == 1">
+      <div class="col-12 col-md-5 pl-3 pr-5 pt-5 pb-5 logo-border d-none d-sm-none d-md-flex">
+        <img *ngIf="!isVerificationLink" src="/assets/img/signup-chat.svg" class="img-fluid">
+        <span *ngIf="isVerificationLink">
+          <svg xmlns="http://www.w3.org/2000/svg" width="344" height="287" viewBox="0 0 344 287">
+            <g fill="none" fill-rule="evenodd">
+                <g>
+                    <g transform="translate(0 -26) translate(0 30) translate(.392 .208)">
+                        <path fill="#F1F1F1" d="M47.765 74.062l17.12 12.374c.776.56 1.235 1.46 1.235 2.418v32.41h18.495V89.234c0-1.197.575-2.321 1.545-3.023l16.374-11.835c1.304-.942 3.066-.942 4.37 0l16.374 11.835c.97.702 1.544 1.826 1.544 3.023v32.028h18.495V89.235c0-1.197.575-2.321 1.545-3.023l16.375-11.835c1.303-.942 3.065-.942 4.369 0l16.374 11.835c.97.702 1.545 1.826 1.545 3.023l-.001 32.028h26.718v36.081h-26.718v124.974h-40.206l-.001-124.975h-18.495v124.975H84.616l-.001-124.975H66.12v124.975H25.913V157.343L0 157.344v-36.08h25.913v-32.41c0-.958.46-1.857 1.236-2.418l17.12-12.374c1.043-.754 2.452-.754 3.496 0z"/>
+                        <ellipse cx="225.093" cy="9.429" stroke="#ECCFA0" stroke-width="2.153" rx="8.27" ry="8.295"/>
+                        <ellipse cx="45.172" cy="50.429" stroke="#EFA8BF" stroke-width="2.153" rx="8.27" ry="8.295"/>
+                        <ellipse cx="226.845" cy="108.414" stroke="#8ECCF1" stroke-width="2.153" rx="5.349" ry="5.366"/>
+                        <ellipse cx="320.31" cy="122.471" stroke="#88E4D0" stroke-width="2.153" rx="7.686" ry="7.709"/>
+                    </g>
+                    <path stroke="#5DB3FF" stroke-dasharray="6.446 6.446" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.611" d="M276.891 55.933c-6.02 5.358-55.798 3.398-74.504 32.314-18.706 28.917-1.706 64.109-40.164 82.11-35.246 16.498-73.71-32.58-59.455-48.06 10.101-10.969 26.614 1.031 26.132 19.32-.543 20.584-17.982 33.948-37.931 31.292-39.571-5.269-45.199-88.737-71.661-67.415" transform="translate(0 -26) translate(0 30)"/>
+                </g>
+                <g>
+                    <path fill="#0C68BC" d="M16.752 86.578L16.752 67.245 54.287 48.33z" transform="translate(0 -26) translate(266) scale(-1 1) rotate(-90 0 102.974)"/>
+                    <path fill="#0C68BC" d="M16.426 86.346L17.165 69.096 52.925 50.495z" transform="translate(0 -26) translate(266)"/>
+                    <path fill="#2296FF" d="M51.656 15.444L87.957 88.187 63.705 88.219 51.61 50.769 39.423 88.251 15.166 88.282z" transform="translate(0 -26) translate(266) rotate(45 51.561 51.863)"/>
+                </g>
+            </g>
+        </svg>
+        </span>
+      </div>
+      <div class="col-12 col-md-7 pl-md-5 pl-1 pb-5">
+        <div class="pl-2 pr-4 pt-3" *ngIf="!isVerificationLink">
+          <p class="pt-4 mt-1 fugu-welcome-header mb-1">Welcome to {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }}</p>
+          <p class="create-workspace-text mb-1">A complete team communication tool! Chat, have a video conference and share files with your teams, create polls and so much more! </p>
+          <div *ngIf="show_google_button" class="mr-5">
+            <app-google-login (googleUserCodeEmitter)="onSignIn($event)"></app-google-login>
+          </div>
+          <div  *ngIf="show_google_button"  class="d-flex align-items-center mr-5"><hr class="w-100 mr-2">or<hr class="ml-2 w-100"></div>
+          <!-- <p class="create-workspace-text mb-1">Let's start with your email or phone number</p> -->
+          <form class="mt-1" role="form" [formGroup]="emailForm" (submit)="commonService.isOldFlow ? emailSubmit() : submitNew()">
+            <div class="form-group mb-0 mr-5 pt-2">
+              <!-- <label class="form-custom-label pl-3 pt-2 mb-0">
+                Email Address / Phone Number
+              </label> -->
+              <app-intl-phone-input *ngIf="!isEmail && emailForm.value.emailOrPhone" class="phone-dropdown-container-email position-absolute"
+                                    [(phoneObj)]="selected_country_code"></app-intl-phone-input>
+              <input type="text"
+                     appAutofocus
+                     [ngClass]="{'error' : commonService.getErrorMessage(emailForm.controls.emailOrPhone),
+                     'padding-phone-picker-input-email': !isEmail && emailForm.value.emailOrPhone}"
+                      [placeholder]="'Enter Your ' + signupText" [maxLength]="!isEmail ? 12 : 200"
+                     class="form-control form-signup-custom pl-3 mr-2"
+                     formControlName="emailOrPhone"
+                     id="inputEmail">
+              </div>
+              <div class="pl-3 validator-height">
+                <app-validator [control]="emailForm.controls.emailOrPhone"></app-validator>
+            </div>
+            <div class="form-custom-btn mt-4">
+              <button class="btn btn-next btn-40 d-flex align-items-center pl-4 pr-4" [disabled]="!emailForm.valid">Continue<img src="/assets/img/arrow-right.svg" class="pl-2"></button>
+            </div>
+            <!-- <div class="mt-2 already-sign-in pl-1 pb-3">
+              Already have an account? <a class="app-color cursor-hand" [routerLink]="['/login']">Sign in here</a>
+            </div> -->
+          </form>
+        </div>
+        <div *ngIf="isVerificationLink" class="h-100 d-flex flex-column justify-content-center verify-email">
+          <p class="pt-4 mt-1 fugu-welcome-header mb-1">Check your email</p>
+         <span class="create-workspace-text mb-3">We have sent a verification link to your email <div class="email-label">{{emailForm.value.emailOrPhone}}</div></span>
+         <!-- <div class="d-flex verify-email mb-2">
+           <span>{{emailForm.value.emailOrPhone}}</span>
+           <img src="assets/img/pencil.svg" class="pencil-icon cursor-hand outline-none" (click)="isVerificationLink = false"/>
+         </div> -->
+         <div (click)="isVerificationLink = false" class="cursor-hand">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M19.4 18.242c.442 0 .8.358.8.8 0 .442-.358.8-.8.8H4.8c-.442 0-.8-.358-.8-.8 0-.442.358-.8.8-.8zm-6.606-13.6c.859-.856 2.247-.856 3.106 0l.89.884c.413.412.645.972.645 1.556 0 .583-.232 1.143-.645 1.556l-7.014 7.014c-.138.137-.321.22-.516.232l-3.122.2h-.05c-.224 0-.439-.093-.591-.258-.152-.165-.228-.387-.209-.61l.258-3.06c.016-.188.098-.365.232-.498zm-.45 2.712l-5.228 5.228-.156 1.846 1.896-.12 5.22-5.222-1.732-1.732zm2.428-1.578c-.234-.234-.614-.234-.848 0l-.45.45 1.732 1.732.45-.45c.234-.235.234-.614 0-.848z"/>
+        </svg>
+        <span class="app-color ml-1">Change email</span>
+         </div>
+         <div class="form-custom-btn mt-2" (click)="submitNew(true)" *ngIf="showResendEmail">
+          <button class="btn btn-next btn-40 d-flex align-items-center pl-4 pr-4 pt-1">Resend Mail
+          </button>
+        </div>
+        <span *ngIf="!showResendEmail && timeLeftEmail != -1">Resend Email Verification in {{timeLeftEmail}} seconds</span>
+        </div>
+      </div>
+    </div>
+    <!----------------------------STEP 2 ---------------------------------->
+    <div class="card-content row no-gutters" *ngIf="stepNumber == 2">
+      <div class="col-12 col-md-5 pl-3 pr-5 pt-5 pb-5 logo-border d-none d-sm-none d-md-flex">
+        <img src="/assets/img/signup-chat.svg" class="img-fluid">
+      </div>
+      <div class="col-12 col-md-7 pl-md-5 pl-1 pb-5">
+        <div class="pl-2 pr-4 pt-3">
+          <p class="otp-header-text mb-0 pt-4 mt-3">Check your {{ isEmail ? 'email' : 'sms' }}</p>
+          <p class="otp-desc-text mb-2">
+            We’ve sent a six-digit code to your {{ isEmail ? 'email' : 'phone number' }}
+            <br/>
+            {{emailForm.value.emailOrPhone || namePasswordForm.value.phone}}
+            <!-- <span class="app-color resend cursor-hand" [routerLink]="['/signup',1]">Edit number</span> -->
+           <!-- <img src="assets/img/pencil.svg" class="pencil-icon cursor-hand outline-none mb-1" [routerLink]="['/signup',1]"/> -->
+
+          </p>
+          <div class="mb-4 outline-none cursor-hand" [routerLink]="['/signup',1]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path d="M19.4 18.242c.442 0 .8.358.8.8 0 .442-.358.8-.8.8H4.8c-.442 0-.8-.358-.8-.8 0-.442.358-.8.8-.8zm-6.606-13.6c.859-.856 2.247-.856 3.106 0l.89.884c.413.412.645.972.645 1.556 0 .583-.232 1.143-.645 1.556l-7.014 7.014c-.138.137-.321.22-.516.232l-3.122.2h-.05c-.224 0-.439-.093-.591-.258-.152-.165-.228-.387-.209-.61l.258-3.06c.016-.188.098-.365.232-.498zm-.45 2.712l-5.228 5.228-.156 1.846 1.896-.12 5.22-5.222-1.732-1.732zm2.428-1.578c-.234-.234-.614-.234-.848 0l-.45.45 1.732 1.732.45-.45c.234-.235.234-.614 0-.848z"/>
+          </svg>
+          <span class="app-color ml-1">Change {{ isEmail ? 'Email' : 'Number' }}</span>
+           </div>
+          <!-- <div class="d-flex verify-email mb-2">
+            <span>{{emailForm.value.emailOrPhone || namePasswordForm.value.phone}}</span>
+            <img src="assets/img/pencil.svg" class="pencil-icon cursor-hand outline-none" (click)="isVerificationLink = false"/>
+          </div> -->
+          <form class="mt-2" role="form" [formGroup]="otpForm" (submit)="commonService.isOldFlow ? verifyOTP() : verifyLoginOTP()">
+            <!-- <label class="form-custom-label">
+              Confirmation Code
+            </label> -->
+            <div class="d-flex pr-5 otp-wrapper align-items-center">
+              <input type="tel"
+                     appAutofocus
+                     maxlength="1"
+                     tabindex="1"
+                     #otp1
+                     (paste)="onOTPpaste($event,otp6)"
+                     (keyup)="nextFocus($event,otp2,otp1)"
+                     class="otp-box otp-box-1"
+                     formControlName="otp_1"
+                     data-key="otp1">
+              <input type="tel"
+                     maxlength="1"
+                     tabindex="2"
+                     #otp2
+                     (keyup)="nextFocus($event,otp3,otp1)"
+                     class="otp-box"
+                     formControlName="otp_2"
+                     data-key="otp2">
+              <input type="tel"
+                     maxlength="1"
+                     tabindex="3"
+                     #otp3
+                     (keyup)="nextFocus($event,otp4,otp2)"
+                     class="otp-box otp-box-3"
+                     formControlName="otp_3"
+                     data-key="otp3">
+              <div class="pl-2 pr-2 hyphen">
+                &mdash;
+              </div>
+              <input type="tel"
+                     maxlength="1"
+                     tabindex="4"
+                     #otp4
+                     (keyup)="nextFocus($event,otp5,otp3)"
+                     class="otp-box otp-box-1"
+                     formControlName="otp_4"
+                     data-key="otp4">
+              <input  type="tel"
+                      maxlength="1"
+                      tabindex="5"
+                      #otp5
+                      (keyup)="nextFocus($event,otp6,otp4)"
+                      class="otp-box"
+                      formControlName="otp_5"
+                      data-key="otp5">
+              <input type="tel"
+                     maxlength="1"
+                     tabindex="6"
+                     #otp6
+                     (keyup)="nextFocus($event,otp6,otp5)"
+                     class="otp-box otp-box-3"
+                     formControlName="otp_6"
+                     data-key="otp6">
+            </div>
+            <span class="app-color mt-2 resend cursor-hand" *ngIf="showResendOtp" (click)='commonService.isOldFlow ? emailSubmit() : submitNew(true)'>Resend otp</span>
+            <span *ngIf="!showResendOtp && timeLeftOtp != -1" class="resend">Resend OTP in {{timeLeftOtp}} seconds</span>
+            <div class="mt-4">
+              <button class="btn btn-next btn-40 pl-3 pr-3" [disabled]="!otpForm.valid">Continue<img src="/assets/img/arrow-right.svg" class="pl-2"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!----------------------------STEP 3 ---------------------------------->
+    <div class="card-content row no-gutters" *ngIf="stepNumber == 3">
+      <div class="col-12 col-md-5 pl-3 pr-5 pt-5 pb-5 d-none d-sm-none d-md-flex
+      logo-border align-items-center justify-content-center">
+        <img src="/assets/img/name-password.svg" class="img-fluid">
+      </div>
+      <div class="col-12 col-md-7 pl-md-5 pl-1 pb-5">
+        <div class="pl-2 pr-4 pt-4">
+          <p class="pt-4 mt-1 fugu-welcome-header mb-1">Your personal information</p>
+          <p class="create-workspace-text mb-1">Please complete your profile</p>
+          <form class="mt-2" role="form" [formGroup]="namePasswordForm" (submit)="setPassword()">
+            <div class="form-group mb-0 mr-5" *ngIf="!takeGooglePhoneNumber">
+              <label class="form-custom-label pl-3 pt-2 mb-0">
+                Full Name
+              </label>
+              <input type="text"
+                     appAutofocus
+                     [ngClass]="{'error' : commonService.getErrorMessage(namePasswordForm.controls.full_name)}"
+                     placeholder="Enter full name here"
+                     maxlength="25"
+                     class="form-control form-signup-custom pl-3"
+                     formControlName="full_name"
+                     id="inputName">
+            </div>
+            <div class="form-group mb-0 mr-5" *ngIf="hasEmail || takeGooglePhoneNumber">
+                <label class="form-custom-label pl-3 pt-2 mb-0">
+                  Phone Number
+                </label>
+              <app-intl-phone-input    [ngClass]="{'p-wl' : commonService.isOldFlow}" class="phone-dropdown-container-password position-absolute"
+                                    [(phoneObj)]="selected_country_code"></app-intl-phone-input>
+              <input type="text"
+                     appAutofocus
+                     [ngClass]="{'error' : commonService.getErrorMessage(namePasswordForm.controls.phone)}"
+                     placeholder="Enter your phone number" [maxLength]="!isEmail ? 12 : 200"
+                     class="form-control form-signup-custom padding-phone-picker-input-email pl-3 mr-2"
+                     formControlName="phone"
+                     id="inputEmail">
+              </div>
+            <div class="form-group mb-0 mr-5" *ngIf="!takeGooglePhoneNumber">
+              <label class="form-custom-label pl-3 pt-2 mb-0">
+                Password
+              </label>
+              <input type="password"
+                     [ngClass]="{'error' : commonService.getErrorMessage(namePasswordForm.controls.password)}"
+                     placeholder="Enter password here"
+                     class="form-control form-signup-custom pl-3"
+                     formControlName="password"
+                     id="inputPassword">
+            </div>
+            <div class="pl-3 validator-height" *ngIf="!takeGooglePhoneNumber">
+              <app-validator [control]="namePasswordForm.controls.password"></app-validator>
+            </div>
+            <div class="text-muted small-text p-1"><input type="checkbox" class="ml-1 mr-2" formControlName="terms">
+              I agree to the <a href="https://jungleworks.co/terms-of-service/" target="_blank" rel="noopener">terms of service </a>and
+              <a [routerLink]="['/privacy-policy']" class="outline-none" target="_blank" rel="noopener">privacy policy.</a>
+            </div>
+            <div class="mt-2">
+              <button class="btn btn-next btn-40 pl-3 pr-3" [disabled]="!namePasswordForm.valid">Continue<img src="/assets/img/arrow-right.svg" class="pl-2"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+        <!----------------------------STEP 9 ---------------------------------->
+        <div class="card-content row no-gutters" *ngIf="stepNumber == 9">
+          <div class="col-12 col-md-5 pl-3 pr-5 pt-5 pb-5 d-none d-sm-none d-md-flex
+          logo-border align-items-center justify-content-center">
+            <img src="/assets/img/signup-chat.svg" class="img-fluid">
+          </div>
+          <div class="col-12 col-md-7 pl-md-5 pl-1 pb-5">
+            <div class="pl-2 pr-4 pt-4">
+              <p class="pt-4 mt-1 fugu-welcome-header mb-1">Almost done...</p>
+              <p class="mb-1">Please complete your profile</p>
+              <form class="mt-2" role="form" [formGroup]="namePasswordForm" (submit)="setUserDetail()">
+                <div class="form-group mb-0 mr-5" *ngIf="!takeGooglePhoneNumber">
+                  <!-- <label class="form-custom-label pl-3 pt-2 mb-0">
+                    Full Name
+                  </label> -->
+                  <input type="text"
+                         appAutofocus
+                         [ngClass]="{'error' : commonService.getErrorMessage(namePasswordForm.controls.full_name)}"
+                         placeholder="Enter your full name here"
+                         maxlength="25"
+                         class="form-control form-signup-custom pl-3"
+                         formControlName="full_name"
+                         id="inputName">
+                </div>
+                <div class="form-group mb-0 mr-5 pt-2" *ngIf="!takeGooglePhoneNumber && showWorkspaceName">
+                  <!-- <label class="form-custom-label pl-3 pt-2 mb-0">
+                    Workspace Name
+                  </label> -->
+                  <input type="text"
+                         [ngClass]="{'error' : commonService.getErrorMessage(namePasswordForm.controls.workspace_name)}"
+                         placeholder="Enter the name of your workspace"
+                         maxlength="25"
+                         class="form-control form-signup-custom pl-3"
+                         formControlName="workspace_name"
+                         id="inputName">
+                </div>
+                <div class="form-group mb-0 mr-5 pt-2" *ngIf="showPhoneNumber">
+                    <!-- <label class="form-custom-label pl-3 pt-2 mb-0">
+                      Phone Number
+                    </label> -->
+                  <app-intl-phone-input class="phone-dropdown-container-password position-absolute"
+                                        [(phoneObj)]="selected_country_code"></app-intl-phone-input>
+                  <input type="text"
+                         [ngClass]="{'error' : commonService.getErrorMessage(namePasswordForm.controls.phone)}"
+                         placeholder="Enter your phone number" [maxLength]="!isEmail ? 12 : 200"
+                         class="form-control form-signup-custom padding-phone-picker-input-email pl-3 mr-2"
+                         formControlName="phone"
+                         id="inputEmail">
+                  </div>
+                <!-- <div class="pl-3 validator-height" *ngIf="!takeGooglePhoneNumber">
+                  <app-validator [control]="namePasswordForm.controls.password"></app-validator>
+                </div> -->
+                <div class="text-muted small-text p-1"><input type="checkbox" class="ml-1 mr-2" formControlName="terms">
+                  I agree to the <a href="https://jungleworks.co/terms-of-service/" target="_blank" rel="noopener">terms of service </a>and
+                  <a [routerLink]="['/privacy-policy']" class="outline-none"  target="_blank" rel="noopener">privacy policy.</a>
+                </div>
+                <div class="mt-2">
+                  <button class="btn btn-next btn-40 pl-3 pr-3" [disabled]="!namePasswordForm.valid">Continue<img src="/assets/img/arrow-right.svg" class="pl-2"></button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    <!----------------------------STEP 4 ---------------------------------->
+    <div class="card-content row no-gutters" *ngIf="stepNumber == 4">
+      <div class="col-12 col-md-5 pl-3 pr-5 pt-5 pb-5 d-none d-sm-none d-md-flex
+      logo-border align-items-center justify-content-center">
+        <img src="/assets/img/space-create.svg" class="img-fluid">
+      </div>
+      <div class="col-12 col-md-7 pl-md-5 pl-1 pb-5">
+        <div class="pl-2 pr-4 pt-4">
+          <p class="pt-4 mt-1 fugu-welcome-header mb-0">Create a new space</p>
+          <p class="create-workspace-text mb-1">A {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }} space is simply a group of<br/> people using
+            {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }} together</p>
+          <form class="mt-2" role="form" [formGroup]="spaceForm" (submit)="createWorkspace()">
+            <div class="form-group mb-0 mr-5">
+              <label class="form-custom-label pl-3 pt-2 mb-0">
+                Space Name
+              </label>
+              <input type="text"
+                     appAutofocus
+                     [ngClass]="{'error' : commonService.getErrorMessage(spaceForm.controls.space_name)}"
+                     placeholder="Robot"
+                     class="form-control form-signup-custom pl-3"
+                     formControlName="space_name"
+                     id="inputSpace">
+            </div>
+            <!-- <div class="form-group mb-0 mr-5">
+              <label class="form-custom-label pl-3 pt-2 mb-0">
+                Space URL
+              </label>
+              <div class="d-flex align-items-center">
+                <input type="text"
+                       [ngClass]="{'error' : commonService.getErrorMessage(spaceForm.controls.space_url)}"
+                       placeholder="workspace"
+                       class="form-control form-signup-custom pl-3"
+                       formControlName="space_url"
+                       id="inputUrl">
+                <div class="fixed-space-text d-flex align-items-center pl-1 pr-2"><b class="ml-2">{{commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.full_domain : '.fugu.chat'}}</b></div>
+              </div>
+            </div> -->
+            <!-- <p class="font-weight-light small-text pl-1">This is the address you’ll use to sign in to {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }}.</p> -->
+            <div class="mt-2">
+              <button class="btn btn-next btn-40 pl-3 pr-3" [disabled]="!spaceForm.valid">Create<img src="/assets/img/arrow-right.svg" class="pl-2"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!----------------------------STEP 5 ---------------------------------->
+    <div class="card-content row no-gutters" *ngIf="stepNumber == 5">
+      <div class="col-12 col-md-5 pl-3 pr-5 pt-5 pb-5 d-none d-sm-none d-md-flex
+      logo-border align-items-center justify-content-center">
+        <img src="/assets/img/space-create.svg" class="img-fluid">
+      </div>
+      <div class="col-12 col-md-7 pl-md-5 pl-1 pb-5 no-pos-relative">
+        <div class="pl-2 pr-3 pt-4">
+          <p class="mt-1 fugu-welcome-header mb-3">Who's on Your Team?</p>
+          <div *ngIf="space_wise_groups.length">
+            <p class="create-workspace-text mb-2 text-muted workspace-text-small">
+              Let's onboard your team members from other spaces.
+            </p>
+            <ng-container *ngIf="selected_groups.size" class="mb-1">
+              <h5 class="underline mt-3">Selected Groups</h5>
+              <div class="selected-groups-container d-flex flex-wrap">
+                <div class="chip-email mb-2 mr-1 d-flex" *ngFor="let result of selected_groups;let i = index">
+                  <img [src]="result.channel_image.channel_thumbnail_url || 'assets/img/channel-placeholder.png'" class="rounded-img-fugu" alt="user-image">
+                  <span class="chip-text d-flex align-items-center pl-2">{{result.custom_label}}
+                <span (click)="selected_groups.delete(result);space_wise_groups[result.space_index].space_data[result.index].selected = false" class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                    <path opacity=".6" fill="#263238" d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+                    </path>
+                  </svg>
+                  </span>
+                </span>
+                </div>
+              </div>
+            </ng-container>
+            <div class="spaces-scroll-container d-flex flex-column mb-4 mt-1 mr-2">
+              <div *ngFor="let space of space_wise_groups;let k = index">
+                <h5 class="TitilliumWeb-bold space-name-header p-1 text-muted">{{space.workspace_name}}</h5>
+                <div class="d-flex flex-wrap">
+                  <div *ngFor="let data of space.groups;let i = index" class="d-flex flex-column align-items-center
+                  p-2 group-card cursor-hand"
+                       (click)="data.index = i;data.space_index = k;selected_groups.add(data);data.selected ? selected_groups.delete(data) : '';data.selected =! data.selected">
+                    <div class="position-relative">
+                      <img [src]="data.channel_image.channel_thumbnail_url || 'assets/img/channel-placeholder.png'" class="group-image rounded-img-fugu">
+                      <span class="check-btn position-absolute rounded-img-fugu pl-1 pr-1" *ngIf="data.selected">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" version="1.1" width="12px" height="12px">
+                        <g id="surface1">
+                        <path style=" " d="M 22.566406 4.730469 L 20.773438 3.511719 C 20.277344 3.175781 19.597656 3.304688 19.265625 3.796875 L 10.476563 16.757813 L 6.4375 12.71875 C 6.015625 12.296875 5.328125 12.296875 4.90625 12.71875 L 3.371094 14.253906 C 2.949219 14.675781 2.949219 15.363281 3.371094 15.789063 L 9.582031 22 C 9.929688 22.347656 10.476563 22.613281 10.96875 22.613281 C 11.460938 22.613281 11.957031 22.304688 12.277344 21.839844 L 22.855469 6.234375 C 23.191406 5.742188 23.0625 5.066406 22.566406 4.730469 Z "/>
+                        </g>
+                      </svg>
+                    </span>
+                    </div>
+                    <p class="mb-0 text-center break-all">{{data.custom_label}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="create-workspace-text mb-0 pt-2 text-muted workspace-text-small">Know a few friends who’d like to explore {{ commonService.isWhitelabelled ? commonApiService.whitelabelConfigurations.app_name : 'Fugu' }} with you? </p>
+          <div *ngIf="is_google_user">
+            <div class="google-sign-in-btn cursor-hand d-flex align-items-center justify-content-center p-2 mb-2 mr-5 position-relative" (click)="getUserContacts(workspace_id)">
+              <span class="google-sign-in-btn__icon p-2 d-flex justify-content-center align-items-center position-absolute">
+                <img src="/assets/img/google-icon.svg" class="ml-1">
+              </span>
+              <span class="mr-2">Invite Google Contacts</span>
+            </div>
+            <div class="d-flex align-items-center mr-5"><hr class="w-100 mr-2">or<hr class="ml-2 w-100"></div>
+          </div>
+          <form [formGroup]="inviteForm">
+            <div formArrayName="properties">
+              <div *ngFor="let prop of inviteForm.get('properties').controls; let i = index; let first = first; let last = last;"
+                   class="pr-2 pb-2 mr-5 position-relative">
+                <p class="form-custom-label pl-3 pt-2 mb-0" *ngIf="first">
+                  <b>{{signupText}}</b>
+                  <span class="float-right app-color pr-2 cursor-hand" [routerLink]="['/signup',6]" preserveQueryParams>+ Add many at once</span>
+                </p>
+                <app-intl-phone-input *ngIf="!phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]" class="phone-dropdown-container-invite position-absolute"
+                                      [(phoneObj)]="phonesCountryCodeArray[i].selected_country_code"></app-intl-phone-input>
+                <input type="text" (keydown)="last ? addFormField(i) : ''"
+                       [autofocus]="first" [maxLength]="!phonesCountryCodeArray[i].is_email ? 12 : 200"
+                       [ngClass]="{'padding-phone-picker-input':
+                       !phonesCountryCodeArray[i].is_email && inviteForm.value.properties[i]}"
+                       [placeholder]="'Enter your' + signupText"
+                       class="form-control form-signup-custom pl-3"
+                       [formControlName]="i">
+              </div>
+            </div>
+            <div class="cursor-hand pl-1 pt-1 app-color hover-underline" id="gmailAccessBtn" *ngIf="!is_google_user && show_google_button">
+              <img src="/assets/img/google-icon.svg" class="mr-2 margin-negative-small">
+              Connect Google Contacts
+            </div>
+            <div class="check-verified-box d-flex p-2 ml-2 mt-3 mr-5" *ngIf="hasEmail && !restricted_domains.includes(emailForm.value.emailOrPhone.split('@')[1])">
+              <input type="checkbox" class="m-1" id="domainCheckBox" #domainCheckBox>
+              <p class="small-text mb-0 margin-small">Let other people sign up with their verified
+                <b>{{'@' + emailForm.value.emailOrPhone.split('@')[1]}}</b> email address</p>
+            </div>
+            <p class="bottom-text mb-0 p-2 text-muted small">* This invitation will expire after 30 days.</p>
+            <div class="mt-2 d-flex align-items-center justify-content-between">
+              <button class="btn btn-next btn-40 pl-3 pr-3" (click)="sendMultipleInvites()">Send Invitations</button>
+              <span class="float-right skip-button cursor-hand p-2 mr-3 top-text" (click)="skipToWorkspace()">Skip</span>
+            </div>
+          </form>
+          <!--<form class="mt-2" role="form" [formGroup]="inviteForm" (submit)="setPassword()">-->
+            <!--<div class="form-group mb-0">-->
+              <!--<p class="form-custom-label pl-3 pt-2 mb-0 w-300">-->
+                <!--<b>Email Address</b>-->
+                <!--<span class="float-right app-color pr-2">+ Add many at once</span>-->
+              <!--</p>-->
+              <!--<input type="text"-->
+                     <!--appAutofocus-->
+                     <!--placeholder="you@example.com"-->
+                     <!--class="form-control form-signup-custom pl-3"-->
+                     <!--[formControlName]="i">-->
+            <!--</div>-->
+          <!--</form>-->
+        </div>
+      </div>
+    </div>
+    <!--------------------------- STEP 6 ------------------------------------------>
+    <div class="card-content row no-gutters" *ngIf="stepNumber == 6">
+      <div class="col-12 col-md-5 pl-md-3 pr-5 pt-5 pb-5 d-none d-sm-none d-md-flex
+    logo-border align-items-center justify-content-center">
+        <img src="/assets/img/multiple-invites.svg" class="img-fluid">
+      </div>
+      <div class="col-12 col-md-7 pl-md-5 pb-5">
+        <div class="pl-2 pr-3 pt-4">
+          <p class="pt-4 mt-1 fugu-welcome-header mb-0">Invite members to “Space”</p>
+          <p class="create-workspace-text mb-1">Enter multiple email address.</p>
+          <form class="mt-2" role="form" [formGroup]="multipleInviteForm" (submit)="sendMultipleInvites()">
+            <div class="form-group mb-0">
+              <p class="form-custom-label pl-3 pt-2 mb-0 w-300">
+                <b>Email Addresses (Phone numbers not allowed)</b>
+              </p>
+              <textarea type="text"
+                        appAutofocus
+                        placeholder="Enter email id here (Phone numbers not allowed)"
+                        class="form-control form-signup-custom multiple-email-box pl-3 w-300"
+                        formControlName="multiple_invite_email"></textarea>
+              <p class="form-custom-label pl-1 pt-2 mb-0 w-300">Please separate mulitple addresses with commas.</p>
+            </div>
+            <div class="mt-4 d-flex align-items-center">
+              <button class="btn btn-negative btn-40 pl-3 pr-3" [routerLink]="['/signup', 5]" preserveQueryParams>Cancel</button>
+              <button class="btn btn-next btn-40 ml-3 pl-3 pr-3">Add Invites</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  <!--------------------------- STEP 7 ------------------------------------------>
+    <div class="card-content row no-gutters d-flex flex-column align-items-center justify-content-center" *ngIf="stepNumber == 7">
+      <div class="d-flex">
+        <img class="p-2 h-45" *ngIf="!commonService.isWhitelabelled" src="/assets/img/fugu-icon.svg">
+        <img class="h-45 p-2" *ngIf="commonService.isWhitelabelled" [src]="commonApiService.whitelabelConfigurations.logo">
+        <img class="p-2" src="/assets/img/exchange-arrows.svg">
+        <img class="p-2 h-45" src="/assets/img/google-icon.svg">
+      </div>
+      <p class="pt-3">Seems like this email has already been registered with <b>Google.</b></p>
+      <div class="p-2 mb-2 position-relative w-300">
+        <app-google-login (googleUserCodeEmitter)="onSignIn($event)"></app-google-login>
+      </div>
+    </div>
+<!--------------------------- STEP 8 ------------------------------------------>
+  <div class="card-content row no-gutters" *ngIf="stepNumber == 8">
+    <span class="text-right p-2 mr-2 text-muted cursor-hand top-text" (click)="skipToWorkspace(true)">Skip</span>
+    <div class="col-12 col-md-5 pl-md-3 pr-5 pt-5 pb-5 d-none d-sm-none d-md-flex
+  logo-border align-items-center justify-content-center">
+      <img src="/assets/img/multiple-invites.svg" class="img-fluid">
+    </div>
+    <div class="col-12 col-md-7 pl-md-5 pb-5">
+      <div class="pl-2 pr-3 pt-4">
+        <p class="pt-4 mt-1 fugu-welcome-header mb-0">Invite members to “Space”</p>
+        <p class="create-workspace-text mb-1">Select your Google contacts to invite.</p>
+        <div class="google-box">
+          <div class="search-div p-3">
+            <input type="text" appAutofocus [formControl]="inviteSearchCtrl" class="form-control form-input-custom invite-search" placeholder="Search by email to invite">
+          </div>
+          <div class="email-box">
+            <div class="selected-emails-box d-flex p-2">
+            </div>
+            <!--checkbox to select all user selected emails-->
+            <div class="d-flex align-items-center p-2 cursor-hand" *ngFor="let email of filteredEmailsData | orderBySort;let i = index" (click)="onEmailClick(email, i)">
+              <span class="profile-logo rounded-img-fugu d-flex align-items-center justify-content-center font-weight-light mr-2">{{email.substring(0,1)}}</span>
+              <p class="w-100 overflow-ellipsis mb-0">{{email}}</p>
+              <input type="checkbox" name="checkbox" [checked]="selectedEmails[email]" class="checkbox-input">
+            </div>
+          </div>
+          <div class="d-flex justify-content-center p-3 align-items-center">
+            <button class="btn invite-btn p-2 pl-4 pr-4 font-weight-light" *ngIf="(selectedEmails | objectLength)" (click)="sendInviteViaGoogle()">Send Invites ({{selectedEmails | objectLength}})</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

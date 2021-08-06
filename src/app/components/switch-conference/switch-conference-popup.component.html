@@ -1,0 +1,67 @@
+<div class="message-modal d-flex justify-content-center align-items-center h-100 w-100">
+  <div class="message-modal__content">
+    <div class="invite-header d-flex align-items-center p-2">
+      <span>
+        <img class="ml-2 mr-3 cursor-hand" data-dismiss="modal" aria-label="Close"
+          src="assets/img/cross-icon-forward.svg" alt="close" (click)="closeConferenceInvitePopup.emit(true)"> Invite
+        People to Conference
+      </span>
+    </div>
+    <div class="message-modal__body d-flex flex-column position-relative">
+        <div class="selected-members-container p-2">
+            <div class="d-flex flex-wrap">
+              <div class="chip-email mb-2 mr-1 d-flex" *ngFor="let member of selected_members | keys" [@flyInOut]>
+                <img *ngIf="selected_members[member].user_image" [src]="selected_members[member].user_image" class="rounded-img-fugu"
+                  alt="user-image">
+                <div *ngIf="!selected_members[member].user_image" class="rounded-img-fugu d-flex
+                           justify-content-center align-items-center hw-26" [ngStyle]="{'background-color': selected_members[member].user_id | randomColor}">
+                  {{selected_members[member].full_name.substring(0,1)}}
+                </div>
+                <span class="chip-text d-flex align-items-center pl-2">{{selected_members[member].full_name.split(' ')[0]}}
+                  <span (click)="removeMember(member)" class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                      <path opacity=".6" fill="#263238" d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+                      </path>
+                    </svg>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="search-bar p-2">
+            <input id="conference-search-box" type="text" class="form-control box-shadow-none outline-none" [formControl]="inviteConferenceSearchCtrl"
+              placeholder="Search..." (keydown)="onSearchBoxKeyDownEvent($event)">
+          </div>
+          <div class="member members-container w-100 overflow-x-hidden flex-grow" #conferenceMemberContainer>
+            <div class="member-card d-flex p-2 pl-3 cursor-hand" [id]="'conference-members' + i"
+              *ngFor="let member of search_results ;let i = index" [ngClass]="{'active': active_index == i}"
+              (click)="addMember(member)">
+              <img *ngIf="member.user_image" [src]="member.user_image" class="member-img rounded-img-fugu">
+              <div *ngIf="!member.user_image" class="rounded-img-fugu d-flex
+                                   justify-content-center align-items-center no-thumbnail-img"
+                [ngStyle]="{'background-color': member.user_id | randomColor}">
+                {{member.full_name.substring(0,1)}}
+              </div>
+              <div class="d-flex flex-column justify-content-center">
+                <p class="ml-2 mb-0 TitilliumWeb-bold">{{member.full_name}}</p>
+              </div>
+            </div>
+            <div class="no-results d-flex justify-content-center mt-3" *ngIf="!search_results.length && frequently_contacted">
+              No results found.
+            </div>
+            <div class="no-results d-flex justify-content-center mt-3" *ngIf="!search_results.length && !frequently_contacted">
+              Start typing to find a user...
+            </div>
+          </div>
+          <footer class="action-button d-flex justify-content-center align-items-center">
+            <div [@scaleInOut]
+              class="forward-icon p-3 rounded-img-fugu cursor-hand hw-56 justify-content-center d-flex align-items-center"
+              (click)="inviteMembers()">
+              <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="#FFF" d="M8 17.1l-5.2-5.2-1.7 1.7 6.9 7L22.9 5.7 21.2 4 8 17.1z"></path>
+              </svg>
+            </div>
+          </footer>
+    </div>
+  </div>
+</div>

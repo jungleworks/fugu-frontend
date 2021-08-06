@@ -1,0 +1,175 @@
+<div [ngClass]="{'thread-bg': contentData.is_thread && !contentData.image_preview}" class="d-flex flex-column w-100 parent position-relative justify-content-center align-items-center content-parent" [id]="input_id + '-parent'">
+  <div class="meet-meta" [hidden]="isMeetClicked == false">
+    <svg _ngcontent-tte-c99="" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" height="50" id="Layer_1" viewBox="0 0 32 32" width="50" class="ng-tns-c99-13" style="/* height: 50px; */"><path _ngcontent-tte-c99="" d="M24,21.45V25a2.0059,2.0059,0,0,1-2,2H9V21h9V16Z" fill="#00ac47" class="ng-tns-c99-13"></path><polygon _ngcontent-tte-c99="" fill="#31a950" points="24 11 24 21.45 18 16 18 11 24 11" class="ng-tns-c99-13"></polygon><polygon _ngcontent-tte-c99="" fill="#ea4435" points="9 5 9 11 3 11 9 5" class="ng-tns-c99-13"></polygon><rect _ngcontent-tte-c99="" fill="#4285f4" height="11" width="6" x="3" y="11" class="ng-tns-c99-13"></rect><path _ngcontent-tte-c99="" d="M24,7v4h-.5L18,16V11H9V5H22A2.0059,2.0059,0,0,1,24,7Z" fill="#ffba00" class="ng-tns-c99-13"></path><path _ngcontent-tte-c99="" d="M9,21v6H5a2.0059,2.0059,0,0,1-2-2V21Z" fill="#0066da" class="ng-tns-c99-13"></path><path _ngcontent-tte-c99="" d="M29,8.26V23.74a.9989.9989,0,0,1-1.67.74L24,21.45,18,16l5.5-5,.5-.45,3.33-3.03A.9989.9989,0,0,1,29,8.26Z" fill="#00ac47" class="ng-tns-c99-13"></path><polygon _ngcontent-tte-c99="" fill="#188038" points="24 10.55 24 21.45 18 16 23.5 11 24 10.55" class="ng-tns-c99-13"></polygon></svg>
+    <div class="meet-meta-data"><span>Google Meet</span><span id ="meetLinkAttached"></span></div>
+    <div class="cancel-meet" (click)= "clearMeet()"><i class="fa fa-times" style="color:var(--font-message-receiver); font-size: 25px;" aria-hidden="true"></i></div>
+    </div>
+  <app-tag-users [activeChannelId]="activeChannelId" #mentionList [@taggingAnimation] class="w-100 position-absolute" *ngIf="taggingMenuOpen" (closeMentionList)="taggingMenuOpen = false"
+    [mentionData]="mentionData" (itemClickEvent)="insertMentionIntoInput($event)"></app-tag-users>
+  <div class="messageInputContainer pl-2 pr-1 d-flex align-items-center"
+         [ngClass]="{'image-preview-styling': contentData.image_preview, 'thread-chat-bg': this.contentData.is_thread}">
+    <div class="plus_dropup" *ngIf="(contentData.chat_type != ChatTypeEnum.BOT || contentData.user_type == UserTypeEnum.FuguSupportBot || contentData.user_type == UserTypeEnum.SelfNote) && !msgEditMode && !contentData.image_preview" click-outside keyboard-events
+          [isEnabled]="dropup_open" (esc)="dropup_open = false"
+          (clickOutside)="dropupClickOutside($event)">
+          <div class="position-relative cursor-hand" (click)="dropup_open = !dropup_open">
+            <!-- <img draggable="false" src="/assets/img/plus-icon-circle.svg" class="ml-2 mr-3 cursor-hand"
+                  alt="plus-btn" /> -->
+         <span class="ml-2 mr-3 cursor-hand d-flex">
+           <svg  xmlns="http://www.w3.org/2000/svg" id="Capa_1" enable-background="new 0 0 551.13 551.13" height="20" viewBox="0 0 551.13 551.13" width="20" class=""><g>
+             <path  fill="var(--content-icon)" d="m275.565 0c-151.944 0-275.565 123.621-275.565 275.565s123.621 275.565 275.565 275.565 275.565-123.621 275.565-275.565-123.621-275.565-275.565-275.565zm0 516.685c-132.955 0-241.119-108.164-241.119-241.119s108.164-241.12 241.119-241.12 241.12 108.164 241.12 241.119-108.165 241.12-241.12 241.12z" data-original="#000000" class="active-path" data-old_color="#000000"/>
+             <path d="m292.788 137.783h-34.446v120.56h-120.56v34.446h120.56v120.56h34.446v-120.56h120.56v-34.446h-120.56z" data-original="#000000" class="active-path" data-old_color="#000000"  fill="var(--content-icon)"/></g>
+          </svg>
+         </span>
+
+            <!-- <span class="position-absolute plus-icon">+</span> -->
+          </div>
+      <div class="dropup_content d-non-imp-flex flex-column" [hidden]="!dropup_open">
+        <button *ngIf="contentData.chat_type != ChatTypeEnum.ONE_TO_ONE && contentData.user_type != UserTypeEnum.FuguSupportBot &&
+         !contentData.is_thread && spaceData.config.poll_enabled == '1'" class="pl-3 p-2
+          cursor-hand no-btn-style text-muted TitilliumWeb-bold text-left outline-none d-flex align-items-center"
+                (click)="openPollPopup()">
+          <!-- <img draggable="false"  src="/assets/img/poll-icon.svg"
+                class="mr-3 hw-16"
+                alt="poll-btn" /> -->
+                <svg     class="mr-3 hw-16" width="18px" height="18px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <title>poll icon</title>
+                  <defs>
+                      <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
+                  </defs>
+                  <g id="Assets" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-78.000000, -113.000000)">
+                      <g id="poll-icon" transform="translate(74.000000, 109.000000)">
+                          <mask id="mask-2" fill="white">
+                              <use xlink:href="#path-1"></use>
+                          </mask>
+                          <g id="Mask"></g>
+                          <g id="Group-6" mask="url(#mask-2)">
+                              <g transform="translate(9.962172, 10.006180) scale(-1, 1) translate(-9.962172, -10.006180) translate(4.462172, 4.006180)" id="Group-4">
+                                  <g transform="translate(0.000000, 0.000000)">
+                                      <rect id="Rectangle-4" fill="var(--chat-header-text)" fill-opacity="0.3" x="0" y="4" width="3" height="8" rx="1"></rect>
+                                      <rect id="Rectangle-4-Copy" fill="var(--chat-header-text)" fill-opacity="0.3" x="4" y="0" width="3" height="12" rx="1"></rect>
+                                      <rect id="Rectangle-4-Copy-2" fill="var(--chat-header-text)" fill-opacity="0.3" x="8" y="6" width="3" height="6" rx="1"></rect>
+                                  </g>
+                              </g>
+                          </g>
+                      </g>
+                  </g>
+              </svg>
+               Poll
+        </button>
+        <button class="btn-attachment d-flex align-items-center TitilliumWeb-bold text-muted outline-none pl-3 p-2 text-left"
+                [disabled]="!isOnline || !socketService.socket?.connected" (click)="onAttchmentClick(fileInput)" (touch)="onAttchmentClick(fileInput)">
+          <!-- <img draggable="false" class="mr-3 hw-16" src="/assets/img/attach.svg" alt="attachment" /> -->
+
+        <!-- <svg class="mr-3 hw-16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="22" viewBox="0 0 20 22">
+          <defs>
+              <path id="a" d="M.03.369H19.7V22H.03z"/>
+          </defs>
+          <g fill="none" fill-rule="evenodd">
+              <mask id="b" fill="#fff">
+                  <use xlink:href="#a"/>
+              </mask>
+              <path fill="var(--chat-header-text)" d="M19.582 8.418a.384.384 0 0 0-.567 0L8.1 19.854a4.152 4.152 0 0 1-6.051 0 4.56 4.56 0 0 1-1.248-3.17 4.56 4.56 0 0 1 1.248-3.17L12.965 2.078c1.158-1.213 2.979-1.14 4.233.174 1.251 1.314 1.323 3.219.165 4.432L7.105 17.429c-.572.6-1.506.6-2.08 0a1.596 1.596 0 0 1 0-2.18l6.947-7.28a.434.434 0 0 0 0-.593.389.389 0 0 0-.566 0l-6.947 7.279a2.466 2.466 0 0 0 0 3.366 2.203 2.203 0 0 0 3.213 0L17.927 7.276c1.483-1.553 1.411-3.967-.163-5.619C16.188.008 13.88-.067 12.4 1.483L1.482 12.923C.525 13.923 0 15.26 0 16.684c0 1.427.525 2.762 1.482 3.763A4.922 4.922 0 0 0 5.075 22c1.36 0 2.635-.55 3.59-1.553L19.582 9.01a.431.431 0 0 0 0-.592z" mask="url(#b)"/>
+          </g>
+      </svg> -->
+
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg class="mr-3" fill="var(--chat-header-text)" fill-opacity="0.3" width="18" height="18"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 511.988 511.988" style="enable-background:new 0 0 511.988 511.988;" xml:space="preserve">
+<g>
+	<g>
+		<path d="M490.305,186.463c-8.354-8.309-21.861-8.272-30.17,0.081L203.687,444.379c-33.271,33.271-87.308,33.271-120.641-0.045
+			c-33.308-33.325-33.308-87.362,0.004-120.674L347.089,58.234c20.772-20.771,54.543-20.771,75.375,0.045
+			c20.826,20.826,20.826,54.593-0.005,75.425L203.727,352.434c-0.014,0.014-0.026,0.03-0.04,0.044
+			c-8.333,8.287-21.8,8.276-30.116-0.04c-8.33-8.33-8.33-21.831,0-30.161l105.58-105.602c8.33-8.332,8.329-21.84-0.003-30.17
+			c-8.332-8.33-21.84-8.329-30.17,0.003l-105.579,105.6c-24.991,24.991-24.991,65.507,0.002,90.499
+			c24.992,24.992,65.508,24.992,90.501,0c0.029-0.029,0.052-0.06,0.08-0.089l218.646-218.646c37.494-37.494,37.494-98.276,0-135.77
+			c-37.499-37.472-98.277-37.472-135.749,0L52.84,293.53C2.906,343.464,2.906,424.509,52.876,474.504
+			c50.003,49.977,131.049,49.977,181.022,0.004l256.489-257.875C498.695,208.279,498.658,194.772,490.305,186.463z"/>
+	</g>
+</g>
+
+</svg>
+
+
+      <!-- <svg class="mr-3 hw-16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="22" viewBox="0 0 20 22">
+        <defs>
+            <path id="a" d="M.03.369H19.7V22H.03z"/>
+        </defs>
+        <g fill="none" fill-rule="evenodd">
+            <mask id="b" fill="#fff">
+                <use xlink:href="#a"/>
+            </mask>
+            <path fill="#fff" fill-opacity=".786" d="M19.582 8.418a.384.384 0 0 0-.567 0L8.1 19.854a4.152 4.152 0 0 1-6.051 0 4.56 4.56 0 0 1-1.248-3.17 4.56 4.56 0 0 1 1.248-3.17L12.965 2.078c1.158-1.213 2.979-1.14 4.233.174 1.251 1.314 1.323 3.219.165 4.432L7.105 17.429c-.572.6-1.506.6-2.08 0a1.596 1.596 0 0 1 0-2.18l6.947-7.28a.434.434 0 0 0 0-.593.389.389 0 0 0-.566 0l-6.947 7.279a2.466 2.466 0 0 0 0 3.366 2.203 2.203 0 0 0 3.213 0L17.927 7.276c1.483-1.553 1.411-3.967-.163-5.619C16.188.008 13.88-.067 12.4 1.483L1.482 12.923C.525 13.923 0 15.26 0 16.684c0 1.427.525 2.762 1.482 3.763A4.922 4.922 0 0 0 5.075 22c1.36 0 2.635-.55 3.59-1.553L19.582 9.01a.431.431 0 0 0 0-.592z" mask="url(#b)"/>
+        </g>
+    </svg>
+     -->
+
+          <input type="file" #fileInput (change)="fileUploadEvent($event)" accept="*" multiple />
+          Attach
+        </button>
+        <button class="pl-3 p-2 cursor-hand gif-btn no-btn-style TitilliumWeb-bold text-muted text-left outline-none d-flex align-items-center" (click)="onGIFClick()">
+          <!-- <img draggable="false" src="/assets/img/gif-icon.svg"
+                class="mr-3 gif-btn hw-18" id="gifBtn"
+                alt="gif-btn" />  -->
+                <svg            class="mr-3 gif-btn hw-18" id="gifBtn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="var(--chat-header-text)" fill-opacity=".3" d="M21 5H3C1.9 5 1 6 1 7.2v9.6C1 18 1.9 19 3 19h18c1.1 0 2-1 2-2.2V7.2C23 6 22.1 5 21 5zm-10.6 7.7c0 1.8-1.1 2.9-2.9 2.9-2 0-3.2-1.3-3.2-3.4 0-2.1 1.2-3.4 3.1-3.4 1.6 0 2.8.9 2.9 2.3H8.7c-.2-.6-.6-.9-1.3-.9-.9 0-1.5.8-1.5 2 0 1.3.6 2.1 1.5 2.1.7 0 1.3-.4 1.3-1.1v-.1H7.6V12h2.8v.7zm2.8 2.7h-1.6V9h1.6v6.4zm6.1-5.1h-2.8v1.5H19V13h-2.5v2.4h-1.6V9h4.4v1.3z"></path></svg>
+
+                GIF
+        </button>
+        <button *ngIf="!contentData.is_thread" class="pl-3 p-2 cursor-hand no-btn-style TitilliumWeb-bold text-muted text-left outline-none d-flex align-items-center" (click)="onMeetClick()">
+          <!-- <svg  class="mr-3 gif-btn hw-18" id="gifBtn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="var(--chat-header-text)" fill-opacity=".3" d="M21 5H3C1.9 5 1 6 1 7.2v9.6C1 18 1.9 19 3 19h18c1.1 0 2-1 2-2.2V7.2C23 6 22.1 5 21 5zm-10.6 7.7c0 1.8-1.1 2.9-2.9 2.9-2 0-3.2-1.3-3.2-3.4 0-2.1 1.2-3.4 3.1-3.4 1.6 0 2.8.9 2.9 2.3H8.7c-.2-.6-.6-.9-1.3-.9-.9 0-1.5.8-1.5 2 0 1.3.6 2.1 1.5 2.1.7 0 1.3-.4 1.3-1.1v-.1H7.6V12h2.8v.7zm2.8 2.7h-1.6V9h1.6v6.4zm6.1-5.1h-2.8v1.5H19V13h-2.5v2.4h-1.6V9h4.4v1.3z"></path></svg> -->
+          <svg _ngcontent-tte-c99="" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 172 172" class="mr-3 gif-btn hw-18 ng-tns-c99-6"><path _ngcontent-tte-c99="" fill="var(--chat-header-text)" fill-opacity=".3" d="M84.28,6.88c-36.98688,0 -67.08,30.09312 -67.08,67.08c0,36.4124 29.16776,66.14481 65.36,67.05985v23.39469l4.48813,-1.4311c0.60544,-0.19608 60.78259,-20.17947 64.30515,-88.84875c0.86688,-16.93512 -5.28734,-33.25609 -17.3411,-45.94281c-12.86904,-13.54328 -30.99795,-21.31187 -49.73219,-21.31187zM84.28,13.76c16.856,0 33.17127,6.98411 44.74687,19.16859c10.73968,11.30384 16.23385,25.81376 15.45985,40.85c-2.75888,53.81536 -41.57568,75.11406 -55.04672,80.9139v-20.72063l-3.54078,0.10078c-0.29584,0.01032 -0.58775,0.02639 -0.88015,0.04703c-0.24424,0.0172 -0.49138,0.04031 -0.73906,0.04031c-33.19256,0 -60.2,-27.00744 -60.2,-60.2c0,-33.19256 27.00744,-60.2 60.2,-60.2zM44.72,55.04v30.96h13.76v17.2h3.44c9.48408,0 17.2,-7.71592 17.2,-17.2v-30.96zM89.44,55.04v30.96h13.76v17.2h3.44c9.48408,0 17.2,-7.71592 17.2,-17.2v-30.96zM51.6,61.92h20.64v24.08c0,4.48576 -2.87584,8.30803 -6.88,9.72875v-16.60875h-13.76zM96.32,61.92h20.64v24.08c0,4.48576 -2.87584,8.30803 -6.88,9.72875v-16.60875h-13.76z" class="ng-tns-c99-6"></path></svg>
+          Meet
+        </button>
+      </div>
+    </div>
+    <div [id]="input_id" [ngClass]="{'thread-chat-bg': this.contentData.is_thread}" class="w-100 form-control content-editable-style" (input)="onInputEvent($event)"
+    (keydown)="onKeydownEvent($event)" (keyup)="onKeyupEvent($event)" (paste)="pasteEvent($event)"
+    contenteditable="true" [attr.data-placeholder]="'Type your message here ('+(commonService.isMac ? '\u2318 E' : 'Ctrl + E' )+')'"></div>
+    <div class="action-buttons pl-1 position-relative">
+      <app-emoji-picker class="emoji-picker" keyboard-events (esc)="showEmojiPicker = false" [isEnabled]="showEmojiPicker" (emojiClick)="emojiClickEvent($event)"
+        *ngIf="showEmojiPicker" click-outside (clickOutside)="emojiPickerClickOutside($event)"></app-emoji-picker>
+      <button *ngIf="contentData.chat_type != ChatTypeEnum.BOT || contentData.user_type == UserTypeEnum.SelfNote" class="emoji-trigger emoji-btn"
+      (click)="showEmojiPicker = !showEmojiPicker">
+      <!-- <img
+        draggable="false" src="/assets/img/emoji-blue.svg" class="mr-2 cursor-hand emoji-trigger" alt="emoji-icon" /> -->
+        <!-- <span class="mr-2 cursor-hand emoji-trigger"> -->
+          <svg class="mr-2 cursor-hand emoji-trigger" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <g fill="none" fill-rule="evenodd">
+                <rect width="24" height="24" rx="2"/>
+                <circle cx="12" cy="12" r="9" stroke="var(--content-icon)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+                <path fill="var(--content-icon)" d="M8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM15.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+                <path stroke="var(--content-icon)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.593 15.001A5.477 5.477 0 0 1 12 17.5a5.477 5.477 0 0 1-4.593-2.499"/>
+            </g>
+        </svg>
+
+        <!-- </span> -->
+      </button>
+      <button *ngIf="msgEditMode" class="emoji-btn" (click)="saveEditedMessage()"><img
+        draggable="false" src="assets/img/green-tick.svg" class="cursor-hand green-tick-icon" alt="green-tick" /></button>
+      <button *ngIf="msgEditMode" class="emoji-btn" (click)="cancelEditedMode()">
+        <!-- <img
+        draggable="false" src="assets/img/close.svg" class="cursor-hand close-icon" alt="close-icon" /> -->
+        <svg fill="var(--chat-header-text)" height="20" width="20" class="cursor-hand close-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<g>
+	<g>
+		<path d="M505.943,6.058c-8.077-8.077-21.172-8.077-29.249,0L6.058,476.693c-8.077,8.077-8.077,21.172,0,29.249
+			C10.096,509.982,15.39,512,20.683,512c5.293,0,10.586-2.019,14.625-6.059L505.943,35.306
+			C514.019,27.23,514.019,14.135,505.943,6.058z"/>
+	</g>
+</g>
+<g>
+	<g>
+		<path d="M505.942,476.694L35.306,6.059c-8.076-8.077-21.172-8.077-29.248,0c-8.077,8.076-8.077,21.171,0,29.248l470.636,470.636
+			c4.038,4.039,9.332,6.058,14.625,6.058c5.293,0,10.587-2.019,14.624-6.057C514.018,497.866,514.018,484.771,505.942,476.694z"/>
+	</g>
+</g>
+</svg>
+      </button>
+    </div>
+  </div>
+</div>
+<app-create-poll *ngIf="poll_popup_open" (closeCreatePoll)="poll_popup_open = false"
+                 (sendPollMessage)="onCreatePollEvent($event)"></app-create-poll>
+<app-gif *ngIf="showGifPopup" (gifClickEvent)="onGifClickEvent($event)"
+          (closeGifPopup)="showGifPopup = false"></app-gif>

@@ -1,0 +1,129 @@
+<div class="create-group-parent overflow-hidden d-flex flex-column" keyboard-events [isEnabled]="true"
+     (esc)="create_step == 1 ? closeCreateGroup(): create_step = 1">
+  <header>
+    <div class="group-header d-flex p-2 pt-5">
+      <span class="position-absolute cursor-hand skip-button" (click)="createGroupChat()" [hidden]="create_step == 1">Skip</span>
+      <div class="d-flex align-items-center w-100">
+        <img src="assets/img/arrow-back.svg" class="ml-1 mr-4 cursor-hand" (click)="create_step == 1 ? closeCreateGroup()
+         : create_step = 1">
+        <p class="mb-0 w-100 d-flex align-items-center">{{create_step == 1 ? 'Add group members' : 'Add Subject'}}</p>
+      </div>
+    </div>
+  </header>
+  <div class="search-container d-flex flex-column h-100" [ngClass]="{'height-0 visibility-hidden': create_step != 1}">
+    <div class="search-bar mt-4 ml-4">
+      <div class="selected-members-container p-2" *ngIf="is_forward_enabled">
+        <div class="d-flex flex-wrap chip-container">
+          <div class="chip-email mb-2 mr-1 d-flex align-items-center" *ngFor="let member of selected_members | keys" [@flyInOutLeft]>
+            <img *ngIf="selected_members[member]?.user_thumbnail_image" [src]="selected_members[member].user_thumbnail_image" class="rounded-img-fugu" alt="user-image">
+            <div *ngIf="!selected_members[member].user_thumbnail_image" class="rounded-img-fugu d-flex
+                 justify-content-center align-items-center hw-26"
+                 [ngStyle]="{'background-color': selected_members[member].fugu_user_id | randomColor}">
+              {{selected_members[member].full_name.substring(0,1)}}
+            </div>
+            <span class="chip-text d-flex align-items-center pl-2">{{selected_members[member].full_name.split(' ')[0]}}
+            <span (click)="removeMember(member)" class="d-flex align-items-center ml-1 mr-1 rounded-img-fugu cursor-hand chip-cross">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                <path opacity=".6" fill="#263238" d="M12.174 4.661l-.836-.835L8 7.165 4.661 3.826l-.835.835L7.165 8l-3.339 3.339.835.835L8 8.835l3.338 3.339.836-.835L8.835 8l3.339-3.339z">
+                </path>
+              </svg>
+            </span>
+          </span>
+          </div>
+        </div>
+      </div>
+      <input type="text" class="form-control search-contacts-input box-shadow-none outline-none pl-1"
+             placeholder="Type member name" [formControl]="searchCtrl" id="create-search-box" (keydown)="onSearchBoxKeyDownEvent($event)">
+    </div>
+    <div class="member members-container mt-3 w-100 overflow-x-hidden flex-grow d-flex h-100">
+      <cdk-virtual-scroll-viewport id="group-member-container" itemSize="62" class="ml-2 flex-grow members-vs-scroll-container" #membersContainer>
+        <div class="member-card d-flex p-2 cursor-hand position-relative" [ngClass]="{'active': active_index == i}"
+          *cdkVirtualFor="let member of search_results;let i = index"
+          [id]="'members' + i" (click)="addMember(member)">
+            <img *ngIf="member?.user_thumbnail_image" [src]="member.user_thumbnail_image" class="member-img rounded-img-fugu">
+            <div *ngIf="!member.user_thumbnail_image" class="rounded-img-fugu d-flex
+                          justify-content-center align-items-center no-thumbnail-img"
+              [ngStyle]="{'background-color': member.fugu_user_id | randomColor}">
+              {{member.full_name.substring(0,1)}}
+            </div>
+            <span *ngIf="selected_members[member.fugu_user_id]" class="d-flex align-items-end tick-position position-absolute"><i class="fas fa-check-circle circle-icon-tick"></i></span>
+            <div class="d-flex flex-column justify-content-center">
+              <span class="d-flex align-items-center">
+                <p class="ml-2 mb-0 TitilliumWeb-bold label">{{member.full_name}}</p>
+                <ng-container [ngSwitch]="member.leave_type">
+                  <ng-container *ngSwitchCase="leaveRoleEnum.ABSENT">
+                    <p class="small label-light ml-1 mb-0">
+                      (On leave)</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="leaveRoleEnum.WORK_FROM_HOME">
+                    <p class="small label-light ml-1 mb-0">
+                      (WFH)</p>
+                  </ng-container>
+                </ng-container>
+              </span>
+              <p class="ml-2 mb-0 label-light email-text font-14" *ngIf="!(spaceData.config.hide_email | parseInt)
+               && (!member.email?.includes('@fuguchat.com') || !member.email?.includes('@junglework.auth'))">{{member.email}}</p>
+              <p class="ml-2 mb-0 label-light email-text font-14" *ngIf="!(spaceData.config.hide_contact_number | parseInt)
+               && (member.email?.includes('@fuguchat.com') || member.email?.includes('@junglework.auth'))">{{member.contact_number}}</p>
+            </div>
+        </div>
+      </cdk-virtual-scroll-viewport>
+    </div>
+    <div class="no-results d-flex justify-content-center mt-3 label-light" *ngIf="!search_results?.length">
+      No results found.
+    </div>
+    <footer class="action-button d-flex justify-content-center align-items-center">
+      <div [@scaleInOut] class="forward-icon rounded-circle cursor-hand hw-56 justify-content-center d-flex align-items-center"
+           *ngIf="is_forward_enabled" (click)="create_step = 2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+          <path fill="#FFF" d="M15 7l-1.4 1.4 5.6 5.6H7v2h12.2l-5.6 5.6L15 23l8-8-8-8z">
+          </path>
+        </svg>
+      </div>
+    </footer>
+  </div>
+  <div class="search-container h-100" *ngIf="create_step == 2" [@flySlowIn]>
+    <div class="d-flex p-2 group-type-bar align-items-center">
+      <div *ngIf="is_private" class="pl-2 w-83">
+        <b>Private</b>
+        <p class="font-12 mr-3">Private groups are invite-only, and do not show up in the group browser list.</p>
+      </div>
+      <div *ngIf="!is_private" class="pl-2 w-83">
+        <b>Public</b>
+        <p class="font-12">Anyone on your team can join.</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="groupCheckbox" [checked]="is_private" (change)="is_private = !is_private;">
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <div class="d-flex flex-column align-items-center mt-4 search-container">
+      <input type="file" #groupFileInput id="channelImage" name="upload" (change)="groupImageUpload($event)"
+             class="d-none-normal" accept="image/*"/>
+      <div class="position-relative channel-group-image" (mouseenter)="groupImageLayer = true"
+           (mouseleave)="groupImageLayer = false">
+        <img [src]="create_group_image" [ngClass]="{'position-absolute' : create_group_image}"
+             class="rounded-img-fugu object-cover" *ngIf="create_group_image">
+        <div (click)="groupFileInput.click()" *ngIf="!create_group_image || groupImageLayer" [ngClass]="{'position-absolute' : create_group_image}"
+             class="image-layer cursor-hand pl-2 pr-2 d-flex flex-column align-items-center justify-content-center rounded-img-fugu">
+          <i class="fa fa-camera"></i>
+          <p class="mb-0 pl-2 pr-2 pt-2 add-text">ADD GROUP ICON</p>
+        </div>
+      </div>
+    </div>
+    <form role="form" [formGroup]="groupForm" (submit)="createGroupChat()">
+      <div class="search-bar mt-4 ml-4">
+        <input type="text" class="form-control search-contacts-input box-shadow-none outline-none pl-1"
+               placeholder="Enter group name (Optional)" formControlName="name" minlength="3" maxlength="30">
+      </div>
+      <div class="d-flex align-items-center justify-content-center tick-button">
+        <button [@scaleInOut]
+                class="forward-icon rounded-circle cursor-hand p-3 d-flex align-items-center box-shadow-none outline-none border-0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#FFF" d="M8 17.1l-5.2-5.2-1.7 1.7 6.9 7L22.9 5.7 21.2 4 8 17.1z"></path>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<app-image-cropper *ngIf="showCroppingPopup" [cropObj]="cropObj" (sendCroppedImage)="saveCroppedImage($event)" (closeCropPopup)="closeCropPopupFunc()"></app-image-cropper>

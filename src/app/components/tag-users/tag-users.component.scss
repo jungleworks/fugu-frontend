@@ -1,0 +1,44 @@
+@import '~assets/css/variables';
+
+.mention-div{
+  background-color: $content-editable;
+  box-shadow: 0px -5px 7px -5px rgba(0, 0, 0, 0.15);
+  max-height: 182px;
+  overflow-y: auto;
+  &__item{
+    // prevent selection on this menu on click via mouse as window.getselection() picks
+    // this selection instead of input
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+    cursor: pointer;
+    height: 52px;
+    padding: 10px 19px;
+    background-color: $tagging-bg;
+    color: $chat-header-text;
+    &:hover{
+      background-color: $tagging-highlight;
+    }
+    &__image{
+      height: 32px;
+      width: 32px;
+      object-fit: cover;
+      border-radius: $rounded-image;
+      color: #fff;
+    }
+  }
+  .active-class{
+    background-color: $tagging-highlight;
+  }
+}
+*::-webkit-scrollbar{
+  width: 6px !important;
+  height: 6px !important;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: rgba(0,0,0,0.2);
+}
+*::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.08);
+}

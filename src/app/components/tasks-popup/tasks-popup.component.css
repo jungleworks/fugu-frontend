@@ -1,0 +1,18 @@
+::ng-deep .message-modal{
+  z-index: 998 !important;
+}
+.task-desc {
+  min-height: 100px;
+  max-height: 100px;
+}
+
+::ng-deep  .spaceSessionCal mat-calendar-header {
+  display: none;
+}
+::ng-deep  .spaceSessionCal {
+  height: auto!important;
+}
+.hidden-input {
+  width: 0;
+  z-index: -9;
+}

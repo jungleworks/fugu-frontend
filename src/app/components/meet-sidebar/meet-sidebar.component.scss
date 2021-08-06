@@ -1,0 +1,108 @@
+@import '~assets/css/variables';
+
+.meet-parent {
+  background-color: $sidebar-chat-color;
+  border-right: solid 1px $border-bottom-header;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+
+  &__upcoming {
+    font-family: TitilliumWeb-Bold;
+    color: $header-ws;
+  }
+
+  &__soon {
+    color: $sidebar-font;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+}
+
+
+::ng-deep .message-modal {
+  z-index: 998 !important;
+}
+
+.task-desc {
+  min-height: 100px;
+  max-height: 100px;
+}
+
+::ng-deep .spaceSessionCal mat-calendar-header {
+  display: none;
+}
+
+::ng-deep .spaceSessionCal {
+  height: auto !important;
+}
+
+.hidden-input {
+  width: 0;
+  z-index: -9;
+}
+
+.meeting-form {
+  padding: 12px;
+  margin-top: -17px;
+}
+
+.sch-btn {
+  font-size: 15px !important;
+  margin-top: 6px;
+}
+
+.meet-div {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+.meet-div .meet-item {
+  height: var(--height-sidebar-chats);
+  position: relative;
+  padding: 12px;
+}
+
+.meet-div .no-meet {
+  height: var(--height-sidebar-chats);
+  position: relative;
+  padding: 12px;
+  color: var(--header-ws);
+}
+
+.meet-div .meet-item:hover {
+  background-color: var(--sidebar-highlight);
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.meet-item .title {
+  font-size: 15px;
+  color: var(--sidebar-heading);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 600 !important;
+}
+
+.meet-item .btn-next {
+  position: absolute;
+  right: 12px;
+  font-size: 18px;
+  padding: 2px 15px;
+}
+
+.meet-item .dates {
+  font-size: 13px;
+  color: var(--sidebar-font) !important;
+  margin-top: -15px;
+}
+
+.on-going {
+  font-size: 13px;
+  width: 59px;
+  height: 16px;
+  border-radius: 5px;
+  background-color: #ff8f47;
+  padding: 0px 3px 1px 3px;
+}

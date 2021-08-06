@@ -1,0 +1,40 @@
+.close-icon {
+  height: 20px;
+  margin-top: -24px;
+}
+.input-new-channel {
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 1px 1px 1px 4px;
+    min-height: 38px;
+}
+.note {
+    color: #888;
+    font-size: 13px;
+    line-height: 1.3;
+    display: flex;
+    margin-top: 8px;
+}
+.btn-new-channel {
+  right: 0px;
+}
+
+.guest-label-heading {
+    font-family: TitilliumWeb-SemiBold;
+    font-size: 16px;
+}
+
+.create-channel-link {
+    font-size: 15px;
+    text-decoration: underline!important;
+    color: var(--app-color)!important;
+}
+
+.invite-desc {
+  padding: 0;
+  color: #888888 !important;
+  margin: 0 0 25px;
+}

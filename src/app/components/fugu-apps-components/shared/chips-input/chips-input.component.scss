@@ -1,0 +1,78 @@
+.chip-input__parent{
+  max-height: 100px;
+  overflow: auto;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  padding: 1px 1px 1px 4px;
+  min-height: 38px;
+  .chip{
+    background-color: #e8e8e8;
+    color: white;
+    border-radius: 16px;
+    font-family: TitilliumWeb;
+    margin: 4px;
+    .chip-text{
+      font-size: 16px;
+      color: #303030;
+    }
+    .chip-cross{
+      padding: 2px;
+      &:hover{
+        background-color: #FFFFFF;
+      }
+    }
+  }
+  .chip-input__input-box{
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+}
+.autocomplete-box{
+  z-index: 1;
+  position: absolute;
+  width: 100%;
+  background-color: #f4f5f5;
+  max-height: 180px;
+  box-shadow: 0 3px 3px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+  .dropdown-option{
+    height: 50px;
+    &:hover{
+      background-color: #e2e2e2;
+    }
+  }
+  .active{
+    background-color: #e2e2e2;
+  }
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.text-label-search {
+  font-size: 16px;
+  font-family: TitilliumWeb-SemiBold;
+}
+
+.text-label-search {
+  font-size: 14px;
+  font-family: TitilliumWeb-SemiBold;
+}
+
+.label-image {
+   height: 32px;
+   width: 32px;
+   object-fit: cover;
+   border-radius: 4px;
+}
+
+.color-scrum-users {
+  background-color: #ef8585!important;
+  border: 1px solid #ff6300;
+}
+
+.color-scrum-user-label {
+  color:#ff6300!important;
+}

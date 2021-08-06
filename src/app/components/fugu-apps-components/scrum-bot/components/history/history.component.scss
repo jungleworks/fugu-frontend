@@ -1,0 +1,41 @@
+.report-selection-box {
+  position: absolute;
+  width: 97%;
+  top: 80px;
+  border-radius: 5px;
+  background-color: #fff;
+  max-height: 180px;
+  overflow: auto;
+}
+.bordered-left {
+  padding-left: 20px;
+  border-width: 4px;
+  border-left: solid var(--app-color);
+}
+.input-drop {
+  position: absolute;
+  right: 20px;
+}
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.min-w-290 {
+  min-width: 290px;
+}
+.w-290 {
+  width: 290px;
+}
+.bg-gray {
+  background-color: #FAFAFA;
+}
+.shadowed-box {
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,.08);
+}
+.round-border {
+  border-radius: 5px;
+}
+.bordered {
+  border: 1px solid #e1e1e1;
+}

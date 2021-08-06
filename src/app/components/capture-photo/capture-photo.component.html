@@ -1,0 +1,40 @@
+<div class="d-flex h-100 w-100 flex-column">
+  <div class="loader d-flex justify-content-center align-items-center" *ngIf="show_loader">
+    <svg width="124px"  height="124px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-rolling" style="background: none;">
+      <circle cx="50" cy="50" fill="none"
+              stroke="var(--app-color)" stroke-width="3" r="24" stroke-dasharray="113.09733552923255 39.69911184307752" transform="rotate(34.1547 50 50)">
+        <animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1" dur="0.7s" begin="0s" repeatCount="indefinite">
+        </animateTransform>
+      </circle>
+    </svg>
+  </div>
+  <div class="body-section d-flex flex-column">
+    <header class="d-flex align-items-center justify-content-between p-2">
+      <div class="d-flex align-items-center">
+        <img src="assets/img/cross-icon-forward.svg" class="hw-30 close-icon cursor-hand rounded-img-fugu pl-2" (click)="closeWebCamPopup.emit(true)">
+        <span class="text ml-2">Take Photo</span>
+      </div>
+      <div class="d-flex align-items-center cursor-hand" *ngIf="screenshot_img.src" (click)="retakePhoto()">
+        <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="#FFF" d="M17.6 6.4C16.2 4.9 14.2 4 12 4c-4.4 0-8 3.6-8 8s3.6 8 8 8c3.7 0 6.8-2.6 7.7-6h-2.1c-.8 2.3-3 4-5.6 4-3.3 0-6-2.7-6-6s2.7-6 6-6c1.7 0 3.1.7 4.2 1.8L13 11h7V4l-2.4 2.4z"></path>
+        </svg>
+        <span class="ml-1">Retake</span>
+      </div>
+    </header>
+    <div class="camera-section d-flex justify-content-center align-items-center h-100" [ngClass]="{'flash' : screenshot_img.src}">
+      <video autoplay muted id="webcam-div">
+      </video>
+      <img id="screenshot-img">
+    </div>
+  </div>
+  <footer class="footer-section d-flex justify-content-center position-relative">
+    <span class="camera-icon footer-icon rounded-img-fugu d-flex justify-content-center align-items-center cursor-hand"
+          *ngIf="video_div_el.srcObject && !screenshot_img.src" [@scaleInOut] (click)="capturePhoto()">
+      <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#FFF" d="M21.317 4.381H10.971L9.078 2.45c-.246-.251-.736-.457-1.089-.457H4.905c-.352 0-.837.211-1.078.468L1.201 5.272C.96 5.529.763 6.028.763 6.38v1.878l-.002.01v11.189a1.92 1.92 0 0 0 1.921 1.921h18.634a1.92 1.92 0 0 0 1.921-1.921V6.302a1.92 1.92 0 0 0-1.92-1.921zM12.076 18.51a5.577 5.577 0 1 1 0-11.154 5.577 5.577 0 0 1 0 11.154zm0-9.506a3.929 3.929 0 1 0 0 7.858 3.929 3.929 0 0 0 0-7.858z"></path></svg>
+    </span>
+    <span class="send-icon footer-icon rounded-img-fugu d-flex justify-content-center align-items-center cursor-hand"
+          *ngIf="screenshot_img.src" [@scaleInOut] (click)="sendImage()">
+      <img src="assets/img/send.svg">
+    </span>
+  </footer>
+</div>

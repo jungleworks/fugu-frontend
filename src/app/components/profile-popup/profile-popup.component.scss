@@ -1,0 +1,84 @@
+@import '~assets/css/variables';
+
+.profile-mask{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+}
+#profile-popover-menu{
+  position: absolute;
+  width: 303px;
+  background-color: $chat-bar-header;
+  border-radius: 4px;
+  box-shadow: 0 16px 34px 10px rgba(121, 121, 121, 0.1);
+  font-family: TitilliumWeb;
+}
+#profile-popover-group{
+  position: fixed;
+  width: 303px;
+  background-color: $chat-bar-header;
+  border-radius: 4px;
+  box-shadow: 0 16px 34px 10px rgba(121, 121, 121, 0.1);
+  font-family: TitilliumWeb;
+}
+.mr-12 {
+  margin-right: 12px;
+}
+.popover-image{
+  // height: 144px;
+  // width: 144px;
+  width: 60px;
+  height: 60px;
+  border-radius: $rounded-image;
+  object-fit: cover;
+}
+.font {
+  font-size: 15px;
+  color: $chat-header-text;
+  padding-bottom: 7px;
+  align-items: baseline;
+}
+
+.full-name{
+  width: 95%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  color: $chat-header-text;;
+  font-family: TitilliumWeb-SemiBold;
+  margin-bottom: 7px;
+}
+.message-btn{
+  border: solid 1px #f0f4f8;
+  font-size: 13px;
+  height: 40px;
+  border-radius: 4px;
+  background-color: #f0f4f8;
+  font-family: TitilliumWeb-SemiBold;
+  img{
+    // height: 16px;
+    // width: 16px;
+    // margin-top: -2px;
+  }
+}
+.email{
+  width: 100%;
+  word-break: break-all;
+}
+.deactive-member {
+  opacity: 0.4;
+}
+
+.guest-label {
+  color: $light-font;
+  font-size: 15px;
+  margin-top: -8px;
+}
+.wl-icon {
+  height: 24px;
+  width: 24px;
+}

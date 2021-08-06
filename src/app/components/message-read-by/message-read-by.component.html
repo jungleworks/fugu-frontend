@@ -1,0 +1,188 @@
+<div class="h-100 overflow-hidden d-flex flex-column border-left">
+  <div class="read-header d-flex align-items-center justify-content-between">
+    <div class="d-flex flex-row align-items-center mr-2 ml-3">
+      <span class="cursor-hand d-flex align-items-center mr-3" (click)="closeReadByWindow()">
+        <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path opacity=".45" fill="var(--chat-header-text)"
+            d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z">
+          </path>
+        </svg>
+      </span>
+      <h4 class="TitilliumWeb-bold mb-0 theme-font-color">Message info</h4>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column overflow-auto h-100 bg-color" id="read-by-container" #readByContainer>
+    <div class="message-read-container">
+      <div class="message-content position-relative"
+        [ngClass]="{'media-padding': readByMembersData.message_type == MessageTypeEnum.Media_Message || readByMembersData.message_type == MessageTypeEnum.Video_Message}">
+        <div *ngIf="(readByMembersData.message_type == MessageTypeEnum.Text_Message || readByMembersData.isEdit) && readByMembersData.message_type != MessageTypeEnum.Media_Message && readByMembersData.message_state != 0">
+          <p class="message-read m-0"
+            [innerHTML]="readByMembersData.message|markdown|url_phone|emoji:'':'is_chat'|edited: readByMembersData.message_state|safeHtml:'html'">
+          </p>
+        </div>
+        <div *ngIf="readByMembersData.message_state == 0 && readByMembersData.is_delete">
+          <p class="message-read text-muted d-flex align-items-center deleted-text-message m-0">
+            <i class="fa fa-ban mr-1"></i>
+            You deleted this message.
+          </p>
+        </div>
+        <div class="image-messages-container" *ngIf="readByMembersData.message_type == MessageTypeEnum.Media_Message && !readByMembersData.is_delete">
+          <div class="image-messages overflow-hidden cursor-hand message-read position-relative"
+            [ngStyle]="readByMembersData | imageDimension" (click)="openImage(readByMembersData)">
+            <img [src]="readByMembersData.thumbnail_url | safeHtml: 'url'" (click)="openImage(readByMembersData)"
+              [ngStyle]="readByMembersData.thumbnail_url | checkGif" alt="thumbnail">
+          </div>
+          <p *ngIf="readByMembersData.message" class="caption-text"
+            [innerHTML]="readByMembersData.message|markdown|url_phone|emoji:'':'is_chat'|edited: readByMembersData.message_state|safeHtml:'html'">
+          </p>
+        </div>
+        <div class="image-messages-container" *ngIf="readByMembersData.message_type == MessageTypeEnum.Video_Message && !readByMembersData.is_delete">
+          <div class="image-messages cursor-hand position-relative d-flex justify-content-center align-items-center"
+            [ngStyle]="readByMembersData | imageDimension" (click)="openImage(readByMembersData)">
+            <img src="assets/img/video-play.svg" class="position-absolute video-play-image">
+            <img [src]="readByMembersData.thumbnail_url | safeHtml:'url' || 'assets/img/video.svg'"
+              (click)="openImage(readByMembersData)" [ngStyle]="readByMembersData.thumbnail_url | checkGif"
+              alt="thumbnail">
+          </div>
+          <p *ngIf="readByMembersData.message" class="caption-text"
+            [innerHTML]="readByMembersData.message|markdown|url_phone|emoji:'':'is_chat'"></p>
+        </div>
+        <div class="" *ngIf="readByMembersData.message_type == MessageTypeEnum.File_Message && !readByMembersData.is_delete">
+          <a #fileAnchor class="cursor-hand" (click)="onFileClick($event, fileAnchor, readByMembersData)" download>
+            <div
+              class="p-3 d-flex align-items-center justify-items-center background-file-type background-file-type-send">
+              <div class="position-relative attachment-img-div d-flex align-items-center">
+                <img class="cursor-hand attachment-icon" src="/assets/img/download-icon.png" alt="download-icon">
+                <span class="position-absolute attachment-img-text">{{readByMembersData.file_name?.split('.')[readByMembersData.file_name.split('.').length
+                                                                                    - 1] && readByMembersData.file_name.split('.').length > 1 ? readByMembersData.file_name.split('.')[readByMembersData.file_name.split('.').length -
+                                                                                    1].toUpperCase()
+                                                                                    : 'FILE'}}
+                </span>
+              </div>
+              <div class="p-1 attachment-link-container">
+                <span class="attachment-link outline-none pl-1">{{readByMembersData.file_name}}</span>
+              </div>
+              <div class="attachment-icon-svg">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
+                  <path fill="#263238" fill-opacity=".5"
+                    d="M17 2c8.3 0 15 6.7 15 15s-6.7 15-15 15S2 25.3 2 17 8.7 2 17 2m0-1C8.2 1 1 8.2 1 17s7.2 16 16 16 16-7.2 16-16S25.8 1 17 1z">
+                  </path>
+                  <path fill="#263238" fill-opacity=".5"
+                    d="M22.4 17.5h-3.2v-6.8c0-.4-.3-.7-.7-.7h-3.2c-.4 0-.7.3-.7.7v6.8h-3.2c-.6 0-.8.4-.4.8l5 5.3c.5.7 1 .5 1.5 0l5-5.3c.7-.5.5-.8-.1-.8z">
+                  </path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="poll_message" *ngIf="readByMembersData.message_type == MessageTypeEnum.Poll && !readByMembersData.is_delete">
+          <p class="font-18 mb-2" [innerHTML]="readByMembersData.question | markdown"></p>
+          <div
+            *ngFor="let option of readByMembersData.poll_options | sortVotes: commonService.userDetails.user_id | slice:0:3"
+            class="poll_option p-2 mb-2 position-relative no-wrap"
+            [ngClass]="{'current_user_color' : option.users_map && option.users_map[commonService.userDetails.user_id]}">
+            <div class="background_fill position-absolute" [style.width]="((option.poll_count / readByMembersData.total_votes
+                                             * 100) || 0) + '%'"></div>
+            <div class="mb-0 d-flex align-items-center justify-content-between">
+              <span class="poll_input_text">
+                <input *ngIf="option.users_map && !readByMembersData.is_expired"
+                  [type]="readByMembersData.multiple_select ? 'checkbox' : 'radio'" disabled class="ml-1 mr-3"
+                  [name]="i" [checked]="option.users_map[commonService.userDetails.user_id]">{{option.label}}
+              </span>
+              <span class="d-flex justify-content-end small cursor-hand text-muted poll_option_count font-16"
+                (click)="$event.stopPropagation();$event.preventDefault();temp_poll_view_data=readByMembersData;selectedVote = option;total_votes_open = true">{{option.poll_count}}
+                {{option.poll_count > 1 ? 'votes' : 'vote'}}</span>
+            </div>
+          </div>
+          <div class="pt-1 pb-1">
+            <span class="cursor-hand pb-1" [ngClass]="{'app-color' : readByMembersData.poll_options.length > 3}">
+              <span class="TitilliumWeb-bold" *ngIf="readByMembersData.poll_options.length > 3">+
+                {{(readByMembersData.poll_options.length - 3).toString()}} more options...</span>
+            </span>
+          </div>
+          <div class="d-flex justify-content-between more_poll_options pt-1 pb-2">
+            <span class="TitilliumWeb-bold"
+              [style.color]="readByMembersData.is_expired ? 'red' : 'black'">{{readByMembersData.is_expired ?
+                                              'Poll Expired' : 'Poll Expiry: ' + (readByMembersData.expire_at ? (readByMembersData.expire_at | date:'d MMM, h:mm a') : '')}}</span>
+            <span>Total Votes: {{readByMembersData.total_votes}}</span>
+          </div>
+        </div>
+        <div class="image-footer"
+          *ngIf="!readByMembersData.message && !readByMembersData.is_delete && (readByMembersData.message_type == MessageTypeEnum.Media_Message || readByMembersData.message_type == MessageTypeEnum.Video_Message)">
+        </div>
+        <div>
+          <span class="time-message"
+            [ngClass]="{'time-message-media': readByMembersData.message_type == MessageTypeEnum.Media_Message || readByMembersData.message_type == MessageTypeEnum.Video_Message}">{{readByMembersData.date_time | date:"shortTime"}}
+          </span>
+          <span class="ml-1 margin-tick-icon tick-message">
+            <ng-container>
+              <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 13" width="15" height="13">
+                <path [attr.fill]="read_members.length ? '#2296ff' : '#92A58C'" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0
+                                                      1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32
+                                                      1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365
+                                                      0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0
+                                                      0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365
+                                                      0 0 0-.063-.51z">
+                </path>
+              </svg> -->
+              <img [src]="read_members.length ? '../../../assets/img/message-read-tick.svg' : '../../../assets/img/message-unread-tick.svg'">
+            </ng-container>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="bg-color">
+      <div class="d-flex justify-content-between p-4" *ngIf="read_members.length">
+        <span class="read-by-text">Seen by</span>
+        <span>
+          <span class="ml-1 margin-tick-icon">
+            <ng-container>
+              <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 13" width="18" height="18">
+                <path [attr.fill]="'#2296ff'" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0
+                                1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32
+                                1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365
+                                0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0
+                                0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365
+                                0 0 0-.063-.51z">
+                </path>
+              </svg> -->
+              <img [src]="read_members.length ? '../../../assets/img/message-read-tick.svg' : '../../../assets/img/message-unread-tick.svg'">
+            </ng-container>
+          </span>
+        </span>
+      </div>
+      <div id="message-read-by-container">
+        <div *ngIf="read_members.length">
+          <div class="d-flex align-items-center read-parent-container" *ngFor="let member of read_members">
+            <div class="pl-4 d-flex w-100 align-items-center">
+              <img *ngIf="member.user_thumbnail_image" [src]="member.user_thumbnail_image"
+                class="member-image rounded-img-fugu cursor-hand">
+              <div *ngIf="!member.user_thumbnail_image"
+                class="rounded-img-fugu member-image member-text cursor-hand d-flex justify-content-center align-items-center"
+                [ngStyle]="{'background-color': member.id | randomColor}">
+                {{member.full_name.substring(0,1)}}
+              </div>
+              <div class="d-flex w-100 overflow-hidden flex-column read-names-container">
+                <span class="d-flex">
+                  <p class="pl-1 mb-1 ml-2 pt-2 cursor-hand member-name-text">
+                    {{member.full_name}}</p>
+                  <p class="pl-1 mb-1 pt-2 small text-muted d-flex align-items-center" *ngIf="member.role == 'GUEST'">(Guest)</p>
+                </span>
+                <span
+                  class="pl-1 pb-2 ml-2 time-container">{{((member.seen_at | time_converter:'chat':'timestamp') | lowercase)}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="no-read-container d-flex justify-content-center p-3"
+          *ngIf="!read_members.length || statusCode != 200">
+          {{readMessageStatus}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-gallery-carousel (closeCarousel)="showImageCarousel = false" [parentData]="dataForCarousel"
+  *ngIf="showImageCarousel">
+</app-gallery-carousel>

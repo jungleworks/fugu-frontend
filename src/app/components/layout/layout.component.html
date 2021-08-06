@@ -1,0 +1,114 @@
+<div class="d-flex flex-column h-100 overflow-hidden">
+  <div id="cookie_consent" class="d-flex align-items-center justify-content-between w-100 p-3" *ngIf="cookie_consent_shown">
+    <p class="mb-0">Our website uses cookies, which helps us to deliver the best possible service and customer experience.
+      <a *ngIf="!commonService.isWhitelabelled" class="app-color" class="outline-none" [routerLink]="['/privacy-policy']" target="_blank" rel="noopener">Click here for the cookie policy.</a></p>
+      <button class="btn btn-common-square" (click)="hideCookieConsent()">Got it</button>
+  </div>
+
+  <div class="d-flex flex-column h-100 overflow-hidden">
+      <div class="h-100 w-100 position-absolute overlay" *ngIf="commonService.showWorkspaces"></div>
+    <!-- <app-header [user_data]="spaceData" (showUserProfile)="showUserProfile($event)" (showNewFeatures)="showNewFeatures($event)"></app-header> -->
+    <div class="parent-container d-flex row no-gutters flex-grow">
+      <!-- *ngIf="commonService.showThemesPopup"  -->
+      <app-themes *ngIf="commonService.showThemesPopup" class="w-100"></app-themes>
+        <div class="col-3 col-2and5 d-flex flex-column">
+          <div *ngIf="commonService.showThemesPopup" class="overlay-themes"></div>
+        <app-header [user_data]="spaceData" (showUserProfile)="showUserProfile($event)" (showNewFeatures)="showNewFeatures($event)"></app-header>
+        <div class="opt-chat-meet" *ngIf="!commonService.isWhitelabelled || (commonService.show_meet_tab && spaceData.installed_apps && spaceData.installed_apps.includes(botsEnum.CONFERENCE_BOT))">
+          <div class="d-flex justify-content-around mt-1 h-30 w-100">
+            <div class="cursor-hand outline-none opt-chat-meet__label w-50 d-flex align-items-center justify-content-center" id="chatLayout" (click)="goToChat()" [ngClass]="{'active-option' : isChat}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+              <path  [ngClass]="{'active-fill' : isChat}" fill="var(--header-ws)"d="M16.138 3c1.524 0 2.77 1.203 2.857 2.719l.005.17v6.642c0 1.538-1.192 2.796-2.694 2.884l-.168.005h-4.86l-3.034 3.153c-.472.492-1.214.56-1.762.198l-.114-.084-.095-.085c-.208-.203-.347-.466-.4-.75l-.019-.145-.185-2.295-.1-.007c-1.336-.137-2.401-1.203-2.551-2.548l-.014-.177L3 12.53V5.889C3 4.35 4.192 3.093 5.694 3.005L5.862 3h10.276zm0 1.333H5.862c-.804 0-1.464.621-1.535 1.414l-.006.142v6.642c0 .811.616 1.477 1.401 1.549l.14.006h1.025l.284 3.513c.001.018.01.034.022.047.02.019.046.025.07.018l.034-.02 3.424-3.558h5.417c.804 0 1.464-.62 1.535-1.413l.006-.142V5.889c0-.86-.69-1.556-1.541-1.556zm-1.808 6.193c.372 0 .673.302.673.674 0 .372-.301.673-.673.673H7.67c-.372 0-.673-.301-.673-.673 0-.372.301-.674.673-.674h6.66zm0-3.366c.372 0 .673.301.673.673 0 .372-.301.673-.673.673H7.67c-.372 0-.673-.301-.673-.673 0-.372.301-.673.673-.673h6.66z"/>
+          </svg>
+              <span class="ml-2 outline-none mb-1" >Chats</span>
+            </div>
+            <div (click)="goToMeet()" class="position-relative opt-chat-meet__label cursor-hand w-50 d-flex align-items-center justify-content-center" id="meetLayout"  [ngClass]="{'active-option' : isMeet || localStorageService.get('showTutorials')}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+                <path [ngClass]="{'active-fill' : isMeet || localStorageService.get('showTutorials')}" fill="var(--header-ws)" d="M12.205 5c.973 0 1.723.824 1.782 1.824l.003.126v1.266l3.844-1.432c.527-.175 1.102.17 1.161.728l.005.095v6.786c0 .582-.547.965-1.099.84l-.092-.026-3.819-1.424v1.29c0 .997-.715 1.856-1.665 1.923l-.12.004h-7.42c-.973 0-1.723-.824-1.781-1.824L3 15.05v-8.1c0-1.014.71-1.878 1.665-1.946L4.785 5h7.42zm0 1.367h-7.42c-.178 0-.363.196-.395.492l-.005.091v8.1c0 .314.169.539.347.577l.054.006h7.419c.177 0 .363-.195.396-.474l.005-.087V6.95c0-.314-.17-.539-.348-.577l-.053-.006zm5.41 1.959l-3.438 1.282v2.783l3.438 1.283V8.326z"/>
+            </svg>
+              <span class="ml-2 mb-1 ">Meet</span>
+              <!-- <span *ngIf="!localStorageService.get('showTutorials')" class="try">New</span> -->
+            </div>
+          </div>
+        </div>
+        <app-sidebar *ngIf="show_sidebar && !showMeetDashboard" (clearChatEmit)="clearChat($event)"  id="app-sidebar" class="overflow-hidden p-0 w-100 h-100"
+                     [params]="params" [group_data]="group_data"
+                     [extra_data]="showProfile || search_view_open || starred_open || user_profile_open || showReadBy || showWhatsNew || commonService.openMeetProfile"
+                     (unreadCountClick)="onUnreadCountClick($event)" (groupName)="labelHeaderReceived($event)"
+                     (userDataUpdate)="userDataUpdate($event)"></app-sidebar>
+
+          <app-meet-sidebar *ngIf="showMeetDashboard" class="overflow-hidden p-0 w-100 h-100"></app-meet-sidebar>
+
+        <app-create-group id="create-group" class="overflow-hidden p-0 w-100 position-absolute h-100 top-absolute" [@flyInOut]
+                          *ngIf="create_group_open" [added_members]="group_members_added">
+        </app-create-group>
+        <app-starred-messages keyboard-events [isEnabled]="starred_open" (esc)="onStarEsc()" class="h-100 overflow-hidden p-0 w-100 position-absolute top-absolute"  [clearChatItem]="clearChatEmitter" [deletedMessage]="deletedMessageItem" (unstarringAll)="unstarAll($event)" [message_item]="messageItem" (jumpToStar)="jumpSearchEmitter($event)"
+        id="star-message" *ngIf="starred_open"
+       (closeStarredMessage)="starred_open = false"> </app-starred-messages>
+       <app-notification keyboard-events [isEnabled]="commonService.notifications_menu_open" (esc)="onNotificationEsc()" *ngIf="commonService.notifications_menu_open" class="h-100 overflow-hidden p-0 w-100 position-absolute top-absolute"></app-notification>
+        <app-workspace-bar [hidden]="!(commonService.showWorkspaces && (!commonService.isWhitelabelled || (commonService.isWhitelabelled && commonApiService.whitelabelConfigurations['properties'].is_create_workspace_enabled)))" class="overflow-hidden p-0 position-absolute top-absolute" [user_data]="spaceData"></app-workspace-bar>
+      </div>
+      <div class="col-9 col-9and5 p-0 d-flex flex-row h-100">
+        <app-chat *ngIf="show_chat && !showMeetDashboard" (deleteClick)="deletedMessage($event)" [unstarAllMessages]="unstarAllItem" (starClick)="starClicked($event)"
+                  [ngStyle]="{'width': user_profile_open ? '69%' : showProfile || showReadBy || showWhatsNew || commonService.openMeetProfile ? '74%' : '100%'}" [params]="params"
+                  [current_unread_count]="current_unread_count" [group_data]="group_data" (joinGroupEvent)="joinGroup()"
+                  [membersInformation]="groupInfo"
+                  (infoBtnClick)="profileBtnClick($event)" (groupName)="labelHeaderReceived($event)"
+                  [searchParams]="jumpSearchData" (showReadByWindow)="showReadByWindow($event)"></app-chat>
+        <app-meet-dashboard *ngIf="showMeetDashboard" class="w-100"></app-meet-dashboard>
+       <!-- <app-themes *ngIf="commonService.showThemesPopup" class="w-100"></app-themes> -->
+        <app-profile-component *ngIf="showProfile" class="position-relative" [params]="params"
+                               [group_data]="group_data" [members_data]="getMembersData" (group_joined)="onGroupJoined($event)"
+                               (groupName)="labelHeaderReceived($event)"
+                               (membersInformation)="onMembersInfoReceived($event)" >
+        </app-profile-component>
+        <!-- <app-search-messages *ngIf="search_view_open" [messages_data]="search_messages_data" (jumpToSearch)="jumpSearchEmitter($event)"
+                             (closeSearch)="search_view_open = false">
+        </app-search-messages> -->
+        <app-user-profile *ngIf="user_profile_open" (userDataUpdate)="userDataUpdate($event)" (closeProfile)="user_profile_open = false"></app-user-profile>
+        <!-- <app-starred-messages [clearChatItem]="clearChatEmitter" [deletedMessage]="deletedMessageItem" (unstarringAll)="unstarAll($event)" [message_item]="messageItem" (jumpToStar)="jumpSearchEmitter($event)"
+         id="star-message" *ngIf="starred_open"
+        (closeStarredMessage)="starred_open = false"> </app-starred-messages> -->
+        <app-whats-new *ngIf="showWhatsNew" (closeWhatsNew)="showWhatsNew = false"></app-whats-new>
+        <app-meet-profile *ngIf="commonService.openMeetProfile" (closeMeetProfile)="commonService.openMeetProfile"></app-meet-profile>
+        <app-message-read-by *ngIf="showReadBy" (closeReadBy)="showReadBy = false" [readByData]="readByData"></app-message-read-by>
+      </div>
+    </div>
+    <div class="slow-internet-container" *ngIf="showSlowInternetBar" [@barFadeInOut]>
+      <span class="slow-internet pl-1 pr-1">Slow Internet Connection Detected.</span>
+    </div>
+  </div>
+  <app-permissions-popup *ngIf="permissions_popup_object.is_open" [@messageModalAnimation] (closePermissionPopup)="permissions_popup_object.is_open = false">
+    <p class="heading-text">{{permissions_popup_object.content.heading}}</p>
+    <p class="description">{{permissions_popup_object.content.description}}</p>
+    <button class="mt-2 got-it-button outline-none" (click)="permissions_popup_object.is_open = false" type="button">OK, GOT IT</button>
+  </app-permissions-popup>
+  <app-message-modal *ngIf="error_message_modal_object.is_open"  [@messageModalAnimation] (closeMessageModal)="error_message_modal_object.is_open = false">
+    <p class="message-modal-heading">{{error_message_modal_object.content.heading}}</p>
+    <p class="message-modal-description">{{error_message_modal_object.content.description}}</p>
+    <div class="d-flex justify-content-end">
+      <button class="message-modal-button outline-none" (click)="error_message_modal_object.is_open = false" type="button">OK, GOT IT</button>
+    </div>
+  </app-message-modal>
+  <app-message-modal  *ngIf="conferenceAcceptanceObject.showAcceptConferencePopup" [@messageModalAnimation]>
+      <p class="message-modal-heading">{{conferenceAcceptanceObject.inviteFullName}} has converted this call into a conference call</p>
+      <p class="message-modal-description">Click on the join button to shift to conference</p>
+      <div class="d-flex justify-content-end">
+        <button class="message-modal-button mr-3 message-modal-button-red btn-red outline-none" type="button" (click)="conferenceAcceptanceObject.showAcceptConferencePopup = false">Cancel</button>
+        <button class="message-modal-button outline-none" (click)="joinConference()" type="button">Join</button>
+      </div>
+  </app-message-modal>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+

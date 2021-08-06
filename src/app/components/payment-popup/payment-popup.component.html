@@ -1,0 +1,41 @@
+<app-message-modal
+  [width]="'30%'"
+  (closeMessageModal)="closePaymentPopup.emit()"
+>
+<div class="d-flex align-items-center mb-2">
+
+
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="28" viewBox="0 0 32 28">
+    <path fill="#FF4242" d="M18.109.604c.543.338 1 .801 1.332 1.352l11.964 19.808c1.164 1.929.568 4.45-1.333 5.632-.634.395-1.364.604-2.109.604H4.036C1.807 28 0 26.166 0 23.904c0-.755.206-1.496.595-2.14L12.559 1.956c1.164-1.929 3.65-2.534 5.55-1.352zM15.986 21.1c-.557 0-1.027.192-1.41.575-.384.384-.576.847-.576 1.39 0 .523.192.977.576 1.36.383.384.853.576 1.41.576.556 0 1.03-.192 1.424-.575.393-.384.59-.838.59-1.361 0-.543-.197-1.006-.59-1.39-.393-.383-.868-.575-1.424-.575zm0-15.099c-.976 0-1.766.79-1.766 1.766l.001.074.47 11.154h2.618l.445-11.154c.039-.976-.721-1.8-1.698-1.839L15.986 6z"/>
+</svg>
+<span class="ml-4 TitilliumWeb-bold font-20">User limit reached!</span>
+</div>
+  <div class="mb-3">
+    <span class="theme-font-light">You have exhausted your current limit of users. Please pay to invite more users to your workspace.</span>
+  </div>
+  <div class="d-flex justify-content-between">
+      <div class="d-flex flex-column">
+          <span class="mb-2">How many more users do you need?</span>
+          <input
+            type="text"
+            class="form-control box-shadow-none outline-none mr-2"
+            [(ngModel)]="usersToPay"
+            placeholder="Enter number of users"
+            (keyup)="getPrice()"
+          />
+      </div>
+      <div class="d-flex align-items-center">
+          <span>{{priceInfo.currency}} {{priceInfo.totalPrice}}</span>
+      </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button
+      class="message-modal-button message-modal-button-red btn-red outline-none mr-3"
+      type="button"
+      (click)="closePaymentPopup.emit()"
+    >
+      Cancel
+    </button>
+    <button class="message-modal-button outline-none" [disabled]="priceInfo.totalPrice == 0.00" type="button" (click)="payment()">Pay {{priceInfo.totalPrice > 0 ? priceInfo.currency : ''}} {{priceInfo.totalPrice > 0 ? priceInfo.totalPrice : ''}}</button>
+  </div>
+</app-message-modal>

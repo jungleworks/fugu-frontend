@@ -1,0 +1,104 @@
+@import '~assets/css/variables';
+
+header{
+  background-color: var(--app-color);
+  color: #ffffff;
+  height: 50px;
+}
+.close-icon{
+  margin-top: -2px;
+  cursor: pointer;
+}
+.text{
+  font-size: 19px;
+}
+
+.img-size{
+  height: 100%;
+  width:100%;
+  object-fit: contain;
+}
+.h-20 {
+  height: 22px;
+}
+.img-preview-underline{
+  border-bottom: 1px solid var(--app-color);
+}
+.btn-send{
+  border: 0;
+  background-color: var(--app-color);
+  outline: none;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: -25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.emoji-flow{
+  position: absolute;
+  right: 0;
+  padding-right: 110px;
+}
+.body-section{
+  flex: 80;
+  background-color: $chat-bg-color;
+}
+.h-82 {
+  height: 75%;
+}
+.footer-section{
+  flex: 20;
+  background-color: #D8D8D8;
+}
+.message-input{
+  background-color:transparent;
+  border-bottom: solid 2px var(--app-color);
+}
+
+.footer-image-size{
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+}
+.selected-footer-image{
+  transform: scale(0.9);
+  border: 4px solid var(--app-color);
+}
+.footer-image{
+  overflow: scroll;
+}
+.content-editable-style:empty:before {
+  content: attr(data-placeholder);
+  font-family: TitilliumWeb;
+  border-radius: 0;
+  font-size: 18px;
+  color: #88838c;
+  cursor: text;
+}
+
+.content-editable-style{
+  max-height: 140px;
+  font-family: TitilliumWeb;
+  padding: 6px;
+  font-size: 18px;
+  overflow-y: auto;
+}
+.emojiBtn{
+  outline: none;
+  border: none;
+  background-color: transparent;
+  border-bottom: solid 2px var(--app-color);
+}
+.pointer-none{
+  pointer-events: none;
+}
+.display-flex{
+  display: flex;
+}
+.input-container{
+  padding-right: 7rem !important;
+  padding-left: 7rem !important;
+}
+.loader-preview {
+  z-index: 1;
+}

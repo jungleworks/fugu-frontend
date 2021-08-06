@@ -1,0 +1,52 @@
+<div class="notifications-menu h-100"
+[@fadeIn]>
+<header class="d-flex align-items-center justify-content-between border-bottom p-3">
+  <div class="d-flex">
+    <span class="cursor-hand d-flex align-items-center mr-3" (click)="commonService.notifications_menu_open = false">
+      <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+        <path opacity=".45" fill="var(--chat-header-text)"
+          d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z">
+        </path>
+      </svg>
+    </span>
+  <span class="font-15 font-semibold text-noti">NOTIFICATIONS</span>
+  </div>
+  <span class="app-color small cursor-hand" *ngIf="notifications_array.length" (click)="markAllRead()">Mark all as
+    read
+  </span>
+</header>
+<div class="notification-body h-100" #notificationsContainer id="notification-container">
+  <div *ngFor="let messageItem of notifications_array" class="notification-card p-3 border-bottom cursor-hand" (click)="onNotificationClick(messageItem)"
+    [ngStyle]="{'background-color': !messageItem.read_at ? 'var(--app-color-highlight)' : 'var(--chat-bar-header)'}">
+    <div class="d-flex">
+      <img draggable="false" *ngIf="messageItem.action_by_user_image" [src]="messageItem.action_by_user_image" class="hw-40 object-cover rounded-img-fugu notification-image">
+      <div *ngIf="!messageItem.action_by_user_image" class="empty-image-div notification-image">
+        <span class="hw-40 p-2 rounded-img-fugu d-flex align-items-center justify-content-center font-22 color-white-font" [style.backgroundColor]="messageItem.action_by_user_id | randomColor">
+          {{messageItem.action_by_user_name.substr(0,1)}}</span>
+      </div>
+      <div class="d-flex flex-column notification-message">
+        <p class="mb-0 font-15 pr-2 notification-title">
+          <b class="TitilliumWeb-bold">{{messageItem.action_by_user_name}} </b>
+          {{messageItem.notification_title}}
+        </p>
+        <b class="font-15 TitilliumWeb-bold notification-title" *ngIf="messageItem.app_secret_key != spaceData.fugu_secret_key
+          && domains_map[messageItem.app_secret_key]">({{domains_map[messageItem.app_secret_key].workspace_name}})</b>
+        <span class="font-time">{{messageItem.updated_at | time_converter:'conversations'}}</span>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!notifications_array.length && !show_loader" class="d-flex justify-content-center w-100 mt-2">
+    No Notifications
+  </div>
+  <div id="loader-div" class="d-flex justify-content-center align-items-center mt-2 position-absolute w-100" *ngIf="show_loader">
+    <svg width="40px" height="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-rolling"
+      style="background: white;border-radius:50%;">
+      <circle cx="50" cy="50" fill="none" stroke="var(--app-color)" stroke-width="6" r="35" stroke-dasharray="164.93361431346415 56.97787143782138"
+        transform="rotate(144 50 50)">
+        <animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1" dur="1s"
+          begin="0s" repeatCount="indefinite"></animateTransform>
+      </circle>
+    </svg>
+  </div>
+</div>
+</div>

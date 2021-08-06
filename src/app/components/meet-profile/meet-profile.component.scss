@@ -1,0 +1,55 @@
+@import "~assets/css/variables";
+
+.menu {
+  font-family: TitilliumWeb;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--chat-bar-header);
+  border-left: solid 1px var(--border-bottom-header);
+  transition: all 1s ease-in-out;
+  color: $chat-header-text;
+  &__header {
+    height: var(--header-height-sides);
+  }
+}
+
+.border-bottom-gray {
+    border-bottom: 8px solid $chat-bg-color;
+  }
+
+  .label-header {
+    font-size: 18px;
+    font-family: TitilliumWeb-SemiBold;
+    color: var(--chat-header-text);
+  }
+
+  .cal {
+    height: 40px;
+    width: 40px;
+  }
+
+    .cal-button {
+    width: 135px;
+    height: 45px;
+    border-radius: 6px;
+    border: solid 1px #d2d8e0;
+    background-color: #ffffff;
+    outline: none;
+    color: #4facfe;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    &:hover {
+      background-image: linear-gradient(259deg, #00c8fe, #4facfe);
+      color: #fff;
+      border: none;
+      .plus {
+        color: #fff;
+      }
+      .keyboard {
+        fill: #fff!important;
+      }
+    }
+  }

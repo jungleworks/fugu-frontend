@@ -1,0 +1,51 @@
+<div class="d-flex flex-column h-100 w-100">
+  <div class="p-3 border-bottom bg-white">
+    <p class="h2 mb-0">Timesheet</p>
+    <button class="btn btn-secondary btn-range-picker" (click)="show_date_range_picker = !show_date_range_picker">
+      <i class="fa fa-calendar"></i>
+      {{date_range_picker_obj.start_date | date}} - {{date_range_picker_obj.end_date | date}}
+    </button>
+    <app-date-range-picker *ngIf="show_date_range_picker" [max_date]="range_max_date"
+                           [btn_class_name]="'btn-range-picker'" [input_date_obj]="date_range_picker_obj" (dateSelectEvent)="onDateSelected($event)"
+                           (closePicker)="show_date_range_picker = false"></app-date-range-picker>
+  </div>
+  <div class="timesheet-container flex-grow p-2 overflow-auto">
+    <div class="timesheet-container__table bg-white">
+      <div class="d-flex timesheet-container__table__header">
+        <span class="heading-text w-20 p-3 TitilliumWeb-bold right-border">EMPLOYEE</span>
+        <span class="w-60 p-3"></span>
+        <span class="heading-text w-20 p-3 TitilliumWeb-bold left-border">TOTAL WORK HOURS</span>
+      </div>
+      <div class="timesheet-container__table__body">
+        <div class="timesheet-container__table__body__row d-flex">
+          <div class="w-20">
+            <div class="p-2 right-border d-flex justify-content-center align-items-center ht-167 word-break" *ngFor="let row of timesheet_data">{{row.full_name}}</div>
+          </div>
+          <div class="w-60 overflow-auto">
+            <div class="d-flex ht-167" *ngFor="let row of timesheet_data">
+              <div class="attendance-card d-flex flex-column m-2" *ngFor="let punch of row.punchings">
+                <p class="mb-0 font-10 text-muted TitilliumWeb-bold">{{punch.date | date : 'EEEE'}}</p>
+                <p class="font-10 text-right black_20">{{punch.date | date : 'd MMM'}}</p>
+                <div class="attendance-card__detail-box d-flex flex-column">
+                  <div class="d-flex align-items-center justify-content-between TitilliumWeb-bold">
+                    <span class="time-hours">{{(punch.clocked_in | date: 'hh:mm') || '00:00'}}</span><span class="clock-status in font-10">IN</span></div>
+                  <div class="d-flex align-items-center justify-content-between TitilliumWeb-bold">
+                    <span class="time-hours">{{(punch.clocked_out | date: 'hh:mm') || '00:00'}}</span><span class="clock-status out font-10">OUT</span></div>
+                  <div class="d-flex align-items-center justify-content-between TitilliumWeb-bold">
+                    <span class="time-hours">{{(punch.work_time | convertToHours: '1') || '00:00'}}</span><span class="clock-status total font-10">TOTAL</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-20">
+            <div class="p-2 ht-167 left-border d-flex justify-content-center align-items-center" *ngFor="let row of timesheet_data">{{row.total_work_hours | convertToHours: '0'}} Hrs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-paginator [length]="paginator_obj.length"
+                   [pageSize]="paginator_obj.page_size"
+                   (page)="onPageChaneEvent($event)">
+    </mat-paginator>
+  </div>
+</div>

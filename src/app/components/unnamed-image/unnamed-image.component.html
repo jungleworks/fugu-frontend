@@ -1,0 +1,8 @@
+<div class="d-flex flex-row circle-image-parent" [style.height.px]="dimensions.height" [style.width.px]="dimensions.width" [style.font-size.px]="dimensions.fontsize">
+  <div class="image-show-child" *ngFor="let img of members; let i = index" [ngClass]="{'img-first-child': i==0,'img-second-child': i==1 , 'img-third-child': i==2, 'h-100': members.length==2,'w-100': members.length==1,'w-60':members.length==3 && i == 0 }">
+    <img *ngIf="members[i].user_image" [src]="members[i].user_image" class="image-child ">
+    <div *ngIf="!members[i].user_image" [ngStyle]="{'background-color': members[i].user_id | randomColor}" [ngClass]="{'noImg-first-child': i==0}" class="image-child d-flex justify-content-center align-items-center pr-2 left-photo-margin color-white  font-18">
+      {{members[i].full_name.substring(0,1) == '+' ? 'U' : members[i].full_name.substring(0,1)}}
+    </div>
+  </div>
+</div>

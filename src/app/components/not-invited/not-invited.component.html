@@ -1,0 +1,18 @@
+<div class="d-flex h-100 justify-content-center align-items-center">
+  <div class="join-box">
+    <div class="join-box-header d-flex justify-content-center align-items-center">
+      <img *ngIf="!commonService.isWhitelabelled" class="img-fluid mb-4" src="/assets/img/fugu-logo-full.svg">
+      <img *ngIf="commonService.isWhitelabelled" class="img-fluid mb-4 h-45" [src]="commonApiService.whitelabelConfigurations.logo">
+    </div>
+    <div class="join-box-content d-flex justify-content-center flex-column">
+      <div class="col-12 d-flex justify-content-center flex-column align-items-center">
+        <p class="text-center mb-1">You are not invited to this workspace.</p>
+        <p class="text-center mb-1" *ngIf="!isPublicInvite">Please contact workspace owner.</p>
+        <button class="btn btn-common mt-2" *ngIf="isPublicInvite" [routerLink]="['/join']">Join Now</button>
+      </div>
+    </div>
+  </div>
+  <div class="position-absolute app-color text-center cursor-hand align-self-end" (click)="logout()">
+    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+  </div>
+</div>
